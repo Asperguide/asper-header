@@ -1,0 +1,60 @@
+[x] Add the Asperguide ascii logo in the comment
+[o] Find an acceptable size for the logo.
+[x] Add the project name
+[x] Add the file name
+[x] Add the creation date name
+[x] Add a last modified section
+[x] Ask for a description
+[x] Add the copyright for the project
+[x] Add an optional tag/keyword prompt
+[x] Add a purpose section
+[-] Add a very optional requirements
+[x] Add a setting in settings.json to allow the user to set the maximum column length.
+[x] Add a max scan limit setting to allow the users to change the maximum scan length so that it can be more flexible.7
+[ ] Fix file detection based on vcode language.
+
+Final idea:
++=== BEGIN Asperguide =================+
+LOGO:
+<ascii_art_of_the_logo>
+/STOP
+PROJECT: MyProject
+FILE: main.ts
+CREATION DATE: 22-09-2025
+LAST MODIFIED: 20:50:20 23-09-2025
+DESCRIPTION: 
+This is a multiline description.
+It can span several lines.
+/STOP
+COPYRIGHT: MyCompany
+TAG: Nodejs, NPM
+PURPOSE: Serve as a demo header
+// AR
++=== END Asperguide ===================+
+
+Use:
+/STOP at the end of a sentence
+
+# Side notes
+On multiline prompts
+Yes, that’s possible, but with some caveats:
+
+VS Code input boxes (vscode.window.showInputBox) are single-line only.
+
+For multiline input, you’d need to open a temporary untitled editor (like how VS Code opens a scratchpad), or use a Webview panel with a text area.
+
+The scratchpad editor approach is cleaner for your case: user types their description, presses Ctrl+Enter (or saves & closes), and you capture the text. That aligns well with your idea.
+
+On max line length setting
+Yes, absolutely. Extensions can expose a setting in package.json under contributes.configuration.
+
+You’d define "asperHeader.maxLineLength" with a default (say 80).
+
+On execution, the extension reads this setting (workspace.getConfiguration).
+
+You then soft-wrap (or truncate) long lines in user-entered text to fit that limit.
+
+This keeps headers neat and consistent, while still being configurable per project/user.
+
+On field handling consistency
+Including all fields (even if blank) makes headers predictable and easier to parse later. So:

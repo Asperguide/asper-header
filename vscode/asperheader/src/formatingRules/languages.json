@@ -1,0 +1,1962 @@
+{
+    "langs": [
+        {
+            "langs": [
+                "C",
+                "C++",
+                "C#",
+                "Java",
+                "JavaScript",
+                "TypeScript",
+                "Swift",
+                "Kotlin",
+                "IO",
+                "Dylan",
+                "Fantom",
+                "V",
+                "Zig",
+                "Verilog",
+                "JSONC",
+                "Go",
+                "Rust",
+                "Scala",
+                "D",
+                "Dart",
+                "Objective-C",
+                "Groovy",
+                "Solidity",
+                "Sass",
+                "SCSS",
+                "Less",
+                "Q#",
+                "QML",
+                "Pony",
+                "Processing",
+                "Chapel",
+                "GLSL",
+                "HLSL",
+                "WGSL",
+                "Metal Shading Language (Apple)",
+                "Metal Shading Language",
+                "Cypher (Neo4j)",
+                "Cypher",
+                "UnrealScript",
+                "Gradle",
+                "Gradle (Groovy)",
+                "Gradle (Kotlin DSL)",
+                "Gradle (Groovy/Kotlin DSL)"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "//"
+            ],
+            "multiLine": [
+                "/*",
+                "*",
+                "*/"
+            ],
+            "quirks": "Doc comments use /** ... */",
+            "fileExtensions": {
+                "C": [
+                    ".c",
+                    ".h"
+                ],
+                "C++": [
+                    "cpp",
+                    "c++",
+                    "hpp",
+                    "h++"
+                ],
+                "C#": [
+                    "cs"
+                ],
+                "Java": [
+                    ".java"
+                ],
+                "JavaScript": [
+                    ".js",
+                    ".jsx",
+                    ".mjs"
+                ],
+                "TypeScript": [
+                    ".ts"
+                ],
+                "Swift": [
+                    ".swift"
+                ],
+                "Kotlin": [
+                    ".kt",
+                    ".kts"
+                ],
+                "IO": [
+                    ".io"
+                ],
+                "Dylan": [
+                    ".dylan",
+                    ".dyl"
+                ],
+                "Fantom": [
+                    ".fan"
+                ],
+                "V": [
+                    ".v"
+                ],
+                "Zig": [
+                    ".zig"
+                ],
+                "Verilog": [
+                    ".v",
+                    ".sv",
+                    ".vh"
+                ],
+                "JSONC": [
+                    ".jsonc",
+                    ".json"
+                ],
+                "Go": [
+                    ".go"
+                ],
+                "Rust": [
+                    ".rs"
+                ],
+                "Scala": [
+                    ".scala"
+                ],
+                "D": [
+                    ".d"
+                ],
+                "Dart": [
+                    ".dart"
+                ],
+                "Objective-C": [
+                    ".m",
+                    ".h"
+                ],
+                "Groovy": [
+                    ".groovy"
+                ],
+                "Solidity": [
+                    ".sol"
+                ],
+                "Sass": [
+                    ".sass"
+                ],
+                "SCSS": [
+                    ".scss"
+                ],
+                "Less": [
+                    ".less"
+                ],
+                "Q#": [
+                    ".qs"
+                ],
+                "QML": [
+                    ".qml"
+                ],
+                "Pony": [
+                    ".pony"
+                ],
+                "Processing": [
+                    ".pde"
+                ],
+                "Chapel": [
+                    ".chpl"
+                ],
+                "GLSL": [
+                    ".glsl",
+                    ".vert",
+                    ".frag",
+                    ".geom",
+                    ".tesc",
+                    ".tese",
+                    ".comp"
+                ],
+                "HLSL": [
+                    ".hlsl",
+                    ".fx",
+                    ".fxh",
+                    ".cginc"
+                ],
+                "WGSL": [
+                    ".wgsl"
+                ],
+                "Metal Shading Language (Apple)": [
+                    ".metal"
+                ],
+                "Metal Shading Language": [
+                    ".metal"
+                ],
+                "Cypher (Neo4j)": [
+                    ".cyp"
+                ],
+                "Cypher": [
+                    ".cyp"
+                ],
+                "UnrealScript": [
+                    ".uc"
+                ],
+                "Gradle": [
+                    ".gradle",
+                    ".gradle.kts"
+                ],
+                "Gradle (Groovy)": [
+                    ".gradle",
+                    ".gradle.kts"
+                ],
+                "Gradle (Kotlin DSL)": [
+                    ".gradle",
+                    ".gradle.kts"
+                ],
+                "Gradle (Groovy/Kotlin DSL)": [
+                    ".gradle",
+                    ".gradle.kts"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Agda"
+            ],
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [
+                "{-",
+                "-}"
+            ],
+            "fileExtensions": {
+                "Agda": [
+                    ".agda"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Idris"
+            ],
+            "singleLine": [
+                "--",
+                "|||"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "Idris": [
+                    ".idr"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Julia"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "#=",
+                "=#"
+            ],
+            "quirks": "Supports nested block comments with #= ... =#.",
+            "fileExtensions": {
+                "Julia": [
+                    ".jl"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "K",
+                "q"
+            ],
+            "singleLine": [
+                "/"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "K": [
+                    ".k"
+                ],
+                "Q": [
+                    ".q"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "ABAP"
+            ],
+            "singleLine": [
+                "*",
+                "\""
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "ABAP": [
+                    ".abap"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Mojo"
+            ],
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "\"\"\"",
+                "\"\"\""
+            ],
+            "fileExtensions": {
+                "Mojo": [
+                    ".mojo"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "REXX",
+                "Pig Latin (Hadoop)",
+                "Pig Latin",
+                "HQL (Hive SQL)",
+                "HQL"
+            ],
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "fileExtensions": {
+                "REXX": [
+                    ".rexx",
+                    ".rex"
+                ],
+                "Pig Latin (Hadoop)": [
+                    ".pig"
+                ],
+                "Pig Latin": [
+                    ".pig"
+                ],
+                "HQL (Hive SQL)": [
+                    ".hql"
+                ],
+                "HQL": [
+                    ".hql"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "HCL"
+            ],
+            "singleLine": [
+                "#",
+                "//"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "fileExtensions": {
+                "HCL": [
+                    ".hcl"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "J"
+            ],
+            "singleLine": [
+                "NB."
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "J": [
+                    ".j"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "INI"
+            ],
+            "singleLine": [
+                ";",
+                "#"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "INI": [
+                    ".ini"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "APL"
+            ],
+            "singleLine": [
+                "⍝"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "APL": [
+                    ".apl"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Forth"
+            ],
+            "singleLine": [
+                "\\"
+            ],
+            "multiLine": [
+                "(",
+                ")"
+            ],
+            "fileExtensions": {
+                "Forth": [
+                    ".fth",
+                    ".fs"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Shell",
+                "Apache",
+                "Nginx",
+                "Dockerfile",
+                "Makefile",
+                "TOML",
+                "Tcl",
+                "Expect",
+                "Org-mode",
+                "CMake",
+                "Nial",
+                "OpenGL ARB Assembly",
+                "Godot GDScript",
+                "Boo",
+                "Ninja build files"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [],
+            "quirks": "No native multi-line comments. Multi-line can be faked with here-docs like `: <<'EOF' ... EOF`.",
+            "fileExtensions": {
+                "Shell": [
+                    ".sh",
+                    ".bash",
+                    ".zsh",
+                    ".ksh",
+                    ".fish"
+                ],
+                "Apache": [
+                    ".conf"
+                ],
+                "Nginx": [
+                    ".conf"
+                ],
+                "Dockerfile": [
+                    "Dockerfile",
+                    "dockerfile"
+                ],
+                "Makefile": [
+                    "Makefile"
+                ],
+                "TOML": [
+                    ".toml"
+                ],
+                "Tcl": [
+                    ".tcl"
+                ],
+                "Expect": [
+                    ".exp"
+                ],
+                "Org-mode": [
+                    ".org"
+                ],
+                "CMake": [
+                    "CMakeLists.txt",
+                    ".cmake"
+                ],
+                "Nial": [
+                    ".nial"
+                ],
+                "OpenGL ARB Assembly": [
+                    ".arb"
+                ],
+                "Godot GDScript": [
+                    ".gd"
+                ],
+                "Boo": [
+                    ".boo"
+                ],
+                "Ninja build files": [
+                    ".ninja"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "reStructuredText"
+            ],
+            "singleLine": [
+                ".."
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "reStructuredText": [
+                    ".rst"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Python"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "'''",
+                "'''",
+                "\"\"\"",
+                "\"\"\""
+            ],
+            "quirks": "Triple quotes are technically strings, but often used as block comments/docstrings.",
+            "fileExtensions": {
+                "Python": [
+                    ".py",
+                    ".pyw",
+                    ".pyi"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Eiffel",
+                "Ada"
+            ],
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "Eiffel": [
+                    ".e"
+                ],
+                "Ada": [
+                    ".adb",
+                    ".ads"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "SQL",
+                "Sqlite",
+                "Microsoft SQL Server",
+                "SQL Express"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "quirks": "Some dialects also accept # (MySQL).",
+            "fileExtensions": {
+                "SQL": [
+                    ".sql",
+                    ".ddl",
+                    ".dml"
+                ],
+                "Microsoft SQL Server": [
+                    ".sql"
+                ],
+                "SQL Express": [
+                    ".sql"
+                ],
+                "Sqlite": [
+                    ".sqlite",
+                    ".sqlite3"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "SQL*Plus",
+                "Euphoria"
+            ],
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "SQL*Plus": [
+                    ".sql"
+                ],
+                "Euphoria": [
+                    ".exu"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "AArch64",
+                "Asciidoc",
+                "Gremlin"
+            ],
+            "singleLine": [
+                "//"
+            ],
+            "multiLine": [],
+            "quirks": "ARM 64-bit assembly (AArch64). Usually single-line comments use '//' in modern assemblers.",
+            "prompt_comment_opening_type": false,
+            "fileExtensions": {
+                "AArch64": [
+                    ".s",
+                    ".S"
+                ],
+                "Asciidoc": [
+                    ".adoc",
+                    ".asciidoc"
+                ],
+                "Gremlin": [
+                    ".gremlin"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "SPARC"
+            ],
+            "singleLine": [
+                "!"
+            ],
+            "multiLine": [],
+            "quirks": "ARM 64-bit assembly (AArch64). Usually single-line comments use '//' in modern assemblers.",
+            "prompt_comment_opening_type": false,
+            "fileExtensions": {
+                "SPARC": [
+                    ".s",
+                    ".S",
+                    ".asm"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Assembly_x86",
+                "NASM/TASM",
+                "Assembly_6502",
+                "Assembly_Z80",
+                "MASM",
+                "PowerPC",
+                "6502",
+                "65C02",
+                "6809",
+                "8080",
+                "8085",
+                "Z80",
+                "Motorola_68k",
+                "68k",
+                "Itanium_IA64",
+                "PIC16",
+                "PIC18",
+                "AVR",
+                "STM32",
+                "Cortex-M",
+                "PDP-11",
+                "VAX",
+                "Clojure"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                ";"
+            ],
+            "multiLine": [],
+            "quirks": "NASM/TASM use ';'. GAS (AT&T syntax) uses '#'.",
+            "fileExtensions": {
+                "Assembly_x86": [
+                    ".asm",
+                    ".s"
+                ],
+                "NASM/TASM": [
+                    ".asm",
+                    ".s"
+                ],
+                "Assembly_6502": [
+                    ".asm",
+                    ".s"
+                ],
+                "Assembly_Z80": [
+                    ".asm",
+                    ".s"
+                ],
+                "MASM": [
+                    ".asm"
+                ],
+                "PowerPC": [
+                    ".s",
+                    ".asm"
+                ],
+                "6502": [
+                    ".asm",
+                    ".s"
+                ],
+                "65C02": [
+                    ".asm",
+                    ".s"
+                ],
+                "6809": [
+                    ".asm",
+                    ".s"
+                ],
+                "8080": [
+                    ".asm",
+                    ".s"
+                ],
+                "8085": [
+                    ".asm",
+                    ".s"
+                ],
+                "Z80": [
+                    ".asm",
+                    ".s"
+                ],
+                "Motorola_68k": [
+                    ".asm",
+                    ".s"
+                ],
+                "68k": [
+                    ".asm",
+                    ".s"
+                ],
+                "Itanium_IA64": [
+                    ".s",
+                    ".asm"
+                ],
+                "PIC16": [
+                    ".asm"
+                ],
+                "PIC18": [
+                    ".asm"
+                ],
+                "AVR": [
+                    ".asm"
+                ],
+                "STM32": [
+                    ".s",
+                    ".asm"
+                ],
+                "Cortex-M": [
+                    ".s",
+                    ".asm"
+                ],
+                "PDP-11": [
+                    ".asm",
+                    ".s"
+                ],
+                "VAX": [
+                    ".s",
+                    ".asm"
+                ],
+                "Clojure": [
+                    ".clj",
+                    ".cljs",
+                    ".cljc"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "ARM",
+                "Assembly_ARM"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "@",
+                ";"
+            ],
+            "multiLine": [],
+            "quirks": "Old ARM assembly uses '@' for single-line comments. No standard block comments.",
+            "fileExtensions": {
+                "Assembly_ARM": [
+                    ".s",
+                    ".asm"
+                ],
+                "ARM": [
+                    ".s",
+                    ".asm"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "YAML",
+                "Awk",
+                "Sed",
+                "R",
+                "Elixir",
+                "GAS",
+                "Perl",
+                "MIPS",
+                "RISC-V",
+                "Crystal"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [],
+            "quirks": "Must be at line start (no inline after data in some parsers).",
+            "fileExtensions": {
+                "YAML": [
+                    ".yml",
+                    ".yaml"
+                ],
+                "Awk": [
+                    ".awk"
+                ],
+                "Sed": [
+                    ".sed"
+                ],
+                "R": [
+                    ".r",
+                    ".R"
+                ],
+                "Elixir": [
+                    ".ex",
+                    ".exs"
+                ],
+                "GAS": [
+                    ".s",
+                    ".S"
+                ],
+                "Perl": [
+                    ".pl",
+                    ".pm",
+                    ".t"
+                ],
+                "MIPS": [
+                    ".s",
+                    ".asm"
+                ],
+                "RISC-V": [
+                    ".s",
+                    ".S"
+                ],
+                "Crystal": [
+                    ".cr"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "HTML",
+                "XML",
+                "Markdown"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [
+                "<!--",
+                "-->"
+            ],
+            "quirks": "SGML-style, must not be nested.",
+            "fileExtensions": {
+                "HTML": [
+                    ".html",
+                    ".htm"
+                ],
+                "Markdown": [
+                    ".md",
+                    ".markdown"
+                ],
+                "XML": [
+                    ".xml",
+                    ".xhtml"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "ColdFusion (CFML)",
+                "ColdFusion"
+            ],
+            "singleLine": [],
+            "multiLine": [
+                "<!---",
+                "--->"
+            ],
+            "fileExtensions": {
+                "ColdFusion (CFML)": [
+                    ".cfm",
+                    ".cfc"
+                ],
+                "ColdFusion": [
+                    ".cfm",
+                    ".cfc"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "CSS",
+                "PL/I"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "quirks": "Only block comments are supported. No single-line comment syntax like `//`.",
+            "fileExtensions": {
+                "CSS": [
+                    ".css"
+                ],
+                "PL/I": [
+                    ".pli",
+                    ".pl1"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "SCSS",
+                "Less",
+                "Haxe"
+            ],
+            "singleLine": [
+                "//"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "fileExtensions": {
+                "SCSS": [
+                    ".scss"
+                ],
+                "Less": [
+                    ".less"
+                ],
+                "Haxe": [
+                    ".hx"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "PHP"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "//",
+                "#"
+            ],
+            "multiLine": [
+                "/*",
+                "*",
+                "*/"
+            ],
+            "quirks": "Supports C-style `/* */` multi-line comments. Both `//` and `#` are valid single-line comment starters.",
+            "fileExtensions": {
+                "PHP": [
+                    ".php",
+                    ".phtml"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Ruby"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "=begin",
+                "=end"
+            ],
+            "quirks": "`=begin`/`=end` must start at column 0. Single-line `#` comments can appear anywhere.",
+            "fileExtensions": {
+                "Ruby": [
+                    ".rb",
+                    ".rbw"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Lisp"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                ";"
+            ],
+            "multiLine": [],
+            "quirks": "One ';' for inline, ';;' or ';;;' for section/doc conventions.",
+            "fileExtensions": {
+                "Lisp": [
+                    ".lisp",
+                    ".lsp",
+                    ".cl",
+                    ".clisp",
+                    ".el"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Scheme",
+                "Racket"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                ";"
+            ],
+            "multiLine": [
+                "#|",
+                "|#"
+            ],
+            "quirks": "One ';' for inline, ';;' or ';;;' for section/doc conventions.",
+            "fileExtensions": {
+                "Scheme": [
+                    ".scm",
+                    ".ss",
+                    ".sld",
+                    ".sch",
+                    ".sc"
+                ],
+                "Racket": [
+                    ".rkt"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Nim"
+            ],
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "#[",
+                " ]#"
+            ],
+            "fileExtensions": {
+                "Nim": [
+                    ".nim"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Batch"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "REM",
+                "::"
+            ],
+            "multiLine": [],
+            "quirks": ":: is a hack; REM is the official keyword.",
+            "fileExtensions": {
+                "Batch": [
+                    ".bat",
+                    ".cmd"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "VHDL"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [],
+            "quirks": "No block comments, only line comments.",
+            "fileExtensions": {
+                "VHDL": [
+                    ".vhdl",
+                    ".vhd"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Matlab",
+                "Octave"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "%"
+            ],
+            "multiLine": [
+                "%{",
+                "%}"
+            ],
+            "quirks": "%% marks cell boundaries in scripts.",
+            "fileExtensions": {
+                "Matlab": [
+                    ".m"
+                ],
+                "Octave": [
+                    ".m"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Octave"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#",
+                "%"
+            ],
+            "multiLine": [],
+            "quirks": "Supports both '#' and '%'.",
+            "fileExtensions": {
+                "Octave": [
+                    ".m"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "SAS"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "*"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "quirks": "Single line '*' requires a terminating semicolon.",
+            "fileExtensions": {
+                "SAS": [
+                    ".sas"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Stata"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "*",
+                "//"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "quirks": "* must appear at start of line.",
+            "fileExtensions": {
+                "Stata": [
+                    ".do",
+                    ".ado"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Fortran"
+            ],
+            "singleLine": [
+                "C",
+                "c",
+                "*",
+                "!"
+            ],
+            "prompt_comment_opening_type": true,
+            "multiLine": [],
+            "quirks": "Older fixed-format Fortran uses column-specific rules.",
+            "fileExtensions": {
+                "Fortran": [
+                    ".f",
+                    ".for",
+                    ".f90",
+                    ".f95"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "COBOL",
+                "SNOBOL",
+                "ICON"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "*"
+            ],
+            "multiLine": [],
+            "quirks": "Column 7 with '*' denotes a comment line. '*> comment' is free-form.",
+            "fileExtensions": {
+                "COBOL": [
+                    ".cob",
+                    ".cbl"
+                ],
+                "SNOBOL": [
+                    ".sno"
+                ],
+                "ICON": [
+                    ".icn"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Ada"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [],
+            "quirks": "No block comments.",
+            "fileExtensions": {
+                "Ada": [
+                    ".adb",
+                    ".ads"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Smalltalk"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [
+                "\"",
+                "\""
+            ],
+            "quirks": "Double quotes enclose comments.",
+            "fileExtensions": {
+                "Smalltalk": [
+                    ".st"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Prolog",
+                "Mercury"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "%"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "quirks": "Some dialects also allow '//' as single-line.",
+            "fileExtensions": {
+                "Prolog": [
+                    ".pl",
+                    ".pro"
+                ],
+                "Mercury": [
+                    ".m",
+                    ".mercury"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Mercury"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "%"
+            ],
+            "multiLine": [
+                "/*",
+                "*/"
+            ],
+            "quirks": "Similar to Prolog but stricter syntax.",
+            "fileExtensions": {
+                "Mercury": [
+                    ".m"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Erlang",
+                "PostScript"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "%"
+            ],
+            "multiLine": [],
+            "quirks": "No block comments.",
+            "fileExtensions": {
+                "Erlang": [
+                    ".erl",
+                    ".hrl"
+                ],
+                "PostScript": [
+                    ".ps"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Haskell"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [
+                "{-",
+                "-}"
+            ],
+            "quirks": "Nested block comments are supported.",
+            "fileExtensions": {
+                "Haskell": [
+                    ".hs",
+                    ".lhs"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Pascal"
+            ],
+            "singleLine": [],
+            "multiLine": [
+                "{",
+                "}",
+                "(*",
+                "*)"
+            ],
+            "fileExtensions": {
+                "Pascal": [
+                    ".pas",
+                    ".pp"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Lean"
+            ],
+            "singleLine": [],
+            "multiLine": [
+                "/-",
+                "-/"
+            ],
+            "fileExtensions": {
+                "Lean": [
+                    ".lean"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "OCaml",
+                "ReasonML",
+                "Modula2",
+                "Modula-2",
+                "Oberon",
+                "Coq"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [
+                "(*",
+                "*",
+                "*)"
+            ],
+            "quirks": "Supports nested block comments.",
+            "fileExtensions": {
+                "OCaml": [
+                    ".ml",
+                    ".mli"
+                ],
+                "ReasonML": [
+                    ".re",
+                    ".rei"
+                ],
+                "Modula2": [
+                    ".mod",
+                    ".def"
+                ],
+                "Modula-2": [
+                    ".mod",
+                    ".def"
+                ],
+                "Oberon": [
+                    ".ob",
+                    ".oh"
+                ],
+                "Coq": [
+                    ".v"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "F#"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "//"
+            ],
+            "multiLine": [
+                "(*",
+                "*",
+                "*)"
+            ],
+            "quirks": "Inherited OCaml-style block comments plus C-style single-line.",
+            "fileExtensions": {
+                "F#": [
+                    ".fs",
+                    ".fsi"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "IBM mainframe JCL"
+            ],
+            "singleLine": [
+                "//*"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "IBM mainframe JCL": [
+                    ".jcl"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "INTERCAL"
+            ],
+            "singleLine": [
+                "PLEASE ignore this"
+            ],
+            "multiLine": [],
+            "fileExtensions": [
+                ".i"
+            ],
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "Nim"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "#[",
+                "]#"
+            ],
+            "quirks": "Block comments can be nested.",
+            "fileExtensions": {
+                "Nim": [
+                    ".nim",
+                    ".nims"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Crystal"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [],
+            "quirks": "Doc comments use '##'.",
+            "fileExtensions": {
+                "Crystal": [
+                    ".cr"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Lua"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [
+                "--[[",
+                "]]"
+            ],
+            "quirks": "Multi-line can also be nested with '--[=[ ... ]=]'.",
+            "fileExtensions": {
+                "Lua": [
+                    ".lua"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "TeX",
+                "LaTeX",
+                "BibTeX"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "%"
+            ],
+            "multiLine": [],
+            "quirks": "Entire line after % is ignored.",
+            "fileExtensions": {
+                "TeX": [
+                    ".tex",
+                    ".sty",
+                    ".cls"
+                ],
+                "LaTeX": [
+                    ".tex"
+                ],
+                "BibTeX": [
+                    ".bib"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Algol60",
+                "Algol68",
+                "AlgolW",
+                "Algol-W"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "COMMENT",
+                "comment"
+            ],
+            "multiLine": [],
+            "quirks": "Block comments use the keyword COMMENT followed by a semicolon.",
+            "fileExtensions": {
+                "Algol60": [
+                    ".alg",
+                    ".a60"
+                ],
+                "Algol68": [
+                    ".alg68"
+                ],
+                "AlgolW": [
+                    ".algw"
+                ],
+                "Algol-W": [
+                    ".algw"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Logo"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                ";"
+            ],
+            "multiLine": [],
+            "quirks": "Only single-line comments.",
+            "fileExtensions": {
+                "Logo": [
+                    ".logo",
+                    ".lgo"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "AppleScript"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [
+                "(*",
+                "*)"
+            ],
+            "quirks": "Nested block comments are supported.",
+            "fileExtensions": {
+                "AppleScript": [
+                    ".applescript",
+                    ".scpt",
+                    ".scptd"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "LOLCODE"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "BTW"
+            ],
+            "multiLine": [
+                "OBTW",
+                "TLDR"
+            ],
+            "quirks": "Only idiomatic block comments using OBTW/TLDR.",
+            "fileExtensions": {
+                "LOLCODE": [
+                    ".lol",
+                    ".lc"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "INTERCAL"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "IGNORE"
+            ],
+            "multiLine": [],
+            "quirks": "Comments are written as 'IGNORE' statements.",
+            "fileExtensions": {
+                "INTERCAL": [
+                    ".i",
+                    ".inc"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Whitespace",
+                "Malbolge",
+                "Chef",
+                "Brainfuck",
+                "Befunge",
+                "Shakespeare (SPL)",
+                "Shakespeare",
+                "SPIR-V"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [],
+            "quirks": "Only space, tab, LF are instructions; all else ignored.",
+            "fileExtensions": {
+                "Whitespace": [
+                    ".ws"
+                ],
+                "Malbolge": [
+                    ".mb"
+                ],
+                "Chef": [
+                    ".chef"
+                ],
+                "Befunge": [
+                    ".bf"
+                ],
+                "Shakespeare (SPL)": [
+                    ".spl"
+                ],
+                "Shakespeare": [
+                    ".spl"
+                ],
+                "SPIR-V": [
+                    ".spv"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Factor",
+                "Simula"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "!"
+            ],
+            "multiLine": [],
+            "quirks": "Single-line comments only.",
+            "fileExtensions": {
+                "Factor": [
+                    ".factor"
+                ],
+                "Simula": [
+                    ".sim"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "HyperCardScript",
+                "HyperTalk"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "--"
+            ],
+            "multiLine": [],
+            "quirks": "Alias of HyperTalk, single-line only.",
+            "fileExtensions": {
+                "HyperCardScript": [
+                    ".hcs"
+                ],
+                "HyperTalk": [
+                    ".hyp"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "VBScript",
+                "VBS",
+                "Visual Basic Script",
+                "Monkey",
+                "BlitzBasic"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "'"
+            ],
+            "multiLine": [],
+            "quirks": "Only apostrophe (') is valid for comments. 'REM' does not work in VBScript, unlike VBA/Batch.",
+            "fileExtensions": {
+                "VBScript": [
+                    ".vbs",
+                    ".vbe"
+                ],
+                "VBS": [
+                    ".vbs",
+                    ".vbe"
+                ],
+                "Visual Basic Script": [
+                    ".vbs",
+                    ".vbe"
+                ],
+                "Monkey": [
+                    ".monkey"
+                ],
+                "BlitzBasic": [
+                    ".bb"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "VBA",
+                "QBasic",
+                "GW-Basic",
+                "FreeBASIC"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "'",
+                "REM"
+            ],
+            "multiLine": [],
+            "quirks": "VBA uses the same comment syntax as classic Visual Basic (apostrophe or REM). VBA typically lives inside Office documents; exported modules commonly use .bas/.cls/.frm.",
+            "fileExtensions": {
+                "VBA": [
+                    ".bas",
+                    ".cls",
+                    ".frm",
+                    ".vba"
+                ],
+                "QBasic": [
+                    ".bas",
+                    ".b"
+                ],
+                "GW-Basic": [
+                    ".bas",
+                    ".b"
+                ],
+                "FreeBASIC": [
+                    ".bas",
+                    ".b"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "HTA"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "'",
+                "REM",
+                "//"
+            ],
+            "multiLine": [
+                "<!--",
+                "-->",
+                "/*",
+                "*/"
+            ],
+            "quirks": "HTA (HTML Application) is HTML + embedded scripts. Top-level markup uses <!-- -->. Embedded script blocks can be VBScript (use ' or REM) or JScript/ECMAScript (use // and /* */). This node treats HTA as a mixed-content file (unique node — not grouped with HTML, VBScript, or JS).",
+            "fileExtensions": {
+                "HTA": [
+                    ".hta"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "Texinfo"
+            ],
+            "singleLine": [
+                "@c",
+                "@comment"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "Texinfo": [
+                    ".texi",
+                    ".txi"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "DOS_COM"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [],
+            "quirks": ".com files are binary DOS executables (machine code) — not source text, so there are no source-level comments. Historically produced from Assembly or compiled C/C++. Treat as binary.",
+            "fileExtensions": {
+                "DOS_COM": [
+                    ".com"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "PowerShell"
+            ],
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "<#",
+                "#>"
+            ],
+            "fileExtensions": {
+                "PowerShell": [
+                    ".ps1",
+                    ".psm1"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "PE_Binary"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [],
+            "quirks": "Windows PE binaries (.exe, .dll, .scr, .ocx) are compiled binaries (no source comments). .scr files are just .exe-format screensavers — their source language depends on how they were built (C/C++, Delphi, etc.).",
+            "fileExtensions": {
+                "PE_Binary": [
+                    ".exe",
+                    ".dll",
+                    ".scr",
+                    ".ocx"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "VB",
+                "VB.NET"
+            ],
+            "singleLine": [
+                "'",
+                "REM"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "VB": [
+                    ".vb"
+                ],
+                "VB.NET": [
+                    ".vb"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "WSF"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "'",
+                "//"
+            ],
+            "multiLine": [
+                "<!--",
+                "-->",
+                "/*",
+                "*/"
+            ],
+            "quirks": "WSF is XML-based and may embed VBScript ('), JScript (//, /* */), or other engines. Outer XML uses <!-- -->.",
+            "fileExtensions": {
+                "WSF": [
+                    ".wsf"
+                ]
+            }
+        }
+    ]
+}

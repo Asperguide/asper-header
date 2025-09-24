@@ -1,0 +1,5 @@
+Hello world!
+This file's extension is: sh,
+it's name is: copy_data.sh,
+it's path is: /home/eletellier/Documents/copy_data.sh,
+determined language: shellscript
