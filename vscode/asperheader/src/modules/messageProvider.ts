@@ -41,6 +41,7 @@ const messages: Record<string, Record<string, (...args: any[]) => string>> = {
         missingFileError: (): string => "The language dictionary is missing, comment adaptability is thus disabled.",
         unknownFileStructure: (): string => "The language dictionary structure is unknown, comment adaptability is thus disabled.",
         arrayNodeContent: (arrayName: string, arrayIndex: number, arrayNode: any[]): string => `${arrayName}[${arrayIndex}] = ${JSON.stringify(arrayNode)}.`,
+        inputArgs: (documentBody: string, filePath: string, fileName: string, fileExtension: string, languageId: string, documentEOL: string, documentVersion: string): string => `this.documentBody = '${documentBody}', this.filePath = '${filePath}', this.fileName = '${fileName}', this.fileExtension = '${fileExtension}', this.languageId = '${languageId}', this.documentEOL = '${documentEOL}', this.documentVersion = '${documentVersion}'`,
         identifiedLanguage: (langName: string): string => `Identified language: ${langName}.`,
         errorDuringFunctionCall: (functionName: string): string => `Something went wrong during the function (${functionName}) call, check logs for more info.`,
         missingLanguageComment: (): string => "Language comment not provided, skipping assignement.",
@@ -50,6 +51,9 @@ const messages: Record<string, Record<string, (...args: any[]) => string>> = {
         noProvidedCommentOptions: (): string => "There are no options that were provided.",
         chooseSingleLineCommentOption: (): string => "Please select your preferred comment prefix from the options below:",
         updateAbortedBecauseFileClosedSyncCancelled: (): string => "Update aborted because the file is closed and will thus not be synced.",
+        updateEditDateMissingBounds: (): string => "Could not update the header: internal header markers were not found.",
+        lastModifiedLineNotFound: (): string => "The header does not contain a 'Last Modified' line to update.",
+        lastModifiedUpdated: (): string => "Last Modified' date has been updated successfully.",
         jsonContent: (jsonContentString: String) => `The content of the comment json file: ${jsonContentString}`,
         messageNotFound: (key: string): string => `Message '${key}' not found.`
     },

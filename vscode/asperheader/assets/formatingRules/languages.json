@@ -444,6 +444,7 @@
         {
             "langs": [
                 "Shell",
+                "Shellscript",
                 "Apache",
                 "Nginx",
                 "Dockerfile",
@@ -467,6 +468,13 @@
             "quirks": "No native multi-line comments. Multi-line can be faked with here-docs like `: <<'EOF' ... EOF`.",
             "fileExtensions": {
                 "Shell": [
+                    ".sh",
+                    ".bash",
+                    ".zsh",
+                    ".ksh",
+                    ".fish"
+                ],
+                "Shellscript": [
                     ".sh",
                     ".bash",
                     ".zsh",

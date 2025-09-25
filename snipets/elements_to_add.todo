@@ -9,10 +9,11 @@
 [-] Add an optional tag/keyword prompt
 [x] Add a purpose section
 [-] Add a very optional requirements
+[x] Fix the function in charge of checking for a header.
 [ ] Add a setting in settings.json to allow the user to set the maximum column length.
 [ ] Add a max scan limit setting to allow the users to change the maximum scan length so that it can be more flexible.7
-[!] Fix file detection based on vscode language.
-[ ] Update the last modified section on save.
+[x] Fix file detection based on vscode language.
+[x] Update the last modified section on save.
 
 Final idea:
 +=== BEGIN Asperguide =================+

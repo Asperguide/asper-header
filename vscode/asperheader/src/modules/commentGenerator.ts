@@ -72,7 +72,7 @@ export class CommentGenerator {
             return commentStructure;
         }
         const jsonContent = await this.languageComment?.get();
-        logger.info(getMessage("jsonContent", JSON.stringify(jsonContent)));
+        // logger.info(getMessage("jsonContent", JSON.stringify(jsonContent)));
         if ((primaryKey in jsonContent) === false) {
             logger.Gui.error(getMessage("unknownFileStructure"));
             return commentStructure;
@@ -253,10 +253,7 @@ export class CommentGenerator {
         this.documentVersion = this.documentBody.version;
     }
 
-
-    private async buildTheHeader(determinedComment: CommentStyle): Promise<string[]> {
-        const eol: vscode.EndOfLine = this.documentEOL || vscode.EndOfLine.LF;
-        const unknownTerm: string = getMessage("unknown");
+    private async getCorrectCommentPrefix(determinedComment: CommentStyle): Promise<string[]> {
         let commentOpener: string = "";
         let commentMiddle: string = "";
         let commentCloser: string = "";
@@ -289,6 +286,15 @@ export class CommentGenerator {
         commentOpener += this.Const.headerCommentSpacing;
         commentMiddle += this.Const.headerCommentSpacing;
         commentCloser += this.Const.headerCommentSpacing;
+        return [commentOpener, commentMiddle, commentCloser];
+    }
+
+    private async buildTheHeader(comments: string[]): Promise<string[]> {
+        const eol: vscode.EndOfLine = this.documentEOL || vscode.EndOfLine.LF;
+        const unknownTerm: string = getMessage("unknown");
+        const commentOpener: string = comments[0] || "";
+        const commentMiddle: string = comments[1] || "";
+        const commentCloser: string = comments[2] || "";
         let buildHeader: string[] = [];
         // Preparing the header content so that it can be put in a comment and written.
         if (commentOpener.length > 0) {
@@ -324,11 +330,61 @@ export class CommentGenerator {
         return buildHeader;
     }
 
-    private async updateEditDate(editor: vscode.TextEditor) {
+    private async updateEditDate(editor: vscode.TextEditor, comments: string[]) {
+        const commentOpener: string = comments[0] || "";
+        const commentMiddle: string = comments[1] || "";
+        const commentCloser: string = comments[2] || "";
+        if (this.headerInnerStart === undefined || this.headerInnerEnd === undefined) {
+            const errMsg: string = getMessage("updateEditDateMissingBounds");
+            logger.error(errMsg);
+            logger.Gui.error(errMsg);
+            return;
+        }
+        if (!this.documentBody) {
+            const errMsg: string = getMessage("emptyDocument");
+            logger.error(errMsg);
+            logger.Gui.error(errMsg);
+            return;
+        }
 
+        const eol = this.documentEOL || vscode.EndOfLine.LF;
+        const lastModifiedKey = this.Const.headerLastModifiedKey;
+
+        // Build the new "Last Modified" line
+        const newLine = this.addLastModifiedDate(commentMiddle, eol).trimEnd();
+
+        let targetLine: number | undefined = undefined;
+
+        // Scan header block to locate the "Last Modified" line
+        for (let i = this.headerInnerStart; i <= this.headerInnerEnd; i++) {
+            const lineText = this.documentBody.lineAt(i).text;
+            if (lineText.includes(lastModifiedKey)) {
+                targetLine = i;
+                break;
+            }
+        }
+
+        if (targetLine === undefined) {
+            const errMsg: string = getMessage("lastModifiedLineNotFound");
+            logger.error(errMsg);
+            logger.Gui.error(errMsg);
+            return;
+        }
+
+        await editor.edit(editBuilder => {
+            const range = this.documentBody!.lineAt(targetLine!).range;
+            editBuilder.replace(range, newLine);
+        });
+
+        const msg: string = getMessage("lastModifiedUpdated");
+        logger.info(msg);
+        logger.Gui.info(msg);
     }
 
-    protected locateIfHeaderPresent(): boolean | undefined {
+    protected locateIfHeaderPresent(comments: string[]): boolean | undefined {
+        const commentOpener: string = comments[0] || "";
+        const commentMiddle: string = comments[1] || "";
+        const commentCloser: string = comments[2] || "";
         this.headerInnerStart = undefined;
         this.headerInnerEnd = undefined;
         if (this.documentBody === undefined) {
@@ -340,8 +396,8 @@ export class CommentGenerator {
             return undefined;
         }
         const eol: vscode.EndOfLine = this.documentEOL ?? vscode.EndOfLine.LF;
-        const opener: string = this.headerOpener("", eol);
-        const closer: string = this.headerCloser("", eol);
+        const opener: string = this.headerOpener(commentMiddle, eol, this.projectName);
+        const closer: string = this.headerCloser(commentMiddle, eol, this.projectName);
         const scanLines: number = Math.min(this.maxScanLength, this.documentBody.lineCount);
         let lineOpenerFound: boolean = false;
         let lineCloserFound: boolean = false;
@@ -371,10 +427,9 @@ export class CommentGenerator {
         return false;
     }
 
-    private async writeHeaderToFile(editor: vscode.TextEditor): Promise<number> {
+    private async writeHeaderToFile(editor: vscode.TextEditor, comments: string[]): Promise<number> {
         let offset: number = 0;
-        const determineComment: CommentStyle = await this.determineCorrectComment();
-        const headerContent: string[] = await this.buildTheHeader(determineComment);
+        const headerContent: string[] = await this.buildTheHeader(comments);
         // determine if the first line has a shebang like line on the first line, if true, add a new line, and write from that line.
         const headerString: string = headerContent.join("");
         await editor.edit(editBuilder => editBuilder.insert(new vscode.Position(offset, 0), headerString));
@@ -405,21 +460,26 @@ export class CommentGenerator {
             logger.Gui.warning(getMessage("updateAbortedBecauseFileClosedSyncCancelled"));
             return;
         }
-        const msg = "this.documentBody = '" + JSON.stringify(this.documentBody) + "', this.filePath = '" + JSON.stringify(this.filePath) + "', this.fileName = '" + JSON.stringify(this.fileName) + "', this.fileExtension = '" + JSON.stringify(this.fileExtension) + "', this.languageId = '" + JSON.stringify(this.languageId) + "', this.documentEOL = '" + JSON.stringify(this.documentEOL) + "', this.documentVersion = '" + JSON.stringify(this.documentVersion) + "'";
+        // Some logging
+        const msg = getMessage("inputArgs", JSON.stringify(this.documentBody), JSON.stringify(this.filePath), JSON.stringify(this.fileName), JSON.stringify(this.fileExtension), JSON.stringify(this.languageId), JSON.stringify(this.documentEOL), JSON.stringify(this.documentVersion));
         logger.Gui.debug(msg);
         logger.debug(msg);
-        let response: boolean | undefined = this.locateIfHeaderPresent();
+        // Determining the correct comment prefix
+        const determineComment: CommentStyle = await this.determineCorrectComment();
+        const comments: string[] = await this.getCorrectCommentPrefix(determineComment);
+        // attempt to locate the header
+        let response: boolean | undefined = this.locateIfHeaderPresent(comments);
         if (response === undefined) {
             logger.Gui.warning(getMessage("updateAbortedBecauseFileClosedSyncCancelled"));
             return;
         }
         if (response === true) {
             logger.Gui.info(getMessage("updatingEditionDate"));
-            await this.updateEditDate(editor);
+            await this.updateEditDate(editor, comments);
             return;
         }
         if (response === false) {
-            let status: number = await this.writeHeaderToFile(editor);
+            let status: number = await this.writeHeaderToFile(editor, comments);
             if (status === this.Const.statusError) {
                 logger.Gui.error(getMessage("headerWriteFailed"));
                 return;
