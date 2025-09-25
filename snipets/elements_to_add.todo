@@ -1,17 +1,18 @@
 [x] Add the Asperguide ascii logo in the comment
-[o] Find an acceptable size for the logo.
+[x] Find an acceptable size for the logo.
 [x] Add the project name
 [x] Add the file name
 [x] Add the creation date name
 [x] Add a last modified section
 [x] Ask for a description
 [x] Add the copyright for the project
-[x] Add an optional tag/keyword prompt
+[-] Add an optional tag/keyword prompt
 [x] Add a purpose section
 [-] Add a very optional requirements
-[x] Add a setting in settings.json to allow the user to set the maximum column length.
-[x] Add a max scan limit setting to allow the users to change the maximum scan length so that it can be more flexible.7
-[ ] Fix file detection based on vcode language.
+[ ] Add a setting in settings.json to allow the user to set the maximum column length.
+[ ] Add a max scan limit setting to allow the users to change the maximum scan length so that it can be more flexible.7
+[!] Fix file detection based on vscode language.
+[ ] Update the last modified section on save.
 
 Final idea:
 +=== BEGIN Asperguide =================+

@@ -1,3 +1,4 @@
+import * as path from "path";
 import * as vscode from 'vscode';
 import { getMessage } from './modules/messageProvider';
 import { logger } from './modules/logger';
@@ -8,7 +9,7 @@ import { moduleName } from './constants';
 
 // ---- SHared variables ----
 
-const COMMENTS_FORMAT = new LazyFileLoader<any>("./src/formatingRules/languagesReorganised.min.json");
+const COMMENTS_FORMAT = new LazyFileLoader<any>();
 
 const MORSETRANSLATOR_INITIALISED = new MorseTranslator();
 
@@ -56,8 +57,18 @@ async function sayHelloWorldCommand() {
 /**
  * Activate extension
  */
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+	logger.Gui.debug(`context.extensionPath: ${context.extensionPath}`);
+	const jsonLanguagePath: string = path.join(
+		context.extensionPath,
+		"assets",
+		"formatingRules",
+		"languagesReorganised.min.json"
+	);
+	await COMMENTS_FORMAT.updateCurrentWorkingDirectory(context.extensionPath);
+	await COMMENTS_FORMAT.updateFilePath(jsonLanguagePath);
 	logger.info(getMessage("extensionActivated", moduleName), 3);
+
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand(`${moduleName}.helloWorld`, helloWorldCommand),

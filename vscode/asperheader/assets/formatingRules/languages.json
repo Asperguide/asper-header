@@ -332,6 +332,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "fileExtensions": {
@@ -364,6 +365,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "fileExtensions": {
@@ -428,6 +430,7 @@
             ],
             "multiLine": [
                 "(",
+                "*",
                 ")"
             ],
             "fileExtensions": {
@@ -540,9 +543,8 @@
                 "#"
             ],
             "multiLine": [
-                "'''",
-                "'''",
                 "\"\"\"",
+                "#",
                 "\"\"\""
             ],
             "quirks": "Triple quotes are technically strings, but often used as block comments/docstrings.",
@@ -587,6 +589,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "quirks": "Some dialects also accept # (MySQL).",
@@ -888,6 +891,7 @@
             "singleLine": [],
             "multiLine": [
                 "<!--",
+                "--",
                 "-->"
             ],
             "quirks": "SGML-style, must not be nested.",
@@ -914,6 +918,7 @@
             "singleLine": [],
             "multiLine": [
                 "<!---",
+                "---",
                 "--->"
             ],
             "fileExtensions": {
@@ -937,6 +942,7 @@
             "singleLine": [],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "quirks": "Only block comments are supported. No single-line comment syntax like `//`.",
@@ -961,6 +967,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "fileExtensions": {
@@ -1074,6 +1081,7 @@
             ],
             "multiLine": [
                 "#[",
+                "#",
                 " ]#"
             ],
             "fileExtensions": {
@@ -1129,6 +1137,7 @@
             ],
             "multiLine": [
                 "%{",
+                "%",
                 "%}"
             ],
             "quirks": "%% marks cell boundaries in scripts.",
@@ -1168,6 +1177,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "quirks": "Single line '*' requires a terminating semicolon.",
@@ -1188,6 +1198,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "quirks": "* must appear at start of line.",
@@ -1290,6 +1301,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "quirks": "Some dialects also allow '//' as single-line.",
@@ -1314,6 +1326,7 @@
             ],
             "multiLine": [
                 "/*",
+                "*",
                 "*/"
             ],
             "quirks": "Similar to Prolog but stricter syntax.",
@@ -1354,6 +1367,7 @@
             ],
             "multiLine": [
                 "{-",
+                "-",
                 "-}"
             ],
             "quirks": "Nested block comments are supported.",
@@ -1370,9 +1384,8 @@
             ],
             "singleLine": [],
             "multiLine": [
-                "{",
-                "}",
                 "(*",
+                "*",
                 "*)"
             ],
             "fileExtensions": {
@@ -1390,6 +1403,7 @@
             "singleLine": [],
             "multiLine": [
                 "/-",
+                "-",
                 "-/"
             ],
             "fileExtensions": {
@@ -1486,9 +1500,11 @@
                 "PLEASE ignore this"
             ],
             "multiLine": [],
-            "fileExtensions": [
-                ".i"
-            ],
+            "fileExtensions": {
+                "INTERCAL": [
+                    ".i"
+                ]
+            },
             "prompt_comment_opening_type": false
         },
         {
@@ -1501,6 +1517,7 @@
             ],
             "multiLine": [
                 "#[",
+                "#",
                 "]#"
             ],
             "quirks": "Block comments can be nested.",
@@ -1537,6 +1554,7 @@
             ],
             "multiLine": [
                 "--[[",
+                "-",
                 "]]"
             ],
             "quirks": "Multi-line can also be nested with '--[=[ ... ]=]'.",
@@ -1629,6 +1647,7 @@
             ],
             "multiLine": [
                 "(*",
+                "*",
                 "*)"
             ],
             "quirks": "Nested block comments are supported.",
@@ -1650,6 +1669,7 @@
             ],
             "multiLine": [
                 "OBTW",
+                "NEXT",
                 "TLDR"
             ],
             "quirks": "Only idiomatic block comments using OBTW/TLDR.",
@@ -1686,7 +1706,9 @@
                 "Befunge",
                 "Shakespeare (SPL)",
                 "Shakespeare",
-                "SPIR-V"
+                "SPIR-V",
+                "DOS_COM",
+                "PE_Binary"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [],
@@ -1713,6 +1735,15 @@
                 ],
                 "SPIR-V": [
                     ".spv"
+                ],
+                "DOS_COM": [
+                    ".com"
+                ],
+                "PE_Binary": [
+                    ".exe",
+                    ".dll",
+                    ".scr",
+                    ".ocx"
                 ]
             }
         },
@@ -1838,9 +1869,8 @@
             ],
             "multiLine": [
                 "<!--",
-                "-->",
-                "/*",
-                "*/"
+                "--",
+                "-->"
             ],
             "quirks": "HTA (HTML Application) is HTML + embedded scripts. Top-level markup uses <!-- -->. Embedded script blocks can be VBScript (use ' or REM) or JScript/ECMAScript (use // and /* */). This node treats HTA as a mixed-content file (unique node — not grouped with HTML, VBScript, or JS).",
             "fileExtensions": {
@@ -1868,20 +1898,6 @@
         },
         {
             "langs": [
-                "DOS_COM"
-            ],
-            "prompt_comment_opening_type": false,
-            "singleLine": [],
-            "multiLine": [],
-            "quirks": ".com files are binary DOS executables (machine code) — not source text, so there are no source-level comments. Historically produced from Assembly or compiled C/C++. Treat as binary.",
-            "fileExtensions": {
-                "DOS_COM": [
-                    ".com"
-                ]
-            }
-        },
-        {
-            "langs": [
                 "PowerShell"
             ],
             "singleLine": [
@@ -1889,6 +1905,7 @@
             ],
             "multiLine": [
                 "<#",
+                "#",
                 "#>"
             ],
             "fileExtensions": {
@@ -1898,23 +1915,6 @@
                 ]
             },
             "prompt_comment_opening_type": false
-        },
-        {
-            "langs": [
-                "PE_Binary"
-            ],
-            "prompt_comment_opening_type": false,
-            "singleLine": [],
-            "multiLine": [],
-            "quirks": "Windows PE binaries (.exe, .dll, .scr, .ocx) are compiled binaries (no source comments). .scr files are just .exe-format screensavers — their source language depends on how they were built (C/C++, Delphi, etc.).",
-            "fileExtensions": {
-                "PE_Binary": [
-                    ".exe",
-                    ".dll",
-                    ".scr",
-                    ".ocx"
-                ]
-            }
         },
         {
             "langs": [
@@ -1947,9 +1947,8 @@
             ],
             "multiLine": [
                 "<!--",
-                "-->",
-                "/*",
-                "*/"
+                "--",
+                "-->"
             ],
             "quirks": "WSF is XML-based and may embed VBScript ('), JScript (//, /* */), or other engines. Outer XML uses <!-- -->.",
             "fileExtensions": {

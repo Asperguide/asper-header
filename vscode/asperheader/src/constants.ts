@@ -8,6 +8,8 @@ export const projectCopyright: string = "(c) Asperguide";
 export const headerOpenerDecorationOpen: string = "+==== ";
 export const headerOpenerDecorationClose: string = " =================+";
 
+export const headerCommentSpacing: string = " ";
+
 export const telegraphBegin: string = "BEGIN";
 export const telegraphEnd: string = "END";
 export const telegraphBlockStop: string = "/STOP";

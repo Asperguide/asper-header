@@ -62,7 +62,7 @@ export class CommentGenerator {
 
     private async determineCorrectComment(): Promise<CommentStyle> {
         const primaryKey: string = "langs";
-        var commentStructure: CommentStyle = {
+        let commentStructure: CommentStyle = {
             singleLine: [],
             multiLine: [],
             prompt_comment_opening_type: false,
@@ -81,25 +81,28 @@ export class CommentGenerator {
             logger.Gui.error(getMessage("unknownFileStructure"));
             return commentStructure;
         }
+        let index = 0;
         const languageNodes = jsonContent[primaryKey];
-        for (var index = 0; index < languageNodes.length; index++) {
+        let locatedName: string = "";
+        for (; index < languageNodes.length; index++) {
             let nodeFound = false;
             const node = languageNodes[index];
 
             const nodeLangs: string[] = node.langs ?? [];
             const nodeFileExtensions: Record<string, string[]> = node.fileExtensions ?? {};
 
-            for (var langIndex = 0; langIndex < nodeLangs.length; langIndex++) {
-                const langName = nodeLangs[langIndex];
+            for (let langIndex = 0; langIndex < nodeLangs.length; langIndex++) {
+                const langName = nodeLangs[langIndex].toLowerCase();
+                locatedName = langName;
 
-                if (langName === this.languageId) {
+                if (langName === this.languageId?.toLowerCase()) {
                     nodeFound = true;
                     break;
                 }
 
                 if (this.fileExtension) {
                     const extensionsForLang = nodeFileExtensions[langName] ?? [];
-                    for (var extIndex = 0; extIndex < extensionsForLang.length; extIndex++) {
+                    for (let extIndex = 0; extIndex < extensionsForLang.length; extIndex++) {
                         if (extensionsForLang[extIndex] === `.${this.fileExtension}`) {
                             nodeFound = true;
                             break;
@@ -113,6 +116,7 @@ export class CommentGenerator {
             }
 
             if (nodeFound) {
+                logger.Gui.info(getMessage("identifiedLanguage", locatedName));
                 logger.info(getMessage("arrayNodeContent", `Json[${primaryKey}]`, index, node));
                 commentStructure.singleLine = node.singleLine ?? [];
                 commentStructure.multiLine = node.multiLine ?? [];
@@ -120,27 +124,26 @@ export class CommentGenerator {
                 break;
             }
             logger.debug(getMessage("arrayNodeContent", `Json[${primaryKey}]`, index, node));
-
         }
         return commentStructure;
     }
 
     private async determineHeaderDescription(): Promise<string[]> {
-        var final: string[] = [];
+        let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderDescription"));
         final.push(usrResponse || "");
         return final;
     }
 
     private async determineHeaderTags(): Promise<string[]> {
-        var final: string[] = [];
+        let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderTags"));
         final.push(usrResponse || "");
         return final;
     }
 
     private async determineHeaderPurpose(): Promise<string[]> {
-        var final: string[] = [];
+        let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderPurpose"));
         final.push(usrResponse || "");
         return final;
@@ -172,7 +175,7 @@ export class CommentGenerator {
         const separatorDay: string = this.Const.headerDateSeperatorDay;
         const separatorMonth: string = this.Const.headerDateSeperatorMonth;
         const separatorYear: string = this.Const.headerDateSeperatorYear;
-        var final: string = comment + this.Const.headerCreationDateKey + this.addKeyDefinitionSeparator();
+        let final: string = comment + this.Const.headerCreationDateKey + this.addKeyDefinitionSeparator();
         final += `${day}${separatorDay}${month}${separatorMonth}${year}${separatorYear}`;
         final += this.determineNewLine(eol);
         return final;
@@ -192,7 +195,7 @@ export class CommentGenerator {
         const separatorSecond: string = this.Const.headerTimeSeperatorSecond;
         const separatorMinute: string = this.Const.headerTimeSeperatorMinute;
         const separatorHour: string = this.Const.headerTimeSeperatorHour;
-        var final: string = comment + this.Const.headerLastModifiedKey + this.addKeyDefinitionSeparator();
+        let final: string = comment + this.Const.headerLastModifiedKey + this.addKeyDefinitionSeparator();
         final += `${hour}${separatorHour}${minute}${separatorMinute}${seconds}${separatorSecond}${separatorTimeAndDate}${day}${separatorDay}${month}${separatorMonth}${year}${separatorYear}`;
         final += this.determineNewLine(eol);
         return final;
@@ -200,8 +203,8 @@ export class CommentGenerator {
 
     private addMultilineKey(comment: string, eol: vscode.EndOfLine, tagName: string, tagDefinition: string[]): string {
         const eolStr: string = this.determineNewLine(eol);
-        var final: string = comment + tagName + this.addKeyDefinitionSeparator() + eolStr;
-        for (var i = 0; i < tagDefinition.length; i++) {
+        let final: string = comment + tagName + this.addKeyDefinitionSeparator() + eolStr;
+        for (let i = 0; i < tagDefinition.length; i++) {
             final += comment + tagDefinition[i] + eolStr;
         }
         final += comment + this.Const.telegraphBlockStop + eolStr;
@@ -212,7 +215,7 @@ export class CommentGenerator {
     }
 
     private addSingleLineKey(comment: string, eol: vscode.EndOfLine, tagName: string, tagDefinition: string): string {
-        var final: string = comment + tagName + this.addKeyDefinitionSeparator();
+        let final: string = comment + tagName + this.addKeyDefinitionSeparator();
         final += tagDefinition + this.determineNewLine(eol);
         return final;
     }
@@ -254,36 +257,39 @@ export class CommentGenerator {
     private async buildTheHeader(determinedComment: CommentStyle): Promise<string[]> {
         const eol: vscode.EndOfLine = this.documentEOL || vscode.EndOfLine.LF;
         const unknownTerm: string = getMessage("unknown");
-        var commentOpener: string = "";
-        var commentMiddle: string = "";
-        var commentCloser: string = "";
+        let commentOpener: string = "";
+        let commentMiddle: string = "";
+        let commentCloser: string = "";
         if (determinedComment.multiLine.length >= 2) {
-            var commentOpener: string = determinedComment.multiLine[0];
+            commentOpener = determinedComment.multiLine[0];
             if (determinedComment.multiLine.length >= 3) {
-                var commentMiddle: string = determinedComment.multiLine[1];
-                var commentCloser: string = determinedComment.multiLine[2];
+                commentMiddle = determinedComment.multiLine[1];
+                commentCloser = determinedComment.multiLine[2];
             } else {
-                var commentMiddle: string = "";
-                var commentCloser: string = determinedComment.multiLine[1];
+                commentMiddle = "";
+                commentCloser = determinedComment.multiLine[1];
             }
         } else if (determinedComment.singleLine.length > 0) {
             if (determinedComment.prompt_comment_opening_type) {
                 // Ask the user for the type to use based on the single comments that are present.
-                var commentString: string = await this.getSingleCommentOption(determinedComment.singleLine);
-                var commentOpener: string = commentString;
-                var commentMiddle: string = commentString;
-                var commentCloser: string = commentString;
+                const commentString: string = await this.getSingleCommentOption(determinedComment.singleLine);
+                commentOpener = commentString;
+                commentMiddle = commentString;
+                commentCloser = commentString;
             } else {
-                var commentOpener: string = determinedComment.singleLine[0];
-                var commentMiddle: string = determinedComment.singleLine[0];
-                var commentCloser: string = determinedComment.singleLine[0];
+                commentOpener = determinedComment.singleLine[0];
+                commentMiddle = determinedComment.singleLine[0];
+                commentCloser = determinedComment.singleLine[0];
             }
         } else {
-            var commentOpener: string = "";
-            var commentMiddle: string = "";
-            var commentCloser: string = "";
+            commentOpener = "";
+            commentMiddle = "";
+            commentCloser = "";
         }
-        var buildHeader: string[] = [];
+        commentOpener += this.Const.headerCommentSpacing;
+        commentMiddle += this.Const.headerCommentSpacing;
+        commentCloser += this.Const.headerCommentSpacing;
+        let buildHeader: string[] = [];
         // Preparing the header content so that it can be put in a comment and written.
         if (commentOpener.length > 0) {
             buildHeader.push(`${commentOpener}${this.determineNewLine(eol)}`);
@@ -305,7 +311,7 @@ export class CommentGenerator {
         // The copyright
         buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerCopyrightKey, this.projectCopyRight));
         // The Tag
-        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerTagKey, (await this.determineHeaderTags()).join(",")));
+        // buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerTagKey, (await this.determineHeaderTags()).join(",")));
         // The Purpose
         buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerPurposeKey, (await this.determineHeaderPurpose()).join(";")));
         // End of transmission telegraph
@@ -318,7 +324,9 @@ export class CommentGenerator {
         return buildHeader;
     }
 
-    private async updateEditDate(editor: vscode.TextEditor) { }
+    private async updateEditDate(editor: vscode.TextEditor) {
+
+    }
 
     protected locateIfHeaderPresent(): boolean | undefined {
         this.headerInnerStart = undefined;
@@ -335,9 +343,9 @@ export class CommentGenerator {
         const opener: string = this.headerOpener("", eol);
         const closer: string = this.headerCloser("", eol);
         const scanLines: number = Math.min(this.maxScanLength, this.documentBody.lineCount);
-        var lineOpenerFound: boolean = false;
-        var lineCloserFound: boolean = false;
-        for (var i = 0; i < scanLines; i++) {
+        let lineOpenerFound: boolean = false;
+        let lineCloserFound: boolean = false;
+        for (let i = 0; i < scanLines; i++) {
             const lineText = this.documentBody.lineAt(i).text + this.determineNewLine(eol);
             if (lineText === opener && lineCloserFound) {
                 logger.Gui.warning(getMessage("brokenHeader"));
@@ -364,7 +372,7 @@ export class CommentGenerator {
     }
 
     private async writeHeaderToFile(editor: vscode.TextEditor): Promise<number> {
-        var offset: number = 0;
+        let offset: number = 0;
         const determineComment: CommentStyle = await this.determineCorrectComment();
         const headerContent: string[] = await this.buildTheHeader(determineComment);
         // determine if the first line has a shebang like line on the first line, if true, add a new line, and write from that line.
