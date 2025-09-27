@@ -1,0 +1,20 @@
+[
+    {
+        "fileContent": "bonus/ditf.json" ,
+        "fileName": "ditf.json" ,
+        "fileParentDirectory": "bonus" ,
+        "fileType": "path"
+    } ,
+    {
+        "fileContent": "bonus/watermark.min.json" ,
+        "fileName": "watermark.min.json" ,
+        "fileParentDirectory": "bonus" ,
+        "fileType": "path"
+    } ,
+    {
+        "fileContent": "bonus/ditf.min.json" ,
+        "fileName": "ditf.min.json" ,
+        "fileParentDirectory": "bonus" ,
+        "fileType": "path"
+    }
+]

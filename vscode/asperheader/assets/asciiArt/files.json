@@ -1,0 +1,50 @@
+[
+    {
+        "fileContent": "" ,
+        "fileName": "appleSystems" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    } ,
+    {
+        "fileContent": "" ,
+        "fileName": "androidSystems" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    } ,
+    {
+        "fileContent": "" ,
+        "fileName": "windowsSystem" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    } ,
+    {
+        "fileContent": "" ,
+        "fileName": "es" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    } ,
+    {
+        "fileContent": "" ,
+        "fileName": "ditf" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    } ,
+    {
+        "fileContent": "" ,
+        "fileName": "linuxSystems" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    } ,
+    {
+        "fileContent": "" ,
+        "fileName": "appleEvents" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    } ,
+    {
+        "fileContent": "" ,
+        "fileName": "iosSystems" ,
+        "fileParentDirectory": "asciiArt" ,
+        "fileType": "dir"
+    }
+]
