@@ -169,6 +169,9 @@ class GenerateJsonMetaData:
 
 # Example usage
 if __name__ == "__main__":
+    destination_base_directory: str = "output"
+    source_input_directory: str = "input"
+
     def get_final_name(filename: str) -> str:
         final_filename: str = ".".join(
             os.path.basename(filename).split(".")[:-1]
@@ -179,8 +182,8 @@ if __name__ == "__main__":
     GJMI: GenerateJsonMetaData = GenerateJsonMetaData()
 
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "androidSystems")
-    dest_dir: str = os.path.join("output", "androidSystems")
+    src_dir: str = os.path.join(source_input_directory, "androidSystems")
+    dest_dir: str = os.path.join(destination_base_directory, "androidSystems")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -196,8 +199,8 @@ if __name__ == "__main__":
     GJMI(dest_dir)
     global_list.extend(GJMI.final_list)
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "appleEvents")
-    dest_dir: str = os.path.join("output", "appleEvents")
+    src_dir: str = os.path.join(source_input_directory, "appleEvents")
+    dest_dir: str = os.path.join(destination_base_directory, "appleEvents")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -213,8 +216,8 @@ if __name__ == "__main__":
     # GJMI(dest_dir) # ignoring output because resulting file is too big (~ 200MB)
     # global_list.extend(GJMI.final_list) # ignoring output because resulting file is too big (~ 200MB)
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "appleSystems")
-    dest_dir: str = os.path.join("output", "appleSystems")
+    src_dir: str = os.path.join(source_input_directory, "appleSystems")
+    dest_dir: str = os.path.join(destination_base_directory, "appleSystems")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -230,8 +233,8 @@ if __name__ == "__main__":
     GJMI(dest_dir)
     global_list.extend(GJMI.final_list)
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "ditf")
-    dest_dir: str = os.path.join("output", "ditf")
+    src_dir: str = os.path.join(source_input_directory, "ditf")
+    dest_dir: str = os.path.join(destination_base_directory, "ditf")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -247,8 +250,8 @@ if __name__ == "__main__":
     GJMI(dest_dir)
     global_list.extend(GJMI.final_list)
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "es")
-    dest_dir: str = os.path.join("output", "es")
+    src_dir: str = os.path.join(source_input_directory, "es")
+    dest_dir: str = os.path.join(destination_base_directory, "es")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -264,8 +267,8 @@ if __name__ == "__main__":
     GJMI(dest_dir)
     global_list.extend(GJMI.final_list)
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "iosSystems")
-    dest_dir: str = os.path.join("output", "iosSystems")
+    src_dir: str = os.path.join(source_input_directory, "iosSystems")
+    dest_dir: str = os.path.join(destination_base_directory, "iosSystems")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -281,8 +284,8 @@ if __name__ == "__main__":
     GJMI(dest_dir)
     global_list.extend(GJMI.final_list)
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "linuxSystems")
-    dest_dir: str = os.path.join("output", "linuxSystems")
+    src_dir: str = os.path.join(source_input_directory, "linuxSystems")
+    dest_dir: str = os.path.join(destination_base_directory, "linuxSystems")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -298,8 +301,8 @@ if __name__ == "__main__":
     GJMI(dest_dir)
     global_list.extend(GJMI.final_list)
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "windowsSystem")
-    dest_dir: str = os.path.join("output", "windowsSystem")
+    src_dir: str = os.path.join(source_input_directory, "windowsSystem")
+    dest_dir: str = os.path.join(destination_base_directory, "windowsSystem")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -317,8 +320,8 @@ if __name__ == "__main__":
     # GJMI(dest_dir) #Commented because resulting file is too big
     # global_list.extend(GJMI.final_list) #Commented because resulting file is too big
     # Get the images in the source folder
-    src_dir: str = os.path.join("input", "windowsSystem")
-    dest_dir: str = os.path.join("output", "windowsSystem")
+    src_dir: str = os.path.join(source_input_directory, "windowsSystem")
+    dest_dir: str = os.path.join(destination_base_directory, "windowsSystem")
     src_dir_content: List[str] = os.listdir(src_dir)
     os.makedirs(dest_dir, exist_ok=True)
     for index, image_path in enumerate(src_dir_content):
@@ -334,6 +337,7 @@ if __name__ == "__main__":
     # GJMI(dest_dir) # ignored because file is too big (6.3 G)
     # global_list.extend(GJMI.final_list) #ignored because resulting file is to big (6.3 G)
     GJMI.final_list = global_list
+    os.chdir(destination_base_directory)
     GJMI.json_name = "allImages.json"
     GJMI.dump_json()
     GJMI.minified_json_name = "allImages.min.json"
