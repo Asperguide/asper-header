@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="400"
+   height="498"
+   version="1.1"
+   viewBox="0 0 400.00001 498"
+   id="svg28"
+   sodipodi:docname="Windows 3.0 Symbol.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview28"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.0582329"
+     inkscape:cx="199.86148"
+     inkscape:cy="249"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg28" />
+  <defs
+     id="defs8">
+    <radialGradient
+       id="radialGradient12795"
+       cx="371.79999"
+       cy="68.210999"
+       r="200"
+       gradientTransform="matrix(1.9675,0,0,2.1975,-366.01,-118.39)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#fff"
+         offset="0"
+         id="stop1" />
+      <stop
+         offset="1"
+         id="stop2" />
+    </radialGradient>
+    <radialGradient
+       id="radialGradient18505-8"
+       cx="148.2"
+       cy="346.84"
+       r="58.75"
+       gradientTransform="matrix(-3.6853,0,1.3559e-4,-4.9021,762.62,1847.2)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset=".29167"
+         id="stop3" />
+      <stop
+         stop-color="#fff"
+         offset="1"
+         id="stop4" />
+    </radialGradient>
+    <radialGradient
+       id="radialGradient18505-7"
+       cx="154.32001"
+       cy="309.29999"
+       r="58.75"
+       gradientTransform="matrix(-3.7362,7.1522e-5,0,-3.4723,809.05,1293)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset=".17647"
+         id="stop5" />
+      <stop
+         stop-color="#fff"
+         offset="1"
+         id="stop6" />
+    </radialGradient>
+    <radialGradient
+       id="radialGradient18505-7-9"
+       cx="165.98"
+       cy="304.23001"
+       r="58.75"
+       gradientTransform="matrix(-4.7362,1.1225e-4,0,-3.4723,1061.3,1287.4)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset=".21114"
+         id="stop7" />
+      <stop
+         stop-color="#fff"
+         offset="1"
+         id="stop8" />
+    </radialGradient>
+  </defs>
+  <g
+     id="g28">
+    <rect
+       width="400"
+       height="498"
+       fill="url(#radialGradient12795)"
+       id="rect8"
+       x="0"
+       y="0"
+       style="fill:url(#radialGradient12795)" />
+    <path
+       d="M 63,63 V 231 H 180.5 V 63 Z"
+       fill="url(#radialGradient18505-8)"
+       id="path8"
+       style="fill:url(#radialGradient18505-8)" />
+    <path
+       d="M 219.5,63 V 231 H 337 V 63 Z"
+       id="path9" />
+    <path
+       d="M 63,267 V 435 H 180.5 V 267 Z"
+       fill="url(#radialGradient18505-7)"
+       id="path10"
+       style="fill:url(#radialGradient18505-7)" />
+    <path
+       d="M 219.5,267 V 435 H 337 V 267 Z"
+       fill="url(#radialGradient18505-7-9)"
+       id="path11"
+       style="fill:url(#radialGradient18505-7-9)" />
+  </g>
+</svg>

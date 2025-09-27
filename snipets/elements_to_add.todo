@@ -10,8 +10,11 @@
 [x] Add a purpose section
 [-] Add a very optional requirements
 [x] Fix the function in charge of checking for a header.
-[ ] Add a setting in settings.json to allow the user to set the maximum column length.
-[ ] Add a max scan limit setting to allow the users to change the maximum scan length so that it can be more flexible.7
+[-] Add a setting in settings.json to allow the user to set the maximum column length. # Ignored for this module
+[x] Add a max scan limit setting to allow the users to change the maximum scan length so that it can be more flexible.
+[x] Add an update trigger on save for the date.
+[ ] Add watermark
+[ ] package and publish
 [x] Fix file detection based on vscode language.
 [x] Update the last modified section on save.
 

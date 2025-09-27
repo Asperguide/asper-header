@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="1000"
+   height="875"
+   viewBox="0 0 1000 875"
+   sodipodi:docname="Windows 9x Start Button.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.60228571"
+     inkscape:cx="499.76281"
+     inkscape:cy="437.5"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g2" />
+  <g
+     id="g2">
+    <path
+       style="fill:#000000"
+       d="M 125,812.5 V 750 h 31 31 v 31 31 H 218.5 250 V 781 750 H 312.5 375 V 531 312 H 250 125 V 249.5 187 h 31 31 V 218.5 250 H 218.5 250 V 218.5 187 h 62.5 62.5 v -31 -31 h 31 31 V 93.5 62 H 499.5 562 V 31 0 H 687 812 V 31 62 H 874.5 937 V 93.5 125 h 31.5 31.5 V 500 875 H 968.5 937 V 843.5 812 H 874.5 812 V 781 750 H 687 562 v 31 31 H 499.5 437 V 843.5 875 H 281 125 Z M 562,656 V 625 H 593.5 625 V 531 437 H 593.5 562 v 31.5 31.5 h -31 -31 v 93.5 93.5 h 31 31 z M 875,593.5 V 500 H 843.5 812 V 468.5 437 h -31 -31 v 94 94 h 31 31 v 31 31 H 843.5 875 Z M 562,343.5 V 312 H 593.5 625 V 218.5 125 H 593.5 562 v 31 31 h -31 -31 v 94 94 h 31 31 z M 875,281 V 187 H 843.5 812 v -31 -31 h -31 -31 v 93.5 93.5 h 31 31 V 343.5 375 H 843.5 875 Z M 0,749.5 V 687 H 31 62 V 749.5 812 H 31 0 Z m 0,-562 V 125 H 31 62 V 187.5 250 H 31 0 Z"
+       id="path2" />
+    <path
+       style="display:inline;fill:#fefe00"
+       d="m 812,656 v -31 h -31 -31 v -94 -94 h 31 31 V 468.5 500 H 843.5 875 V 593.5 687 H 843.5 812 Z"
+       id="path6" />
+    <path
+       style="display:inline;fill:#fe0000"
+       d="M 125,437.5 V 375 h 31 31 v 31 31 H 218.5 250 V 406 375 H 312.5 375 V 437.5 500 H 250 125 Z M 0,374.5 V 312 H 31 62 V 374.5 437 H 31 0 Z M 500,281 v -94 h 31 31 V 156 125 H 593.5 625 V 218.5 312 H 593.5 562 v 31.5 31.5 h -31 -31 z"
+       id="path5" />
+    <path
+       style="display:inline;fill:#00fe00"
+       d="M 812,343.5 V 312 H 781 750 V 218.5 125 h 31 31 v 31 31 h 31.5 31.5 v 94 94 H 843.5 812 Z"
+       id="path4" />
+    <path
+       style="display:inline;fill:#0000fe"
+       d="M 125,624.5 V 562 h 31 31 V 593.5 625 H 218.5 250 V 593.5 562 H 312.5 375 V 624.5 687 H 250 125 Z m 375,-31 V 500 h 31 31 V 468.5 437 h 31.5 31.5 v 94 94 H 593.5 562 v 31 31 H 531 500 Z M 0,562.5 V 500 H 31 62 V 562.5 625 H 31 0 Z"
+       id="path3" />
+  </g>
+</svg>

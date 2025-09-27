@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="899px" height="899px" viewBox="0 0 899 899" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Android Q</title>
+    <g id="Android-Q" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="#59CA55" cx="449" cy="449" r="449"></circle>
+        <path d="M449.71,104.15 C640.888889,104.15 795.87,259.115441 795.87,450.275 C795.87,641.434559 640.888889,796.4 449.71,796.4 C258.531111,796.4 103.55,641.434559 103.55,450.275 C103.55,259.115441 258.531111,104.15 449.71,104.15 Z M449.55,204 C314.488764,204 205,313.645465 205,448.9 C205,584.154535 314.488764,693.8 449.55,693.8 C584.611236,693.8 694.1,584.154535 694.1,448.9 C694.1,313.645465 584.611236,204 449.55,204 Z" id="Combined-Shape" fill="#FFFFFF"></path>
+        <polygon id="Path" fill="#FFFFFF" points="231 580 335.5 475.5 538 678 754 894 825.5 821.5 696.5 692.5 624 620 335.5 330.5 198 468"></polygon>
+    </g>
+</svg>
