@@ -12,3 +12,16 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+# Ignore old asset files
+**/assets/**/old/**
+# Ignore xcf files
+**/*.xcf
+# Ignore all .json
+**/*.json
+# But explicitly keep .min.json
+!**/*.min.json
+# Ignore the packing script
+**/package_extension.sh
+# Ignore the source assets folder (original files)
+assets/
+assets/**/*.min.json
