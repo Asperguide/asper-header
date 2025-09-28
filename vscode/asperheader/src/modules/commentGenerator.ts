@@ -199,7 +199,11 @@ export class CommentGenerator {
                 if (this.fileExtension) {
                     const extensionsForLang = nodeFileExtensions[langName] ?? [];
                     for (let extIndex = 0; extIndex < extensionsForLang.length; extIndex++) {
-                        if (extensionsForLang[extIndex] === `.${this.fileExtension}`) {
+                        let dot: string = "";
+                        if (extensionsForLang[extIndex].length >0 && extensionsForLang[extIndex][0] === ".") {
+                            dot=".";
+                        }
+                        if (extensionsForLang[extIndex] === `${dot}${this.fileExtension}`) {
                             nodeFound = true;
                             break;
                         }
