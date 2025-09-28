@@ -1,27 +1,83 @@
+/**
+ * @file darling.ts
+ * @brief Character display module for showing random anime characters with ASCII art
+ * @author Henry Letellier
+ * @version 1.0.0
+ * @date 2025
+ * 
+ * This module provides functionality to load and display random anime characters
+ * from the "Darling in the FranXX" series. It creates webview panels showing
+ * character information, quotes, descriptions, and ASCII art representations
+ * with interactive features like copy and zoom functionality.
+ */
+
 import * as vscode from 'vscode';
 import { logger } from "./logger";
 import { getMessage } from "./messageProvider";
 import { LazyFileLoader } from "./lazyFileLoad";
 
-
+/**
+ * @interface Person
+ * @brief Represents a character from the Darling in the FranXX series
+ * 
+ * This interface defines the structure for character data including
+ * personal information, visual representation, and metadata.
+ */
 export interface Person {
+    /** @brief Unique identifier for the character */
     id: number,
+    /** @brief Character's full name */
     name: string,
+    /** @brief Character's name in romaji (Latin script) */
     romaji: string,
+    /** @brief Character's age as string */
     age: string,
+    /** @brief Memorable quote from the character */
     quote: string,
+    /** @brief Detailed character description */
     description: string,
+    /** @brief Array of strings representing ASCII art lines for the character */
     imageContent: string[],
+    /** @brief Character's height measurement */
     height: string,
+    /** @brief Character's weight measurement */
     weight: string,
+    /** @brief URL or reference to additional character information */
     more_information: string,
+    /** @brief Character type or classification */
     type: string,
+    /** @brief Alternative names or nicknames for the character */
     alias: string[] | null
 }
+/**
+ * @class Darling
+ * @brief Main class for managing and displaying Darling in the FranXX characters
+ * 
+ * This class handles loading character data from JSON files and creating
+ * interactive webview panels to display character information with ASCII art.
+ * It provides functionality for random character selection, webview creation,
+ * and interactive features like copy-to-clipboard and zoom controls.
+ * 
+ * Key features:
+ * - Random character selection from data files
+ * - Interactive webview panels with character information
+ * - ASCII art display with zoom and copy functionality
+ * - Lazy loading of character data files
+ * - Customizable file paths and working directories
+ */
 export class Darling {
 
+    /** @brief Lazy file loader instance for managing character data files */
     private fileInstance: LazyFileLoader = new LazyFileLoader();
 
+    /**
+     * @brief Constructor for Darling class
+     * @param filePath Optional path to the character data JSON file
+     * @param cwd Optional current working directory path
+     * 
+     * Initializes the Darling instance with optional file path and working
+     * directory configurations. If not provided, default values are used.
+     */
     constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
         if (filePath) {
             this.fileInstance.updateFilePath(filePath);
@@ -31,18 +87,51 @@ export class Darling {
         }
     }
 
+    /**
+     * @brief Updates the file path for character data
+     * @param filePath New path to the character data JSON file
+     * @return Promise resolving to true if update successful, false otherwise
+     * 
+     * Updates the file path used by the lazy file loader to read
+     * character data from a different JSON file location.
+     */
     async updateFilePath(filePath: string): Promise<boolean> {
         return await this.fileInstance.updateFilePath(filePath);
     }
 
+    /**
+     * @brief Updates the current working directory
+     * @param cwd New current working directory path
+     * @return Promise resolving to true if update successful, false otherwise
+     * 
+     * Updates the working directory used by the lazy file loader for
+     * resolving relative file paths.
+     */
     async updateCurrentWorkingDirectory(cwd: string): Promise<boolean> {
         return await this.fileInstance.updateCurrentWorkingDirectory(cwd);
     }
 
+    /**
+     * @brief Generates a random number within specified range
+     * @param maxValue Maximum value (exclusive) for random number generation
+     * @return Random integer between 0 (inclusive) and maxValue (exclusive)
+     * 
+     * Utility method for generating random indices to select characters
+     * from the loaded data array.
+     */
     private getRandomNumber(maxValue: number): number {
         return Math.floor(Math.random() * maxValue);
     }
 
+    /**
+     * @brief Selects and returns a random character from the data file
+     * @return Promise resolving to a randomly selected Person object
+     * @throws Error if file content is invalid or empty
+     * 
+     * Loads the character data file, validates its format, and returns
+     * a randomly selected character. Maps the raw JSON data to the
+     * Person interface format, handling property name transformations.
+     */
     async getRandomPerson(): Promise<Person> {
         const fileContent = await this.fileInstance.get();
         if (!Array.isArray(fileContent) || fileContent.length === 0) {
@@ -69,6 +158,14 @@ export class Darling {
         return person;
     }
 
+    /**
+     * @brief Generates JavaScript for copy-to-clipboard functionality
+     * @return HTML script tag with clipboard copy functionality
+     * 
+     * Creates JavaScript code that handles copying ASCII art content
+     * to the system clipboard when the copy button is clicked.
+     * Communicates success back to the VS Code extension.
+     */
     private copyButtonScript(): string {
         return `
 <script>
@@ -86,6 +183,14 @@ export class Darling {
   `;
     }
 
+    /**
+     * @brief Generates JavaScript for ASCII art zoom functionality
+     * @return HTML script tag with zoom in/out controls
+     * 
+     * Creates JavaScript code that handles font size adjustment for
+     * the ASCII art display, allowing users to zoom in and out for
+     * better readability. Maintains minimum font size constraints.
+     */
     private zoomScript(): string {
         return `
 <script>
@@ -120,6 +225,14 @@ export class Darling {
     `;
     }
 
+    /**
+     * @brief Generates CSS styling for the character display webview
+     * @return HTML style tag with page styling rules
+     * 
+     * Creates CSS styles for the webview panel including typography,
+     * spacing, button styling, and ASCII art formatting to ensure
+     * proper display and readability.
+     */
     private pageStyle(): string {
         return `
         <style>
@@ -132,6 +245,19 @@ export class Darling {
         `;
     }
 
+    /**
+     * @brief Creates and displays a webview panel with a random character
+     * 
+     * Main public method that orchestrates the complete character display process:
+     * 1. Selects a random character from the data file
+     * 2. Creates a new VS Code webview panel
+     * 3. Generates HTML content with character information and ASCII art
+     * 4. Adds interactive features (copy, zoom)
+     * 5. Sets up message handling for user interactions
+     * 
+     * The webview includes character details, quotes, descriptions, and
+     * interactive ASCII art with copy and zoom functionality.
+     */
     async displayRandomPersonInWindow() {
         const randomPerson: Person = await this.getRandomPerson();
 

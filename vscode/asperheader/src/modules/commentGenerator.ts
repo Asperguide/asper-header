@@ -1,3 +1,15 @@
+/**
+ * @file commentGenerator.ts
+ * @brief Comment generator module for creating file headers with logos and metadata
+ * @author Henry Letellier
+ * @version 1.0.0
+ * @date 2025
+ * 
+ * This module provides functionality to generate and manage file headers with
+ * customizable logos, project information, and metadata. It supports multiple
+ * comment styles and automatic header refresh on file save.
+ */
+
 import * as vscode from 'vscode';
 import { minimatch } from 'minimatch';
 import { CodeConfig, CodeConfigType } from './processConfiguration';
@@ -7,32 +19,82 @@ import { getMessage } from './messageProvider';
 import { LazyFileLoader } from './lazyFileLoad';
 import { RandomLogo, logo } from './randomLogo';
 
+/**
+ * @interface CommentStyle
+ * @brief Defines comment style configuration for different programming languages
+ * 
+ * This interface specifies the comment syntax patterns used to generate
+ * appropriate headers for different file types and programming languages.
+ */
 interface CommentStyle {
+    /** @brief Array of single-line comment prefixes (e.g., "//", "#") */
     singleLine: string[];
+    /** @brief Array of multi-line comment delimiters [opener, middle, closer] (e.g., ["/*", " *", " *\/"]) */
     multiLine: string[];
+    /** @brief Whether to prompt user for comment type selection when multiple options exist */
     prompt_comment_opening_type: boolean;
 }
 
+/**
+ * @class CommentGenerator
+ * @brief Main class responsible for generating and managing file headers
+ * 
+ * This class handles the creation, injection, and updating of file headers with
+ * project metadata, logos, creation/modification dates, and other customizable
+ * information. It supports multiple programming languages and comment styles.
+ * 
+ * Key features:
+ * - Automatic language detection and comment style selection
+ * - Random logo generation from asset collections
+ * - Header refresh on file save
+ * - Metadata tracking (creation date, last modified, etc.)
+ * - Multi-language support through configuration files
+ */
 export class CommentGenerator {
-    // Class in charge of building the comment that will be added to the target file
+    /** @brief Configuration object containing all extension settings */
     private Config: CodeConfigType = CodeConfig;
+    /** @brief Random logo generator instance */
     private randomLogo: RandomLogo = new RandomLogo();
+    /** @brief Lazy loader for language comment configuration */
     private languageComment: LazyFileLoader | undefined = undefined;
+    /** @brief VS Code document being processed */
     private documentBody: vscode.TextDocument | undefined = undefined;
+    /** @brief Full file system path of the current document */
     private filePath: string | undefined = undefined;
+    /** @brief Name of the current file including extension */
     private fileName: string | undefined = undefined;
+    /** @brief File extension without the dot (e.g., "ts", "js") */
     private fileExtension: string | undefined = undefined;
+    /** @brief VS Code language identifier */
     private languageId: string | undefined = undefined;
+    /** @brief End-of-line character type (LF or CRLF) */
     private documentEOL: vscode.EndOfLine | undefined = undefined;
+    /** @brief Document version number for change tracking */
     private documentVersion: number | undefined = undefined;
+    /** @brief Line number where header content starts (excluding opener) */
     private headerInnerStart: number | undefined = undefined;
+    /** @brief Line number where header content ends (excluding closer) */
     private headerInnerEnd: number | undefined = undefined;
+    /** @brief Maximum number of lines to scan when looking for existing headers */
     private maxScanLength: number = this.Config.get("maxScanLength");
+    /** @brief Array of logo lines to display in header */
     private headerLogo: string[] = this.Config.get("headerLogo");
+    /** @brief Project name to display in header */
     private projectName: string = this.Config.get("extensionName");
+    /** @brief Copyright information */
     private projectCopyRight: string = this.Config.get("projectCopyright");
+    /** @brief Whether to add blank line after multiline sections */
     private addBlankLineAfterMultiline: boolean = this.Config.get("headerAddBlankLineAfterMultiline");
 
+    /**
+     * @brief Constructor for CommentGenerator class
+     * @param languageComment Optional lazy loader for language comment configurations
+     * @param editor Optional VS Code text editor instance
+     * @param randomLogoInstance Optional random logo generator instance
+     * 
+     * Initializes the comment generator with optional dependencies. If any parameter
+     * is undefined, appropriate warnings are logged and defaults are used.
+     */
     constructor(languageComment: LazyFileLoader | undefined = undefined, editor: vscode.TextEditor | undefined = undefined, randomLogoInstance: RandomLogo | undefined = undefined) {
         if (languageComment !== undefined) {
             this.languageComment = languageComment;
@@ -51,6 +113,14 @@ export class CommentGenerator {
         }
     }
 
+    /**
+     * @brief Converts VS Code EndOfLine enum to string representation
+     * @param eol VS Code end-of-line type
+     * @return String representation of newline character(s)
+     * 
+     * Converts the VS Code EndOfLine enumeration to the appropriate string
+     * for use in text manipulation operations.
+     */
     private determineNewLine(eol: vscode.EndOfLine): string {
         if (eol === vscode.EndOfLine.LF) {
             return "\n";
@@ -59,6 +129,16 @@ export class CommentGenerator {
         }
     }
 
+    /**
+     * @brief Generates the opening line of a file header
+     * @param comment Comment prefix to use
+     * @param eol End-of-line type for the document
+     * @param projectName Name of the project (defaults to extension name)
+     * @return Formatted header opening line
+     * 
+     * Creates the decorative opening line of the header with telegraph-style
+     * formatting and project name.
+     */
     private headerOpener(comment: string, eol: vscode.EndOfLine, projectName: string = this.Config.get("extensionName")): string {
         let final: string = comment + this.Config.get("headerOpenerDecorationOpen");
         final += this.Config.get("telegraphBegin") + " ";
@@ -68,6 +148,14 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Determines appropriate comment style for current file
+     * @return Promise resolving to CommentStyle configuration
+     * 
+     * Analyzes the current file's language ID and extension to determine
+     * the appropriate comment syntax from the language configuration file.
+     * Supports both language ID matching and file extension fallback.
+     */
     private async determineCorrectComment(): Promise<CommentStyle> {
         const primaryKey: string = "langs";
         let commentStructure: CommentStyle = {
@@ -136,6 +224,13 @@ export class CommentGenerator {
         return commentStructure;
     }
 
+    /**
+     * @brief Prompts user for file description
+     * @return Promise resolving to array of description lines
+     * 
+     * Displays an input dialog asking the user to provide a description
+     * for the current file. The description will be included in the header.
+     */
     private async determineHeaderDescription(): Promise<string[]> {
         let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderDescription"));
@@ -143,6 +238,13 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Prompts user for file tags
+     * @return Promise resolving to array of tag strings
+     * 
+     * Displays an input dialog asking the user to provide tags
+     * for categorizing the current file.
+     */
     private async determineHeaderTags(): Promise<string[]> {
         let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderTags"));
@@ -150,6 +252,13 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Prompts user for file purpose
+     * @return Promise resolving to array of purpose strings
+     * 
+     * Displays an input dialog asking the user to describe the
+     * purpose or function of the current file.
+     */
     private async determineHeaderPurpose(): Promise<string[]> {
         let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderPurpose"));
@@ -157,6 +266,16 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Presents user with comment style options for selection
+     * @param commentOptions Array of available comment style strings
+     * @return Promise resolving to selected comment style
+     * @throws Error if no comment options are provided
+     * 
+     * When multiple comment styles are available for a language, this method
+     * presents a quick pick dialog for user selection. Returns the single
+     * option if only one exists, or the first option if user cancels selection.
+     */
     private async getSingleCommentOption(commentOptions: string[]): Promise<string> {
         if (commentOptions.length === 0) {
             logger.Gui.error(getMessage("noCommentToShow"));
@@ -170,11 +289,27 @@ export class CommentGenerator {
         return response || commentOptions[0];
     }
 
+    /**
+     * @brief Gets the separator string between keys and values in header
+     * @return Key-value separator string from configuration
+     * 
+     * Returns the configured separator string used between header keys
+     * (like "File:", "Date:") and their corresponding values.
+     */
     private addKeyDefinitionSeparator(): string {
         const userSettingDefinedElement: string = this.Config.get("headerKeyDefinitionSeparator");
         return userSettingDefinedElement || this.Config.get("headerKeyDefinitionSeparator");
     }
 
+    /**
+     * @brief Generates creation date line for header
+     * @param comment Comment prefix to prepend
+     * @param eol End-of-line type for the document
+     * @return Formatted creation date line with comment prefix
+     * 
+     * Creates a header line showing the current date as the file creation date.
+     * Uses configured date separators and formatting from the extension settings.
+     */
     private addCreationDate(comment: string, eol: vscode.EndOfLine) {
         const now = new Date();
         const day = String(now.getDate()).padStart(2, "0");
@@ -188,6 +323,17 @@ export class CommentGenerator {
         final += this.determineNewLine(eol);
         return final;
     }
+
+    /**
+     * @brief Generates last modified date/time line for header
+     * @param comment Comment prefix to prepend
+     * @param eol End-of-line type for the document
+     * @return Formatted last modified date/time line with comment prefix
+     * 
+     * Creates a header line showing the current date and time as the last
+     * modification timestamp. Includes hours, minutes, and seconds along with
+     * the date using configured separators.
+     */
     private addLastModifiedDate(comment: string, eol: vscode.EndOfLine) {
         const now: Date = new Date();
         const day: string = String(now.getDate()).padStart(2, "0");
@@ -209,6 +355,18 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Formats a multi-line key-value section for the header
+     * @param comment Comment prefix for each line
+     * @param eol End-of-line type
+     * @param tagName Name of the key/tag
+     * @param tagDefinition Array of content lines
+     * @return Formatted multi-line section string
+     * 
+     * Creates a multi-line section in the header with a key name followed by
+     * multiple content lines. Adds telegraph-style block terminator and
+     * optional blank line based on configuration.
+     */
     private addMultilineKey(comment: string, eol: vscode.EndOfLine, tagName: string, tagDefinition: string[]): string {
         const eolStr: string = this.determineNewLine(eol);
         let final: string = comment + tagName + this.addKeyDefinitionSeparator() + eolStr;
@@ -222,16 +380,45 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Formats a single-line key-value pair for the header
+     * @param comment Comment prefix
+     * @param eol End-of-line type
+     * @param tagName Name of the key/tag
+     * @param tagDefinition Value content
+     * @return Formatted single-line string
+     * 
+     * Creates a single-line key-value pair in the header format.
+     */
     private addSingleLineKey(comment: string, eol: vscode.EndOfLine, tagName: string, tagDefinition: string): string {
         let final: string = comment + tagName + this.addKeyDefinitionSeparator();
         final += tagDefinition + this.determineNewLine(eol);
         return final;
     }
 
+    /**
+     * @brief Generates the line before header closure
+     * @param comment Comment prefix
+     * @param eol End-of-line type
+     * @return Telegraph end-of-transmission line
+     * 
+     * Creates a telegraph-style end-of-transmission marker that appears
+     * before the final header closing line.
+     */
     private beforeHeaderCloser(comment: string, eol: vscode.EndOfLine): string {
         return comment + this.Config.get("telegraphEndOfTransmission") + this.determineNewLine(eol);
     }
 
+    /**
+     * @brief Generates the closing line of a file header
+     * @param comment Comment prefix to use
+     * @param eol End-of-line type for the document
+     * @param projectName Name of the project (defaults to extension name)
+     * @return Formatted header closing line
+     * 
+     * Creates the decorative closing line of the header with telegraph-style
+     * formatting and project name, matching the opener format.
+     */
     private headerCloser(comment: string, eol: vscode.EndOfLine, projectName: string = this.Config.get("extensionName")): string {
         let final: string = comment + this.Config.get("headerOpenerDecorationOpen");
         final += this.Config.get("telegraphEnd") + " ";
@@ -241,6 +428,15 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Updates internal file metadata from editor/document
+     * @param editor VS Code text editor instance
+     * @param document Optional document override (uses editor.document if not provided)
+     * 
+     * Extracts and stores file metadata including path, name, extension,
+     * language ID, EOL type, and version. Resets header boundary markers
+     * and updates configuration-dependent properties.
+     */
     private updateFileInfo(editor: vscode.TextEditor, document: vscode.TextDocument | undefined = undefined) {
         this.headerInnerEnd = undefined;
         this.headerInnerStart = undefined;
@@ -265,6 +461,15 @@ export class CommentGenerator {
         this.documentVersion = this.documentBody.version;
     }
 
+    /**
+     * @brief Determines comment prefixes based on comment style configuration
+     * @param determinedComment Comment style configuration for the language
+     * @return Promise resolving to array of [opener, middle, closer] comment prefixes
+     * 
+     * Analyzes the comment style configuration and determines the appropriate
+     * comment prefixes for header opener, content lines, and closer. Handles
+     * both multi-line and single-line comment styles with user prompting when needed.
+     */
     private async getCorrectCommentPrefix(determinedComment: CommentStyle): Promise<string[]> {
         let commentOpener: string = "";
         let commentMiddle: string = "";
@@ -301,6 +506,21 @@ export class CommentGenerator {
         return [commentOpener, commentMiddle, commentCloser];
     }
 
+    /**
+     * @brief Constructs the complete file header content
+     * @param comments Array of comment prefixes [opener, middle, closer]
+     * @return Promise resolving to array of header lines
+     * 
+     * Assembles the complete header including:
+     * - Opening comment delimiter
+     * - Header opener with project name
+     * - Logo section (static or random)
+     * - Project metadata (name, file, dates)
+     * - User-provided description and purpose
+     * - Copyright information
+     * - Telegraph-style closing markers
+     * - Closing comment delimiter
+     */
     private async buildTheHeader(comments: string[]): Promise<string[]> {
         const eol: vscode.EndOfLine = this.documentEOL || vscode.EndOfLine.LF;
         const unknownTerm: string = getMessage("unknown");
@@ -355,6 +575,15 @@ export class CommentGenerator {
         return buildHeader;
     }
 
+    /**
+     * @brief Updates the "Last Modified" timestamp in an existing header
+     * @param editor VS Code text editor instance
+     * @param comments Array of comment prefixes [opener, middle, closer]
+     * 
+     * Locates the "Last Modified" line within the existing header boundaries
+     * and updates it with the current date and time. Requires that header
+     * boundaries have been previously determined by locateIfHeaderPresent().
+     */
     private async updateEditDate(editor: vscode.TextEditor, comments: string[]) {
         const commentOpener: string = comments[0] || "";
         const commentMiddle: string = comments[1] || "";
@@ -406,6 +635,15 @@ export class CommentGenerator {
         logger.Gui.info(msg);
     }
 
+    /**
+     * @brief Scans document to detect existing header presence and boundaries
+     * @param comments Array of comment prefixes [opener, middle, closer]
+     * @return true if valid header found, false if no/broken header, undefined on error
+     * 
+     * Searches the document within maxScanLength lines for header opener and closer
+     * patterns. Sets headerInnerStart and headerInnerEnd properties when valid
+     * header is found. Detects broken headers (mismatched/missing opener/closer).
+     */
     protected locateIfHeaderPresent(comments: string[]): boolean | undefined {
         const commentOpener: string = comments[0] || "";
         const commentMiddle: string = comments[1] || "";
@@ -452,6 +690,15 @@ export class CommentGenerator {
         return false;
     }
 
+    /**
+     * @brief Writes a new header to the beginning of the file
+     * @param editor VS Code text editor instance
+     * @param comments Array of comment prefixes [opener, middle, closer]
+     * @return Promise resolving to status code (success/error)
+     * 
+     * Generates a complete header using buildTheHeader() and inserts it at the
+     * top of the document. Handles shebang line detection and offset calculation.
+     */
     private async writeHeaderToFile(editor: vscode.TextEditor, comments: string[]): Promise<number> {
         let offset: number = 0;
         const headerContent: string[] = await this.buildTheHeader(comments);
@@ -460,6 +707,17 @@ export class CommentGenerator {
         await editor.edit(editBuilder => editBuilder.insert(new vscode.Position(offset, 0), headerString));
         return this.Config.get("statusSuccess");
     }
+    /**
+     * @brief Main method to inject or update header in active editor
+     * 
+     * Primary entry point for header injection functionality. Performs:
+     * 1. Validates active editor and file metadata
+     * 2. Determines appropriate comment style for the language
+     * 3. Checks for existing header presence
+     * 4. Updates existing header timestamp OR writes new header
+     * 
+     * This method is typically called by user command activation.
+     */
     async injectHeader() {
         const editor = vscode.window.activeTextEditor;
         if (editor === undefined) {
@@ -513,6 +771,14 @@ export class CommentGenerator {
         }
     }
 
+    /**
+     * @brief Checks if current file is allowed for header operations
+     * @return Promise resolving to true if file is allowed, false if excluded
+     * 
+     * Evaluates the current file against the extension's ignore patterns
+     * configured in extensionIgnore setting. Checks file extension,
+     * file name, and full file path against minimatch patterns.
+     */
     private async allowedToActivate(): Promise<boolean> {
         const ignored: string[] = CodeConfig.get("extensionIgnore") ?? [];
 
@@ -529,9 +795,27 @@ export class CommentGenerator {
         return true;
     }
 
+    /**
+     * @brief Updates the random logo generator instance
+     * @param randomLogoInstance New RandomLogo instance to use
+     * 
+     * Allows external code to update the logo randomizer, useful for
+     * dependency injection or runtime reconfiguration.
+     */
     updateLogoInstanceRandomiser(randomLogoInstance: RandomLogo): void {
         this.randomLogo = randomLogoInstance;
     }
+
+    /**
+     * @brief Automatically refreshes header on document save (if configured)
+     * @param document The document being saved
+     * 
+     * Called by the extension's document save event handler. Checks configuration
+     * settings for auto-refresh behavior and file exclusion patterns. Can either:
+     * 1. Update existing header timestamps
+     * 2. Prompt to create new header (if configured)
+     * 3. Do nothing (if refresh disabled or file excluded)
+     */
     async refreshHeader(document: vscode.TextDocument) {
         const refreshOnSave: boolean = CodeConfig.get("refreshOnSave");
         const promptToCreateIfMissing: boolean = CodeConfig.get("promptToCreateIfMissing");

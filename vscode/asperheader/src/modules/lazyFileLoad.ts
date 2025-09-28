@@ -1,13 +1,62 @@
+/**
+ * @file lazyFileLoad.ts
+ * @brief Lazy loading file system utility with caching and type safety
+ * @author Henry Letellier
+ * @version 1.0.0
+ * @date 2025
+ * 
+ * This module provides a generic lazy file loader that supports caching,
+ * automatic JSON parsing, and flexible path resolution. It's designed to
+ * efficiently load configuration files, data files, and other resources
+ * on-demand while maintaining type safety through TypeScript generics.
+ * 
+ * Key features:
+ * - Lazy loading with automatic caching
+ * - JSON and text file support
+ * - Relative and absolute path resolution
+ * - Type-safe file content handling
+ * - Cache invalidation and reload functionality
+ */
+
 import * as fs from 'fs';
 import * as fsp from "fs/promises";
 import * as path from 'path';
 import { logger } from './logger';
 import { getMessage } from './messageProvider';
+
+/**
+ * @class LazyFileLoader
+ * @brief Generic lazy file loader with caching and type safety
+ * @template T The expected type of the loaded file content
+ * 
+ * A utility class that provides lazy loading of files with automatic caching,
+ * JSON parsing, and flexible path resolution. Supports both relative and
+ * absolute file paths with configurable working directory.
+ * 
+ * Features:
+ * - Generic type support for type-safe file content
+ * - Automatic JSON parsing for .json and .jsonc files
+ * - In-memory caching to avoid repeated file system access
+ * - Configurable working directory for relative path resolution
+ * - Path existence validation and error handling
+ * - Cache invalidation and manual reload capabilities
+ */
 export class LazyFileLoader<T = any> {
+    /** @brief Path to the file to be loaded (relative or absolute) */
     private filePath: string | undefined = undefined;
+    /** @brief Cached file content to avoid repeated file system access */
     private cache: T | null = null;
+    /** @brief Current working directory for resolving relative paths */
     private cwd: string = "";
 
+    /**
+     * @brief Constructor for LazyFileLoader
+     * @param filePath Optional path to the file to be loaded
+     * @param cwd Optional current working directory for path resolution
+     * 
+     * Initializes the lazy file loader with optional file path and working
+     * directory. The file is not loaded until the first call to get().
+     */
     constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
         if (filePath) {
             this.filePath = filePath;
@@ -17,6 +66,14 @@ export class LazyFileLoader<T = any> {
         }
     }
 
+    /**
+     * @brief Checks if a file or directory exists at the given path
+     * @param filePath Path to check for existence
+     * @return Promise resolving to true if path exists, false otherwise
+     * 
+     * Utility method that uses fs.promises.access() to check path existence
+     * without throwing exceptions. Used for path validation and resolution.
+     */
     async pathExists(filePath: string): Promise<boolean> {
         try {
             await fsp.access(filePath);
@@ -26,6 +83,16 @@ export class LazyFileLoader<T = any> {
         }
     }
 
+    /**
+     * @brief Resolves a file path to an absolute path
+     * @param filePath Relative or absolute file path to resolve
+     * @return Promise resolving to the absolute file path
+     * 
+     * Converts relative paths to absolute paths using the configured working
+     * directory. For relative paths, it first tries joining with the parent
+     * directory of cwd, then falls back to joining directly with cwd.
+     * Absolute paths are returned unchanged.
+     */
     private async resolveAbsolutePath(filePath: string): Promise<string> {
         if (path.isAbsolute(filePath)) {
             return filePath;
@@ -37,7 +104,20 @@ export class LazyFileLoader<T = any> {
         return path.join(this.cwd, filePath);
     }
 
-    // Lazy load the file contents
+    /**
+     * @brief Loads and returns the file content with caching
+     * @return Promise resolving to the loaded file content or undefined on error
+     * 
+     * Main method for lazy loading file content. On first call, reads the file
+     * from disk and caches the result. Subsequent calls return the cached content.
+     * 
+     * Behavior:
+     * - JSON files (.json, .jsonc) are automatically parsed
+     * - Text files are returned as strings
+     * - Handles both relative and absolute file paths
+     * - Caches successful loads to avoid repeated file system access
+     * - Returns undefined if file path not set or parsing fails
+     */
     async get(): Promise<T | undefined> {
         if (this.cache) {
             return this.cache; // Already loaded
@@ -64,19 +144,41 @@ export class LazyFileLoader<T = any> {
         return this.cache;
     }
 
-    // Force reload the file
+    /**
+     * @brief Forces a reload of the file from disk, bypassing cache
+     * @return Promise resolving to the reloaded file content or undefined on error
+     * 
+     * Clears the current cache and reloads the file from the file system.
+     * Useful when the file content may have changed externally and the
+     * cache needs to be refreshed.
+     */
     async reload(): Promise<T | undefined> {
         this.cache = null;
         logger.info(getMessage("fileRefreshed"));
         return this.get();
     }
 
-    // Unload the file from memory
+    /**
+     * @brief Clears the cached file content from memory
+     * 
+     * Removes the cached file content to free up memory. The next call
+     * to get() will reload the file from disk. Useful for memory management
+     * when the file content is no longer needed.
+     */
     unload() {
         this.cache = null;
         logger.info(getMessage("fileUnloaded", String(this.filePath)));
     }
 
+    /**
+     * @brief Updates the file path and optionally reloads cached content
+     * @param filePath New file path to use for loading
+     * @return Promise resolving to true if update successful, false on reload failure
+     * 
+     * Changes the target file path for this loader instance. If content is
+     * currently cached, automatically reloads from the new path to ensure
+     * cache consistency. Returns false if the new file cannot be loaded.
+     */
     async updateFilePath(filePath: string): Promise<boolean> {
         const oldFilePath = this.filePath;
         this.filePath = filePath;
@@ -91,6 +193,15 @@ export class LazyFileLoader<T = any> {
     }
 
 
+    /**
+     * @brief Updates the current working directory for path resolution
+     * @param cwd New current working directory path
+     * @return Promise resolving to true if update successful, false if path doesn't exist
+     * 
+     * Changes the working directory used for resolving relative file paths.
+     * Validates that the new directory exists before updating. Does not
+     * invalidate the cache automatically.
+     */
     async updateCurrentWorkingDirectory(cwd: string): Promise<boolean> {
         const oldCwd: string = this.cwd;
         if (! await this.pathExists(cwd)) {
@@ -102,6 +213,13 @@ export class LazyFileLoader<T = any> {
         return true;
     }
 
+    /**
+     * @brief Returns the currently configured file path
+     * @return The current file path or undefined if not set
+     * 
+     * Getter method that returns the file path currently configured
+     * for this loader instance. May be relative or absolute.
+     */
     getFilePath(): string | undefined {
         return this.filePath;
     }

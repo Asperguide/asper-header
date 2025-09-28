@@ -1,3 +1,42 @@
+/**
+ * @file randomLogo.ts
+ * @brief Random ASCII art logo system for dynamic header content generation
+ * @author Henry Letellier
+ * @version 1.0.0
+ * @date 2025
+ * 
+ * This module provides a comprehensive system for managing and displaying random ASCII art
+ * logos in file headers and interactive webview panels. It supports recursive file discovery,
+ * lazy loading of logo content, and interactive display features including copy functionality
+ * and zoom controls.
+ * 
+ * Key Features:
+ * - Recursive discovery of ASCII art files from directory structures
+ * - Random logo selection from available collections
+ * - Lazy loading with caching for efficient memory usage
+ * - Interactive webview display with user controls
+ * - Copy-to-clipboard functionality for ASCII art
+ * - Zoom controls for better readability
+ * - Integration with extension's internationalization system
+ * 
+ * File Support:
+ * - Text files (.txt) containing ASCII art
+ * - Line-by-line logo storage format
+ * - Automatic file type filtering and validation
+ * - Support for various ASCII art formats and sizes
+ * 
+ * Display Features:
+ * - VS Code webview integration for logo preview
+ * - Interactive controls (copy, zoom in/out)
+ * - Responsive styling for different logo sizes
+ * - Message passing between webview and extension
+ * 
+ * Architecture:
+ * The system uses LazyFileLoader for efficient file management, maintaining
+ * a collection of logo loaders that can be accessed randomly. This approach
+ * minimizes memory usage while providing quick access to logo content.
+ */
+
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -5,15 +44,66 @@ import { logger } from "./logger";
 import { getMessage } from "./messageProvider";
 import { LazyFileLoader } from "./lazyFileLoad";
 
+/**
+ * @interface logo
+ * @brief Structure representing a loaded ASCII art logo with metadata
+ * 
+ * Defines the data structure for ASCII art logos after they have been loaded
+ * from files. Contains both the visual content and identifying information
+ * for display and user interaction purposes.
+ */
 export interface logo {
+    /** @brief Array of strings representing each line of the ASCII art */
     logoContent: string[],
+    /** @brief Original filename of the logo file (without path) */
     fileName: string
 }
+
+/**
+ * @class RandomLogo
+ * @brief ASCII art logo management system with random selection and interactive display
+ * 
+ * Manages collections of ASCII art logos stored in text files, providing functionality
+ * for random selection, lazy loading, and interactive display through VS Code webviews.
+ * The class handles file system operations, content caching, and user interface generation.
+ * 
+ * Core Functionality:
+ * - **File Discovery**: Recursive scanning of directories for ASCII art files
+ * - **Random Selection**: Pseudo-random selection from available logo collection
+ * - **Lazy Loading**: Efficient memory usage through on-demand file loading
+ * - **Interactive Display**: Full-featured webview with user controls
+ * - **Content Management**: Automatic file type filtering and validation
+ * 
+ * File System Integration:
+ * - Supports configurable root directories for logo collections
+ * - Recursive directory traversal for comprehensive logo discovery
+ * - File type filtering (currently supports .txt files)
+ * - Path resolution and cross-platform compatibility
+ * 
+ * User Interface Features:
+ * - Copy-to-clipboard functionality for ASCII art content
+ * - Zoom controls for accessibility and readability
+ * - Responsive design adapting to different logo sizes
+ * - Localized user interface elements
+ */
 export class RandomLogo {
+    /** @brief Current working directory for relative path resolution */
     private cwd: string | undefined = undefined;
+    /** @brief Root directory path for logo file discovery */
     private rootDir: string | undefined = undefined;
+    /** @brief Collection of lazy file loaders for discovered logo files */
     private liveLogoFiles: LazyFileLoader[] = [];
 
+    /**
+     * @brief Constructor for RandomLogo class
+     * @param rootDir Optional root directory path for logo file discovery
+     * @param cwd Optional current working directory for path resolution
+     * 
+     * Initializes the RandomLogo instance with optional directory configuration.
+     * If a root directory is provided, automatically begins logo file discovery.
+     * The current working directory is used for resolving relative paths in
+     * the LazyFileLoader instances.
+     */
     constructor(rootDir: string | undefined = undefined, cwd: string | undefined = undefined) {
         if (rootDir) {
             this.rootDir = rootDir;
@@ -24,6 +114,25 @@ export class RandomLogo {
         }
     }
 
+    /**
+     * @brief Updates the root directory and refreshes logo file collection
+     * @param basePath New root directory path for logo file discovery
+     * @return Promise resolving to true if update successful, false on error
+     * 
+     * Changes the root directory for logo file discovery and automatically
+     * refreshes the collection of available logo files. This method allows
+     * runtime reconfiguration of logo sources without creating new instances.
+     * 
+     * The method performs the following operations:
+     * 1. Updates the internal root directory path
+     * 2. Clears existing logo file collection
+     * 3. Recursively scans new directory for logo files
+     * 4. Logs any errors encountered during the process
+     * 
+     * Error Handling:
+     * If directory scanning fails, the error is logged and the method returns
+     * false. The existing logo collection may be partially updated in this case.
+     */
     async updateRootDir(basePath: string): Promise<boolean> {
         this.rootDir = basePath;
         try {
@@ -35,16 +144,59 @@ export class RandomLogo {
         }
     }
 
+    /**
+     * @brief Updates the current working directory for path resolution
+     * @param cwd New current working directory path
+     * @return True if update successful (always succeeds)
+     * 
+     * Updates the current working directory used by LazyFileLoader instances
+     * for resolving relative file paths. This method provides runtime
+     * configuration for path resolution without affecting existing file loaders.
+     */
     updateCurrentWorkingDirectory(cwd: string): boolean {
         this.cwd = cwd;
         return true;
     }
 
+    /**
+     * @brief Generates a random integer within the specified range
+     * @param maxValue Maximum value (exclusive) for random number generation
+     * @return Random integer between 0 (inclusive) and maxValue (exclusive)
+     * 
+     * Utility method for generating random indices to select logos from
+     * the available collection. Uses Math.random() for pseudo-random generation
+     * with uniform distribution across the specified range.
+     */
     private getRandomNumber(maxValue: number): number {
         return Math.floor(Math.random() * maxValue);
     }
 
-    /** Recursively gather all files under the given folder */
+    /**
+     * @brief Recursively discovers and catalogs all logo files in directory tree
+     * @param rootDir Optional root directory override for file discovery
+     * @return Promise that resolves when file discovery is complete
+     * @throws Error if no root directory is configured or provided
+     * 
+     * Performs recursive directory traversal to discover all ASCII art logo files
+     * within the specified directory tree. Only processes .txt files, logging
+     * information about skipped files for debugging purposes.
+     * 
+     * Discovery Process:
+     * 1. Validates root directory configuration
+     * 2. Reads directory contents with file type information
+     * 3. Recursively processes subdirectories
+     * 4. Creates LazyFileLoader instances for .txt files
+     * 5. Logs information about non-.txt files encountered
+     * 
+     * File Selection Criteria:
+     * - Must have .txt extension
+     * - Must be a regular file (not directory or special file)
+     * - Must be readable by the file system API
+     * 
+     * Error Handling:
+     * Throws an error if no root directory is available. Individual file
+     * access errors during discovery are handled by the LazyFileLoader.
+     */
     private async gatherAllLogoFiles(rootDir: string | undefined = undefined): Promise<void> {
         if (!rootDir && !this.rootDir) {
             throw Error(getMessage("logoNoRootDir"));
@@ -67,6 +219,25 @@ export class RandomLogo {
             }
         }
     }
+    /**
+     * @brief Generates JavaScript for copy-to-clipboard functionality
+     * @return HTML script tag with clipboard copy implementation
+     * 
+     * Creates JavaScript code that enables users to copy ASCII art content
+     * to their system clipboard. The script sets up event listeners and
+     * communicates success back to the VS Code extension through message passing.
+     * 
+     * Functionality:
+     * - Acquires VS Code API for extension communication
+     * - Attaches click event listener to copy button
+     * - Extracts ASCII art text from display element
+     * - Uses Clipboard API for system clipboard access
+     * - Sends confirmation message back to extension
+     * 
+     * Browser Compatibility:
+     * Uses modern Clipboard API which requires HTTPS or localhost context.
+     * VS Code webviews provide the necessary secure context for clipboard access.
+     */
     private copyButtonScript(): string {
         return `
 <script>
@@ -84,6 +255,26 @@ export class RandomLogo {
   `;
     }
 
+    /**
+     * @brief Generates JavaScript for ASCII art zoom functionality
+     * @return HTML script tag with zoom control implementation
+     * 
+     * Creates JavaScript code that allows users to dynamically adjust the
+     * font size of displayed ASCII art for better readability. Includes
+     * zoom in, zoom out, and minimum size constraints.
+     * 
+     * Features:
+     * - Dynamic font size adjustment (starts at 20px)
+     * - Zoom increment/decrement of 2px per click
+     * - Minimum font size constraint (2px minimum)
+     * - Synchronized line height for proper ASCII art display
+     * - Console logging for debugging font size changes
+     * 
+     * User Controls:
+     * - Zoom In: Increases font size by 2px
+     * - Zoom Out: Decreases font size by 2px (minimum 2px)
+     * - Automatic initialization on script load
+     */
     private zoomScript(): string {
         return `
 <script>
@@ -118,6 +309,21 @@ export class RandomLogo {
     `;
     }
 
+    /**
+     * @brief Generates CSS styling for the logo display webview
+     * @return HTML style tag with comprehensive page styling
+     * 
+     * Creates CSS styles optimized for ASCII art display and user interaction.
+     * The styles ensure proper monospace font rendering, appropriate spacing,
+     * and consistent button styling across different ASCII art sizes.
+     * 
+     * Styling Features:
+     * - Sans-serif font for UI elements with proper padding
+     * - Scaled heading sizes for content hierarchy
+     * - Monospace pre-formatted text for ASCII art preservation
+     * - Consistent button styling with proper spacing
+     * - Responsive layout adapting to content size
+     */
     private pageStyle(): string {
         return `
         <style>
@@ -130,7 +336,33 @@ export class RandomLogo {
         `;
     }
 
-    /** Pick a random logo file from the live folder list and read its content */
+    /**
+     * @brief Selects and loads a random logo from the discovered file collection
+     * @return Promise resolving to a logo object with content and metadata
+     * @throws Error if no logo files are available after discovery attempts
+     * 
+     * Main method for random logo selection and loading. Implements lazy discovery
+     * if no files are currently available, then randomly selects and loads a logo
+     * file using the LazyFileLoader system.
+     * 
+     * Selection Process:
+     * 1. Checks if logo files have been discovered (triggers discovery if empty)
+     * 2. Validates that logo files are available after discovery
+     * 3. Generates random index within available file range
+     * 4. Loads content from selected logo file
+     * 5. Processes content into line-based format
+     * 6. Returns structured logo object with content and metadata
+     * 
+     * Content Processing:
+     * - Splits file content by line breaks (handles both \n and \r\n)
+     * - Preserves original line structure for ASCII art integrity
+     * - Extracts filename for display and identification purposes
+     * 
+     * Error Conditions:
+     * - No root directory configured for file discovery
+     * - No .txt files found in directory tree
+     * - File system errors during content loading
+     */
     async getRandomLogoFromFolder(): Promise<logo> {
         if (this.liveLogoFiles.length === 0) {
             await this.gatherAllLogoFiles();
@@ -156,6 +388,38 @@ export class RandomLogo {
     }
 
 
+    /**
+     * @brief Creates and displays an interactive webview panel with a random logo
+     * @return Promise that resolves when the webview panel is created and configured
+     * 
+     * Main public method for displaying ASCII art logos in an interactive VS Code webview.
+     * Orchestrates the complete display process including logo selection, webview creation,
+     * HTML generation, and user interaction setup.
+     * 
+     * Display Process:
+     * 1. Selects and loads a random logo using getRandomLogoFromFolder()
+     * 2. Creates a new VS Code webview panel with script execution enabled
+     * 3. Processes logo content for HTML display (handles string/array formats)
+     * 4. Generates complete HTML page with embedded styles and scripts
+     * 5. Sets up message passing for user interaction callbacks
+     * 6. Logs successful display operation
+     * 
+     * Webview Features:
+     * - **Copy Button**: Allows users to copy ASCII art to clipboard
+     * - **Zoom Controls**: In/out buttons for font size adjustment
+     * - **Responsive Design**: Adapts to different ASCII art dimensions
+     * - **Localized Interface**: Uses extension's internationalization system
+     * 
+     * User Interaction:
+     * - Copy operations trigger success notifications
+     * - All user actions are logged for debugging and user feedback
+     * - Webview remains interactive until manually closed by user
+     * 
+     * Content Handling:
+     * - Supports both string and array format logo content
+     * - Gracefully handles undefined/missing logo content
+     * - Preserves ASCII art formatting through proper HTML escaping
+     */
     async displayRandomLogoInWindow() {
         const randomLogo: logo = await this.getRandomLogoFromFolder();
 
