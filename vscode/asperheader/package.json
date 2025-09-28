@@ -1,8 +1,19 @@
 {
   "name": "asperheader",
-  "displayName": "asperheader",
+  "displayName": "Asper Header",
   "description": "This is an extension that will allow the developers of the Asperguide project to sign their file in an easier way and quicker",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "publisher": "your-publisher-id",
+  "icon": "images/icon/favicon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Asperguide/asper-header.git",
+    "directory": "vscode/asperheader"
+  },
+  "bugs": {
+    "url": "https://github.com/Asperguide/asper-header/issues"
+  },
+  "homepage": "https://asperguide.github.io/asper-header/",
   "engines": {
     "vscode": "^1.104.0"
   },
@@ -10,6 +21,8 @@
     "Other"
   ],
   "files": [
+    "images/icon/favicon.png",
+    "images/demo",
     "README.md",
     "LICENSE"
   ],
@@ -55,12 +68,27 @@
     "keybindings": [
       {
         "command": "asperheader.injectHeader",
-        "key": "ctrl+shift+h",
+        "key": "ctrl+alt+h",
         "when": "editorTextFocus"
       },
       {
         "command": "asperheader.refreshHeader",
-        "key": "ctrl+shift+r",
+        "key": "ctrl+alt+u",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.displayRandomLogo",
+        "key": "ctrl+alt+shift+l",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.darling",
+        "key": "ctrl+alt+shift+d",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.author",
+        "key": "ctrl+alt+shift+a",
         "when": "editorTextFocus"
       }
     ],
@@ -254,12 +282,18 @@
           "type": "string[]",
           "default": [],
           "description": "A list of file globs or extensions where the header injection should not run on save."
+        },
+        "asperheader.useWorkspaceNameWhenAvailable": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, the name of the active workspace will be used as the displayed project name."
         }
       }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
+    "vsce:package": "npx vsce package",
     "compile": "npm run check-types && npm run lint && node esbuild.js",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
@@ -284,6 +318,7 @@
     "esbuild-plugin-copy": "^2.1.1",
     "eslint": "^9.34.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vsce": "^2.15.0"
   }
 }
