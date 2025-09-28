@@ -52,6 +52,7 @@ import * as vscode from 'vscode';
 import { logger } from "./logger";
 import { getMessage } from "./messageProvider";
 import { LazyFileLoader } from "./lazyFileLoad";
+import { authorLogo } from '../constants';
 
 /**
  * @interface watermark
@@ -319,6 +320,7 @@ export class Watermark {
     h2 { margin-top: 1.2em; }
     pre { font-size: 10px; line-height: 10px; white-space: pre; }
     button { margin: 10px 0; padding: 5px 12px; font-size: 14px; }
+    .logo { width:150px; height:150px }
   </style>
         `;
     }
@@ -390,6 +392,8 @@ export class Watermark {
   ${pageStyle}
 </head>
 <body>
+    <p>${getMessage("watermarkAuthorName")}: Henry Letellier</p>
+    <img class="logo" src="${authorLogo}"/>
     <div>
         <button id="copyBtn">${getMessage('watermarkCopyAscii')}</button>
         <button id="zoomInBtn">${getMessage('watermarkZoomIn')}</button>

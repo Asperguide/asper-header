@@ -120,7 +120,7 @@ class LoggerInternals {
      * logging should be active. Used to control debug output visibility.
      */
     debugEnabled(): boolean {
-        return CodeConfig.getVariable("enableDebug");
+        return CodeConfig.get("enableDebug");
     }
 }
 
@@ -162,7 +162,7 @@ class Gui {
      */
     info<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         let final: string = "";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(true, false, false, false);
         final += " '" + message + "'";
         return vscode.window.showInformationMessage<T>(message, ...items);
@@ -181,7 +181,7 @@ class Gui {
     warning<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, true, false, false);
         final += " '" + message + "'";
         return vscode.window.showWarningMessage<T>(message, ...items);
@@ -200,7 +200,7 @@ class Gui {
     error<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, true, false);
         final += " '" + message + "'";
         return vscode.window.showErrorMessage<T>(message, ...items);
@@ -223,7 +223,7 @@ class Gui {
         }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, false, true);
         final += " '" + message + "'";
         return vscode.window.showInformationMessage<T>(final, ...items);
@@ -273,7 +273,7 @@ class Log {
     info(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(true, false, false, false);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";
@@ -292,7 +292,7 @@ class Log {
     warning(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, true, false, false);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";
@@ -311,7 +311,7 @@ class Log {
     error(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, true, false);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";
@@ -330,7 +330,7 @@ class Log {
     debug(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += CodeConfig.getVariable("extensionName") + " ";
+        final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, false, true);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";

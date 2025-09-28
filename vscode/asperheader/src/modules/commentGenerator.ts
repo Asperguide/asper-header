@@ -445,7 +445,11 @@ export class CommentGenerator {
         } else {
             this.documentBody = document;
         }
-        this.projectName = this.Config.get("extensionName");
+        if (this.Config.get("useWorkspaceNameWhenAvailable")) {
+            this.projectName = this.Config.get("workspaceName") || this.Config.get("extensionName");
+        } else {
+            this.projectName = this.Config.get("extensionName");
+        }
         this.filePath = this.documentBody.uri.fsPath;
         this.projectCopyRight = this.Config.get("projectCopyright");
         this.addBlankLineAfterMultiline = this.Config.get("headerAddBlankLineAfterMultiline");
@@ -816,14 +820,14 @@ export class CommentGenerator {
      * 2. Prompt to create new header (if configured)
      * 3. Do nothing (if refresh disabled or file excluded)
      */
-    async refreshHeader(document: vscode.TextDocument) {
+    async refreshHeader(document: vscode.TextDocument | undefined) {
         const refreshOnSave: boolean = CodeConfig.get("refreshOnSave");
         const promptToCreateIfMissing: boolean = CodeConfig.get("promptToCreateIfMissing");
         if (!refreshOnSave) {
             return;
         }
         const editor = vscode.window.activeTextEditor;
-        if (editor === undefined) {
+        if (editor === undefined || document === undefined) {
             logger.error(getMessage("noFocusedEditors"));
             logger.Gui.error(getMessage("openFileToApplyHeader"));
             return;

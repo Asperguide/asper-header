@@ -90,6 +90,15 @@ async function updateSaveSafe(document: vscode.TextDocument) {
 }
 
 /**
+ * Refresh the name of the cached workspace if any is activated
+ */
+function refreshWorkspaceName() {
+	const workspaceFolders = vscode.workspace.workspaceFolders;
+	const workspaceName = workspaceFolders && workspaceFolders.length > 0 ? workspaceFolders[0].name : undefined;
+	CodeConfig.setWorkspaceName(workspaceName);
+}
+
+/**
  * Activate extension
  */
 export async function activate(context: vscode.ExtensionContext) {
@@ -133,8 +142,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand(`${moduleName}.helloWorld`, helloWorldCommand),
 		vscode.commands.registerCommand(`${moduleName}.sayHelloWorld`, sayHelloWorldCommand),
-		vscode.commands.registerCommand(`${moduleName}.injectHeader`, COMMENT_GENERATOR.injectHeader.bind(COMMENT_GENERATOR)),
-		vscode.commands.registerCommand(`${moduleName}.refreshHeader`, COMMENT_GENERATOR.refreshHeader.bind(COMMENT_GENERATOR)),
+		vscode.commands.registerCommand(`${moduleName}.injectHeader`, () => { refreshWorkspaceName(); COMMENT_GENERATOR.injectHeader(); }),
+		vscode.commands.registerCommand(`${moduleName}.refreshHeader`, () => { refreshWorkspaceName(); COMMENT_GENERATOR.refreshHeader(vscode.window.activeTextEditor?.document); }),
 		vscode.commands.registerCommand(`${moduleName}.darling`, DARLING.displayRandomPersonInWindow.bind(DARLING)),
 		vscode.commands.registerCommand(`${moduleName}.author`, WATERMARK.displayRandomAuthorWatermarkInWindow.bind(WATERMARK)),
 		vscode.commands.registerCommand(`${moduleName}.displayRandomLogo`, RANDOM_LOGO.displayRandomLogoInWindow.bind(RANDOM_LOGO)),

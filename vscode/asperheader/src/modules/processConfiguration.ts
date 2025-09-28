@@ -145,6 +145,12 @@ class Configuration {
     /** @brief Glob patterns for files/paths to exclude from header operations */
     private extensionIgnore: string[] = CONST.extensionIgnore;
 
+    /** @brief The name of the workspace if any are open */
+    private workspaceName: string | undefined = undefined;
+
+    /** @brief The setting that allows the program to know the user's preference regarding wether to use the workspace name when available */
+    private useWorkspaceNameWhenAvailable: boolean = CONST.useWorkspaceNameWhenAvailable;
+
     /**
      * @brief Refreshes all configuration values from VS Code workspace settings
      * @return Promise that resolves when all configuration values are updated
@@ -200,24 +206,7 @@ class Configuration {
         this.promptToCreateIfMissing = config.get<boolean>("promptToCreateIfMissing", CONST.promptToCreateIfMissing);
         this.randomLogo = config.get<boolean>("randomLogo", CONST.randomLogo);
         this.extensionIgnore = config.get<string[]>("extensionIgnore", CONST.extensionIgnore);
-    }
-
-    /**
-     * @brief Retrieves a configuration value by key with automatic fallback
-     * @param key Configuration property name to retrieve
-     * @return Configuration value or default constant if not found
-     * @deprecated Use get() method instead for consistency
-     * 
-     * Legacy method for accessing configuration values. Implements fallback chain:
-     * 1. Current instance property (refreshed from VS Code settings)
-     * 2. Default constant value if instance property is undefined
-     * 
-     * This method uses dynamic property access and should be replaced with
-     * the get() method for better consistency and future compatibility.
-     */
-    getVariable(key: string): any {
-        // fallback to CONST if no runtime override exists
-        return (this as any)[key] ?? (CONST as any)[key];
+        this.useWorkspaceNameWhenAvailable = config.get<boolean>("useWorkspaceNameWhenAvailable", CONST.useWorkspaceNameWhenAvailable);
     }
 
     /**
@@ -247,6 +236,10 @@ class Configuration {
     get(key: string): any {
         // fallback to CONST if no runtime override exists
         return (this as any)[key] ?? (CONST as any)[key];
+    }
+
+    setWorkspaceName(workpaceName: string | undefined = undefined) {
+        this.workspaceName = workpaceName;
     }
 }
 
