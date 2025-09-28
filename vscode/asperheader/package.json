@@ -10,8 +10,6 @@
     "Other"
   ],
   "files": [
-    "out",
-    "formatingRules/languagesReorganised.min.json",
     "README.md",
     "LICENSE"
   ],
@@ -19,7 +17,8 @@
     "onStartupFinished",
     "onCommand:asperheader.helloWorld",
     "onCommand:asperheader.sayHelloWorld",
-    "onCommand:asperheader.injectHeader"
+    "onCommand:asperheader.injectHeader",
+    "onCommand:asperheader.refreshHeader"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -47,17 +46,21 @@
       {
         "command": "asperheader.injectHeader",
         "title": "AsperHeader: Add a header to the file"
+      },
+      {
+        "command": "asperheader.refreshHeader",
+        "title": "AsperHeader: Refresh the header located in the file that you asked to trigger, this also gets triggered with the save"
       }
     ],
     "keybindings": [
       {
         "command": "asperheader.injectHeader",
-        "key": "ctrl+alt+h",
+        "key": "ctrl+shift+h",
         "when": "editorTextFocus"
       },
       {
-        "command": "asperheader.injectHeader",
-        "key": "ctrl+shift+h",
+        "command": "asperheader.refreshHeader",
+        "key": "ctrl+shift+r",
         "when": "editorTextFocus"
       }
     ],
@@ -67,137 +70,137 @@
         "asperheader.extensionName": {
           "type": "string",
           "default": "AsperHeader",
-          "description": "This is the name of the extension that you are using this module on."
+          "description": "The name of the extension. Appears in generated headers as the source tool."
         },
         "asperheader.projectCopyright": {
           "type": "string",
           "default": "(c) Asperguide",
-          "description": "This is the copyright message that will appear in the header"
+          "description": "The copyright line that will be inserted into generated headers."
         },
         "asperheader.headerOpenerDecorationOpen": {
           "type": "string",
           "default": "+==== ",
-          "description": ""
+          "description": "The opening marker used at the start of the header border."
         },
         "asperheader.headerOpenerDecorationClose": {
           "type": "string",
           "default": " =================+",
-          "description": ""
+          "description": "The closing marker used at the end of the header border."
         },
         "asperheader.headerCommentSpacing": {
           "type": "string",
           "default": " ",
-          "description": ""
+          "description": "The spacing between the comment character(s) and the rest of the header content."
         },
         "asperheader.telegraphBegin": {
           "type": "string",
           "default": "BEGIN",
-          "description": ""
+          "description": "The keyword used to mark the start of a header block."
         },
         "asperheader.telegraphEnd": {
           "type": "string",
           "default": "END",
-          "description": ""
+          "description": "The keyword used to mark the end of a header block."
         },
         "asperheader.telegraphBlockStop": {
           "type": "string",
           "default": "/STOP",
-          "description": ""
+          "description": "Marker used to end multiline sections (e.g. DESCRIPTION, REQUIREMENTS)."
         },
         "asperheader.telegraphEndOfTransmission": {
           "type": "string",
           "default": "// AR",
-          "description": ""
+          "description": "End-of-transmission marker. Appears just before the closing header border."
         },
         "asperheader.headerAddBlankLineAfterMultiline": {
           "type": "boolean",
           "default": false,
-          "description": ""
+          "description": "If true, inserts a blank line after each multiline section (DESCRIPTION, REQUIREMENTS, etc.)."
         },
         "asperheader.headerKeyDefinitionSeparator": {
           "type": "string",
           "default": ": ",
-          "description": ""
+          "description": "The separator string used between keys (like FILE, PROJECT) and their values."
         },
         "asperheader.headerLogoKey": {
           "type": "string",
           "default": "LOGO",
-          "description": ""
+          "description": "The keyword used to identify the logo block in the header."
         },
         "asperheader.headerProjectKey": {
           "type": "string",
           "default": "PROJECT",
-          "description": ""
+          "description": "The keyword used for the project name field."
         },
         "asperheader.headerFileKey": {
           "type": "string",
           "default": "FILE",
-          "description": ""
+          "description": "The keyword used for the file name field."
         },
         "asperheader.headerCreationDateKey": {
           "type": "string",
           "default": "CREATION DATE",
-          "description": ""
+          "description": "The keyword used for the file creation date field."
         },
         "asperheader.headerLastModifiedKey": {
           "type": "string",
           "default": "LAST Modified",
-          "description": ""
+          "description": "The keyword used for the last modified timestamp field."
         },
         "asperheader.headerDescriptionKey": {
           "type": "string",
           "default": "DESCRIPTION",
-          "description": ""
+          "description": "The keyword used for the description field."
         },
         "asperheader.headerCopyrightKey": {
           "type": "string",
           "default": "COPYRIGHT",
-          "description": ""
+          "description": "The keyword used for the copyright field."
         },
         "asperheader.headerTagKey": {
           "type": "string",
           "default": "TAG",
-          "description": ""
+          "description": "The keyword used for the tags/keywords field."
         },
         "asperheader.headerPurposeKey": {
           "type": "string",
           "default": "PURPOSE",
-          "description": ""
+          "description": "The keyword used for the purpose field."
         },
         "asperheader.headerTimeSeperatorHour": {
           "type": "string",
           "default": ":",
-          "description": ""
+          "description": "The separator between hours and minutes in time values."
         },
         "asperheader.headerTimeSeperatorMinute": {
           "type": "string",
           "default": ":",
-          "description": ""
+          "description": "The separator between minutes and seconds in time values."
         },
         "asperheader.headerTimeSeperatorSecond": {
           "type": "string",
           "default": "",
-          "description": ""
+          "description": "The separator placed after seconds in time values. Leave empty for none."
         },
         "asperheader.headerTimeAndDateSeperator": {
           "type": "string",
           "default": " ",
-          "description": ""
+          "description": "The separator string between the time and date values."
         },
         "asperheader.headerDateSeperatorDay": {
           "type": "string",
           "default": "-",
-          "description": ""
+          "description": "The separator between the day and month in date values."
         },
         "asperheader.headerDateSeperatorMonth": {
           "type": "string",
           "default": "-",
-          "description": ""
+          "description": "The separator between the month and year in date values."
         },
         "asperheader.headerDateSeperatorYear": {
           "type": "string",
           "default": "",
-          "description": ""
+          "description": "Optional suffix after the year in date values. Leave empty for none."
         },
         "asperheader.headerLogo": {
           "type": "string[]",
@@ -220,37 +223,37 @@
             ".......#......#.########.......",
             ".........##.##...#####........."
           ],
-          "description": ""
+          "description": "The default ASCII logo used when random logos are disabled."
         },
         "asperheader.maxScanLength": {
           "type": "number",
           "default": 100,
-          "description": ""
+          "description": "The maximum number of lines to scan in a file when checking for an existing header."
         },
         "asperheader.enableDebug": {
           "type": "boolean",
           "default": true,
-          "description": ""
+          "description": "Enable or disable debug logging for the extension."
         },
         "asperheader.refreshOnSave": {
           "type": "boolean",
           "default": true,
-          "description": ""
+          "description": "If true, the header will automatically refresh (update last modified date, etc.) whenever the file is saved."
         },
         "asperheader.promptToCreateIfMissing": {
           "type": "boolean",
           "default": true,
-          "description": ""
+          "description": "If true, prompts the user to create a header if none is found when saving a file."
         },
         "asperheader.randomLogo": {
           "type": "boolean",
           "default": false,
-          "description": ""
+          "description": "If true, a random ASCII logo will be chosen from the logo bank for each generated header."
         },
         "asperheader.extensionIgnore": {
           "type": "string[]",
           "default": [],
-          "description": "This is where you can specify the files on which you wish that the extension will not trigger when the target file is saved."
+          "description": "A list of file globs or extensions where the header injection should not run on save."
         }
       }
     }
