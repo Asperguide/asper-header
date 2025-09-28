@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { extensionName } from '../constants';
+import { codeConfig } from "./processConfiguration";
 
 class LoggerInternals {
     constructor() { }
@@ -49,6 +49,10 @@ class LoggerInternals {
 
         return undefined;
     }
+
+    debugEnabled(): boolean {
+        return codeConfig.getVariable("enableDebug");
+    }
 }
 
 class Gui {
@@ -58,7 +62,7 @@ class Gui {
     };
     info<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         let final: string = "";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(true, false, false, false);
         final += " '" + message + "'";
         return vscode.window.showInformationMessage<T>(message, ...items);
@@ -66,7 +70,7 @@ class Gui {
     warning<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, true, false, false);
         final += " '" + message + "'";
         return vscode.window.showWarningMessage<T>(message, ...items);
@@ -74,15 +78,18 @@ class Gui {
     error<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, true, false);
         final += " '" + message + "'";
         return vscode.window.showErrorMessage<T>(message, ...items);
     }
     debug<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
+        if (!this.LI.debugEnabled()) {
+            return Promise.resolve(undefined);
+        }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, false, true);
         final += " '" + message + "'";
         return vscode.window.showInformationMessage<T>(final, ...items);
@@ -97,7 +104,7 @@ class Log {
     info(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(true, false, false, false);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";
@@ -106,7 +113,7 @@ class Log {
     warning(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, true, false, false);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";
@@ -115,7 +122,7 @@ class Log {
     error(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, true, false);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";
@@ -124,7 +131,7 @@ class Log {
     debug(message: string, searchDepth: number | undefined = undefined) {
         let final: string = "";
         final += this.LI.getDatetime() + " ";
-        final += extensionName + " ";
+        final += codeConfig.getVariable("extensionName") + " ";
         final += this.LI.getCorrectPrefix(false, false, false, true);
         final += " <" + this.LI.getParentCaller(searchDepth || this.depthSearch) + ">";
         final += " '" + message + "'";

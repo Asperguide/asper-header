@@ -85,4 +85,13 @@ export const defaultHeaderLogo: string[] = [
     ".......#......#.########.......",
     ".........##.##...#####.........",
 ];
-export const defaultMaxScanLength: number = 30;
+export const defaultMaxScanLength: number = 100;
+export const enableDebug: boolean = true;
+
+
+export const refreshOnSave: boolean = true;
+export const promptToCreateIfMissing: boolean = true;
+
+export const randomLogo: boolean = false;
+
+export const extensionIgnore: string[] = [];

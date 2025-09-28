@@ -45,3 +45,13 @@ coverage/
 
 # No temporary files
 *tmp*
+
+# no environements
+.env
+.venv
+env
+venv
+genv
+wenv
+lenv
+menv

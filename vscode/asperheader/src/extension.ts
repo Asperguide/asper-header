@@ -1,19 +1,33 @@
 import * as path from "path";
 import * as vscode from 'vscode';
-import { getMessage } from './modules/messageProvider';
-import { logger } from './modules/logger';
-import { LazyFileLoader } from './modules/lazyFileLoad';
-import { MorseTranslator } from './modules/morseCode';
-import { CommentGenerator } from './modules/commentGenerator';
 import { moduleName } from './constants';
+import { logger } from './modules/logger';
+import { Darling } from "./modules/darling";
+import { MorseTranslator } from './modules/morseCode';
+import { getMessage } from './modules/messageProvider';
+import { LazyFileLoader } from './modules/lazyFileLoad';
+import { CommentGenerator } from './modules/commentGenerator';
+import { codeConfig, codeConfigType } from "./modules/processConfiguration";
+import { Watermark } from "./modules/watermark";
+import { randomLogo } from "./modules/randomLogo";
 
 // ---- SHared variables ----
+
+const updatingDocuments = new WeakSet<vscode.TextDocument>();
+
+const codeConfiguration: codeConfigType = codeConfig;
 
 const COMMENTS_FORMAT = new LazyFileLoader<any>();
 
 const MORSETRANSLATOR_INITIALISED = new MorseTranslator();
 
 const COMMENT_GENERATOR: CommentGenerator = new CommentGenerator(COMMENTS_FORMAT);
+
+const DARLING: Darling = new Darling();
+
+const WATERMARK: Watermark = new Watermark();
+
+const RANDOM_LOGO: randomLogo = new randomLogo();
 
 // --- Helper functions ---
 function getFileInfo(editor: vscode.TextEditor) {
@@ -55,6 +69,27 @@ async function sayHelloWorldCommand() {
 }
 
 /**
+ * Update checks to avoid concurrency during a save trigger
+ */
+async function updateSaveSafe(document: vscode.TextDocument) {
+	if (updatingDocuments.has(document)) {
+		return;
+	}
+	updatingDocuments.add(document);
+	try {
+		await COMMENT_GENERATOR.refreshHeader(document);
+		if (document.isDirty) {
+			const status = await document.save();
+			if (!status) {
+				logger.Gui.error(getMessage("fileSaveFailed"));
+			}
+		}
+	} finally {
+		updatingDocuments.delete(document);
+	}
+}
+
+/**
  * Activate extension
  */
 export async function activate(context: vscode.ExtensionContext) {
@@ -65,15 +100,43 @@ export async function activate(context: vscode.ExtensionContext) {
 		"formatingRules",
 		"languagesReorganised.min.json"
 	);
+	const darlingPath: string = path.join(
+		context.extensionPath,
+		"assets",
+		"bonus",
+		"ditf.min.json"
+	);
+	const watermarkPath: string = path.join(
+		context.extensionPath,
+		"assets",
+		"bonus",
+		"watermark.min.json"
+	);
+	const logoPath: string = path.join(
+		context.extensionPath,
+		"assets",
+		"asciiArt"
+	);
+	await DARLING.updateCurrentWorkingDirectory(context.extensionPath);
+	await WATERMARK.updateCurrentWorkingDirectory(context.extensionPath);
+	RANDOM_LOGO.updateCurrentWorkingDirectory(context.extensionPath);
 	await COMMENTS_FORMAT.updateCurrentWorkingDirectory(context.extensionPath);
+	await DARLING.updateFilePath(darlingPath);
+	await WATERMARK.updateFilePath(watermarkPath);
+	await RANDOM_LOGO.updateRootDir(logoPath);
 	await COMMENTS_FORMAT.updateFilePath(jsonLanguagePath);
+	await codeConfiguration.refreshVariables();
 	logger.info(getMessage("extensionActivated", moduleName), 3);
 
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand(`${moduleName}.helloWorld`, helloWorldCommand),
 		vscode.commands.registerCommand(`${moduleName}.sayHelloWorld`, sayHelloWorldCommand),
-		vscode.commands.registerCommand(`${moduleName}.injectHeader`, COMMENT_GENERATOR.injectHeader.bind(COMMENT_GENERATOR))
+		vscode.commands.registerCommand(`${moduleName}.injectHeader`, COMMENT_GENERATOR.injectHeader.bind(COMMENT_GENERATOR)),
+		vscode.commands.registerCommand(`${moduleName}.darling`, DARLING.displayRandomPersonInWindow.bind(DARLING)),
+		vscode.commands.registerCommand(`${moduleName}.author`, WATERMARK.displayRandomAuthorWatermarkInWindow.bind(WATERMARK)),
+		vscode.commands.registerCommand(`${moduleName}.displayRandomLogo`, RANDOM_LOGO.displayRandomLogoInWindow.bind(RANDOM_LOGO)),
+		vscode.workspace.onDidSaveTextDocument(async (document: vscode.TextDocument) => { await updateSaveSafe(document); })
 	);
 }
 

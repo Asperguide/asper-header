@@ -60,6 +60,14 @@ async function main() {
 					{
 						from: ['./README.md', './CHANGELOG.md'],
 						to: ['./'],
+					},
+					{
+						from: ['./assets/asciiArt/**/*.min.json', "./assets/asciiArt/**/*.txt"],
+						to: ['./assets/asciiArt/'],
+					},
+					{
+						from: ['./assets/bonus/*.min.json'],
+						to: ['./assets/bonus/'],
 					}
 				],
 				verbose: true,

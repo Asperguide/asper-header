@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import * as CONST from "../constants";
+import { minimatch } from 'minimatch';
+import { codeConfig, codeConfigType } from './processConfiguration';
 import { query } from './querier';
 import { logger } from './logger';
 import { getMessage } from './messageProvider';
@@ -13,7 +14,7 @@ interface CommentStyle {
 
 export class CommentGenerator {
     // Class in charge of building the comment that will be added to the target file
-    private Const = CONST;
+    private Config: codeConfigType = codeConfig;
     private languageComment: LazyFileLoader | undefined = undefined;
     private documentBody: vscode.TextDocument | undefined = undefined;
     private filePath: string | undefined = undefined;
@@ -24,11 +25,11 @@ export class CommentGenerator {
     private documentVersion: number | undefined = undefined;
     private headerInnerStart: number | undefined = undefined;
     private headerInnerEnd: number | undefined = undefined;
-    private maxScanLength: number = this.Const.defaultMaxScanLength;
-    private headerLogo: string[] = this.Const.defaultHeaderLogo;
-    private projectName: string = this.Const.extensionName;
-    private projectCopyRight: string = this.Const.projectCopyright;
-    private addBlankLineAfterMultiline: boolean = this.Const.headerAddBlankLineAfterMultiline;
+    private maxScanLength: number = this.Config.get("maxScanLength");
+    private headerLogo: string[] = this.Config.get("headerLogo");
+    private projectName: string = this.Config.get("extensionName");
+    private projectCopyRight: string = this.Config.get("projectCopyright");
+    private addBlankLineAfterMultiline: boolean = this.Config.get("headerAddBlankLineAfterMultiline");
 
     constructor(languageComment: LazyFileLoader | undefined = undefined, editor: vscode.TextEditor | undefined = undefined) {
         if (languageComment !== undefined) {
@@ -51,11 +52,11 @@ export class CommentGenerator {
         }
     }
 
-    private headerOpener(comment: string, eol: vscode.EndOfLine, projectName: string = this.Const.extensionName): string {
-        let final: string = comment + this.Const.headerOpenerDecorationOpen;
-        final += this.Const.telegraphBegin + " ";
+    private headerOpener(comment: string, eol: vscode.EndOfLine, projectName: string = this.Config.get("extensionName")): string {
+        let final: string = comment + this.Config.get("headerOpenerDecorationOpen");
+        final += this.Config.get("telegraphBegin") + " ";
         final += projectName;
-        final += this.Const.headerOpenerDecorationClose;
+        final += this.Config.get("headerOpenerDecorationClose");
         final += this.determineNewLine(eol);
         return final;
     }
@@ -163,8 +164,8 @@ export class CommentGenerator {
     }
 
     private addKeyDefinitionSeparator(): string {
-        const userSettingDefinedElement: string = this.Const.headerKeyDefinitionSeparator;
-        return userSettingDefinedElement || this.Const.headerKeyDefinitionSeparator;
+        const userSettingDefinedElement: string = this.Config.get("headerKeyDefinitionSeparator");
+        return userSettingDefinedElement || this.Config.get("headerKeyDefinitionSeparator");
     }
 
     private addCreationDate(comment: string, eol: vscode.EndOfLine) {
@@ -172,10 +173,10 @@ export class CommentGenerator {
         const day = String(now.getDate()).padStart(2, "0");
         const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
         const year = now.getFullYear();
-        const separatorDay: string = this.Const.headerDateSeperatorDay;
-        const separatorMonth: string = this.Const.headerDateSeperatorMonth;
-        const separatorYear: string = this.Const.headerDateSeperatorYear;
-        let final: string = comment + this.Const.headerCreationDateKey + this.addKeyDefinitionSeparator();
+        const separatorDay: string = this.Config.get("headerDateSeperatorDay");
+        const separatorMonth: string = this.Config.get("headerDateSeperatorMonth");
+        const separatorYear: string = this.Config.get("headerDateSeperatorYear");
+        let final: string = comment + this.Config.get("headerCreationDateKey") + this.addKeyDefinitionSeparator();
         final += `${day}${separatorDay}${month}${separatorMonth}${year}${separatorYear}`;
         final += this.determineNewLine(eol);
         return final;
@@ -188,14 +189,14 @@ export class CommentGenerator {
         const hour: number = now.getHours();
         const minute: number = now.getMinutes();
         const seconds: number = now.getSeconds();
-        const separatorDay: string = this.Const.headerDateSeperatorDay;
-        const separatorMonth: string = this.Const.headerDateSeperatorMonth;
-        const separatorYear: string = this.Const.headerDateSeperatorYear;
-        const separatorTimeAndDate: string = this.Const.headerTimeAndDateSeperator;
-        const separatorSecond: string = this.Const.headerTimeSeperatorSecond;
-        const separatorMinute: string = this.Const.headerTimeSeperatorMinute;
-        const separatorHour: string = this.Const.headerTimeSeperatorHour;
-        let final: string = comment + this.Const.headerLastModifiedKey + this.addKeyDefinitionSeparator();
+        const separatorDay: string = this.Config.get("headerDateSeperatorDay");
+        const separatorMonth: string = this.Config.get("headerDateSeperatorMonth");
+        const separatorYear: string = this.Config.get("headerDateSeperatorYear");
+        const separatorTimeAndDate: string = this.Config.get("headerTimeAndDateSeperator");
+        const separatorSecond: string = this.Config.get("headerTimeSeperatorSecond");
+        const separatorMinute: string = this.Config.get("headerTimeSeperatorMinute");
+        const separatorHour: string = this.Config.get("headerTimeSeperatorHour");
+        let final: string = comment + this.Config.get("headerLastModifiedKey") + this.addKeyDefinitionSeparator();
         final += `${hour}${separatorHour}${minute}${separatorMinute}${seconds}${separatorSecond}${separatorTimeAndDate}${day}${separatorDay}${month}${separatorMonth}${year}${separatorYear}`;
         final += this.determineNewLine(eol);
         return final;
@@ -207,7 +208,7 @@ export class CommentGenerator {
         for (let i = 0; i < tagDefinition.length; i++) {
             final += comment + tagDefinition[i] + eolStr;
         }
-        final += comment + this.Const.telegraphBlockStop + eolStr;
+        final += comment + this.Config.get("telegraphBlockStop") + eolStr;
         if (this.addBlankLineAfterMultiline) {
             final += comment + eolStr;
         }
@@ -221,27 +222,31 @@ export class CommentGenerator {
     }
 
     private beforeHeaderCloser(comment: string, eol: vscode.EndOfLine): string {
-        return comment + this.Const.telegraphEndOfTransmission + this.determineNewLine(eol);
+        return comment + this.Config.get("telegraphEndOfTransmission") + this.determineNewLine(eol);
     }
 
-    private headerCloser(comment: string, eol: vscode.EndOfLine, projectName: string = this.Const.extensionName): string {
-        let final: string = comment + this.Const.headerOpenerDecorationOpen;
-        final += this.Const.telegraphEnd + " ";
+    private headerCloser(comment: string, eol: vscode.EndOfLine, projectName: string = this.Config.get("extensionName")): string {
+        let final: string = comment + this.Config.get("headerOpenerDecorationOpen");
+        final += this.Config.get("telegraphEnd") + " ";
         final += projectName;
-        final += this.Const.headerOpenerDecorationClose;
+        final += this.Config.get("headerOpenerDecorationClose");
         final += this.determineNewLine(eol);
         return final;
     }
 
-    private updateFileInfo(editor: vscode.TextEditor) {
+    private updateFileInfo(editor: vscode.TextEditor, document: vscode.TextDocument | undefined = undefined) {
         this.headerInnerEnd = undefined;
         this.headerInnerStart = undefined;
-        this.documentBody = editor.document;
-        this.projectName = this.Const.extensionName;
+        if (document === undefined) {
+            this.documentBody = editor.document;
+        } else {
+            this.documentBody = document;
+        }
+        this.projectName = this.Config.get("extensionName");
         this.filePath = this.documentBody.uri.fsPath;
-        this.projectCopyRight = this.Const.projectCopyright;
-        this.addBlankLineAfterMultiline = this.Const.headerAddBlankLineAfterMultiline;
-        this.maxScanLength = this.Const.defaultMaxScanLength + this.headerLogo.length;
+        this.projectCopyRight = this.Config.get("projectCopyright");
+        this.addBlankLineAfterMultiline = this.Config.get("headerAddBlankLineAfterMultiline");
+        this.maxScanLength = this.Config.get("defaultMaxScanLength") + this.headerLogo.length;
         this.fileName = this.documentBody.uri.path.split('/').pop() || "unknown";
         if (this.fileName.includes('.')) {
             this.fileExtension = this.fileName.split('.').pop() || "none";
@@ -283,9 +288,9 @@ export class CommentGenerator {
             commentMiddle = "";
             commentCloser = "";
         }
-        commentOpener += this.Const.headerCommentSpacing;
-        commentMiddle += this.Const.headerCommentSpacing;
-        commentCloser += this.Const.headerCommentSpacing;
+        commentOpener += this.Config.get("headerCommentSpacing");
+        commentMiddle += this.Config.get("headerCommentSpacing");
+        commentCloser += this.Config.get("headerCommentSpacing");
         return [commentOpener, commentMiddle, commentCloser];
     }
 
@@ -303,23 +308,23 @@ export class CommentGenerator {
         // Opening the header
         buildHeader.push(this.headerOpener(commentMiddle, eol, this.projectName));
         // The logo
-        buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Const.headerLogoKey, this.headerLogo));
+        buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Config.get("headerLogoKey"), this.headerLogo));
         // The project name
-        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerProjectKey, this.projectName));
+        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Config.get("headerProjectKey"), this.projectName));
         // The file name
-        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerFileKey, this.fileName || unknownTerm));
+        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Config.get("headerFileKey"), this.fileName || unknownTerm));
         // The Creation date
         buildHeader.push(this.addCreationDate(commentMiddle, eol));
         // The Last modified date
         buildHeader.push(this.addLastModifiedDate(commentMiddle, eol));
         // The description
-        buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Const.headerDescriptionKey, await this.determineHeaderDescription()));
+        buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Config.get("headerDescriptionKey"), await this.determineHeaderDescription()));
         // The copyright
-        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerCopyrightKey, this.projectCopyRight));
+        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Config.get("headerCopyrightKey"), this.projectCopyRight));
         // The Tag
-        // buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerTagKey, (await this.determineHeaderTags()).join(",")));
+        // buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Config.get("headerTagKey"), (await this.determineHeaderTags()).join(",")));
         // The Purpose
-        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Const.headerPurposeKey, (await this.determineHeaderPurpose()).join(";")));
+        buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Config.get("headerPurposeKey"), (await this.determineHeaderPurpose()).join(";")));
         // End of transmission telegraph
         buildHeader.push(this.beforeHeaderCloser(commentMiddle, eol));
         // Closing the header 
@@ -348,7 +353,7 @@ export class CommentGenerator {
         }
 
         const eol = this.documentEOL || vscode.EndOfLine.LF;
-        const lastModifiedKey = this.Const.headerLastModifiedKey;
+        const lastModifiedKey = this.Config.get("headerLastModifiedKey");
 
         // Build the new "Last Modified" line
         const newLine = this.addLastModifiedDate(commentMiddle, eol).trimEnd();
@@ -433,7 +438,7 @@ export class CommentGenerator {
         // determine if the first line has a shebang like line on the first line, if true, add a new line, and write from that line.
         const headerString: string = headerContent.join("");
         await editor.edit(editBuilder => editBuilder.insert(new vscode.Position(offset, 0), headerString));
-        return this.Const.statusSuccess;
+        return this.Config.get("statusSuccess");
     }
     async injectHeader() {
         const editor = vscode.window.activeTextEditor;
@@ -480,11 +485,99 @@ export class CommentGenerator {
         }
         if (response === false) {
             let status: number = await this.writeHeaderToFile(editor, comments);
-            if (status === this.Const.statusError) {
+            if (status === this.Config.get("statusError")) {
                 logger.Gui.error(getMessage("headerWriteFailed"));
                 return;
             }
             logger.Gui.info(getMessage("headerWriteSuccess"));
+        }
+    }
+
+    private async allowedToActivate(): Promise<boolean> {
+        const ignored: string[] = codeConfig.get("extensionIgnore") ?? [];
+
+        for (const pattern of ignored) {
+            if (
+                this.fileExtension && minimatch(this.fileExtension, pattern) ||
+                this.fileName && minimatch(this.fileName, pattern) ||
+                this.filePath && minimatch(this.filePath, pattern)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    async refreshHeader(document: vscode.TextDocument) {
+        const refreshOnSave: boolean = codeConfig.get("refreshOnSave");
+        const promptToCreateIfMissing: boolean = codeConfig.get("promptToCreateIfMissing");
+        if (!refreshOnSave) {
+            return;
+        }
+        const editor = vscode.window.activeTextEditor;
+        if (editor === undefined) {
+            logger.error(getMessage("noFocusedEditors"));
+            logger.Gui.error(getMessage("openFileToApplyHeader"));
+            return;
+        }
+        this.updateFileInfo(editor, document);
+        // Checking that the meta data is filled out.
+        if (
+            this.documentBody === undefined || this.filePath === undefined
+            || this.fileName === undefined || this.fileExtension === undefined
+            || this.languageId === undefined || this.documentEOL === undefined
+            || this.documentVersion === undefined
+        ) {
+            logger.error(getMessage("corruptedFileMetaData"));
+            logger.Gui.error(getMessage("errorDuringFunctionCall", "injectHeader"));
+            return;
+        }
+        // Check that the file is not in the exclusion list.
+        if (!await this.allowedToActivate()) {
+            logger.info(getMessage("fileExcludedActivationDisabled"));
+            return;
+        }
+        // Making sure that the target document is still open.
+        if (this.documentBody.isClosed) {
+            logger.warning(getMessage("closedDocument"));
+            logger.Gui.warning(getMessage("updateAbortedBecauseFileClosedSyncCancelled"));
+            return;
+        }
+        // Some logging
+        const msg = getMessage("inputArgs", JSON.stringify(this.documentBody), JSON.stringify(this.filePath), JSON.stringify(this.fileName), JSON.stringify(this.fileExtension), JSON.stringify(this.languageId), JSON.stringify(this.documentEOL), JSON.stringify(this.documentVersion));
+        logger.Gui.debug(msg);
+        logger.debug(msg);
+        // Determining the correct comment prefix
+        const determineComment: CommentStyle = await this.determineCorrectComment();
+        const comments: string[] = await this.getCorrectCommentPrefix(determineComment);
+        // attempt to locate the header
+        const response: boolean | undefined = this.locateIfHeaderPresent(comments);
+        if (response === undefined) {
+            logger.Gui.warning(getMessage("updateAbortedBecauseFileClosedSyncCancelled"));
+            return;
+        }
+        if (response === false) {
+            if (!promptToCreateIfMissing) {
+                logger.Gui.info(getMessage("headerNotFound"));
+                return;
+            }
+            logger.Gui.warning(getMessage("headerNotFound"));
+            const questionResponse: boolean = await query.confirm(getMessage("headerInjectQuestion"));
+            if (questionResponse === false) {
+                logger.Gui.info(getMessage("headerInjectQuestionRefused"));
+                return;
+            }
+            const status: number = await this.writeHeaderToFile(editor, comments);
+            if (status === this.Config.get("statusError")) {
+                logger.Gui.error(getMessage("headerWriteFailed"));
+                return;
+            }
+            logger.Gui.info(getMessage("headerWriteSuccess"));
+        }
+        if (response === true) {
+            logger.Gui.info(getMessage("updatingEditionDate"));
+            await this.updateEditDate(editor, comments);
+            return;
         }
     }
 }

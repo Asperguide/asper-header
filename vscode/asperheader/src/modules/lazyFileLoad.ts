@@ -90,6 +90,7 @@ export class LazyFileLoader<T = any> {
         return true;
     }
 
+
     async updateCurrentWorkingDirectory(cwd: string): Promise<boolean> {
         const oldCwd: string = this.cwd;
         if (! await this.pathExists(cwd)) {
@@ -99,5 +100,9 @@ export class LazyFileLoader<T = any> {
         this.cwd = cwd;
         logger.info(getMessage("cwdUpdated", String(oldCwd), String(this.cwd)));
         return true;
+    }
+
+    getFilePath(): string | undefined {
+        return this.filePath;
     }
 }

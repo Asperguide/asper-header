@@ -16,6 +16,7 @@
     "LICENSE"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onCommand:asperheader.helloWorld",
     "onCommand:asperheader.sayHelloWorld",
     "onCommand:asperheader.injectHeader"
@@ -30,6 +31,18 @@
       {
         "command": "asperheader.sayHelloWorld",
         "title": "AsperHeader: World with File Info"
+      },
+      {
+        "command": "asperheader.author",
+        "title": "AsperHeader: Author"
+      },
+      {
+        "command": "asperheader.darling",
+        "title": "AsperHeader: Darling Character"
+      },
+      {
+        "command": "asperheader.displayRandomLogo",
+        "title": "AsperHeader: Display a random ascii logo in it's own file"
       },
       {
         "command": "asperheader.injectHeader",
@@ -47,7 +60,200 @@
         "key": "ctrl+shift+h",
         "when": "editorTextFocus"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Asper Header",
+      "properties": {
+        "asperheader.extensionName": {
+          "type": "string",
+          "default": "AsperHeader",
+          "description": "This is the name of the extension that you are using this module on."
+        },
+        "asperheader.projectCopyright": {
+          "type": "string",
+          "default": "(c) Asperguide",
+          "description": "This is the copyright message that will appear in the header"
+        },
+        "asperheader.headerOpenerDecorationOpen": {
+          "type": "string",
+          "default": "+==== ",
+          "description": ""
+        },
+        "asperheader.headerOpenerDecorationClose": {
+          "type": "string",
+          "default": " =================+",
+          "description": ""
+        },
+        "asperheader.headerCommentSpacing": {
+          "type": "string",
+          "default": " ",
+          "description": ""
+        },
+        "asperheader.telegraphBegin": {
+          "type": "string",
+          "default": "BEGIN",
+          "description": ""
+        },
+        "asperheader.telegraphEnd": {
+          "type": "string",
+          "default": "END",
+          "description": ""
+        },
+        "asperheader.telegraphBlockStop": {
+          "type": "string",
+          "default": "/STOP",
+          "description": ""
+        },
+        "asperheader.telegraphEndOfTransmission": {
+          "type": "string",
+          "default": "// AR",
+          "description": ""
+        },
+        "asperheader.headerAddBlankLineAfterMultiline": {
+          "type": "boolean",
+          "default": false,
+          "description": ""
+        },
+        "asperheader.headerKeyDefinitionSeparator": {
+          "type": "string",
+          "default": ": ",
+          "description": ""
+        },
+        "asperheader.headerLogoKey": {
+          "type": "string",
+          "default": "LOGO",
+          "description": ""
+        },
+        "asperheader.headerProjectKey": {
+          "type": "string",
+          "default": "PROJECT",
+          "description": ""
+        },
+        "asperheader.headerFileKey": {
+          "type": "string",
+          "default": "FILE",
+          "description": ""
+        },
+        "asperheader.headerCreationDateKey": {
+          "type": "string",
+          "default": "CREATION DATE",
+          "description": ""
+        },
+        "asperheader.headerLastModifiedKey": {
+          "type": "string",
+          "default": "LAST Modified",
+          "description": ""
+        },
+        "asperheader.headerDescriptionKey": {
+          "type": "string",
+          "default": "DESCRIPTION",
+          "description": ""
+        },
+        "asperheader.headerCopyrightKey": {
+          "type": "string",
+          "default": "COPYRIGHT",
+          "description": ""
+        },
+        "asperheader.headerTagKey": {
+          "type": "string",
+          "default": "TAG",
+          "description": ""
+        },
+        "asperheader.headerPurposeKey": {
+          "type": "string",
+          "default": "PURPOSE",
+          "description": ""
+        },
+        "asperheader.headerTimeSeperatorHour": {
+          "type": "string",
+          "default": ":",
+          "description": ""
+        },
+        "asperheader.headerTimeSeperatorMinute": {
+          "type": "string",
+          "default": ":",
+          "description": ""
+        },
+        "asperheader.headerTimeSeperatorSecond": {
+          "type": "string",
+          "default": "",
+          "description": ""
+        },
+        "asperheader.headerTimeAndDateSeperator": {
+          "type": "string",
+          "default": " ",
+          "description": ""
+        },
+        "asperheader.headerDateSeperatorDay": {
+          "type": "string",
+          "default": "-",
+          "description": ""
+        },
+        "asperheader.headerDateSeperatorMonth": {
+          "type": "string",
+          "default": "-",
+          "description": ""
+        },
+        "asperheader.headerDateSeperatorYear": {
+          "type": "string",
+          "default": "",
+          "description": ""
+        },
+        "asperheader.headerLogo": {
+          "type": "string[]",
+          "default": [
+            "..........####...####..........",
+            "......###.....#.#########......",
+            "....##........#.###########....",
+            "...#..........#.############...",
+            "...#..........#.#####.######...",
+            "..#.....##....#.###..#...####..",
+            ".#.....#.##...#.##..##########.",
+            "#.....##########....##...######",
+            "#.....#...##..#.##..####.######",
+            ".#...##....##.#.##..###..#####.",
+            "..#.##......#.#.####...######..",
+            "..#...........#.#############..",
+            "..#...........#.#############..",
+            "...##.........#.############...",
+            "......#.......#.#########......",
+            ".......#......#.########.......",
+            ".........##.##...#####........."
+          ],
+          "description": ""
+        },
+        "asperheader.maxScanLength": {
+          "type": "number",
+          "default": 100,
+          "description": ""
+        },
+        "asperheader.enableDebug": {
+          "type": "boolean",
+          "default": true,
+          "description": ""
+        },
+        "asperheader.refreshOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": ""
+        },
+        "asperheader.promptToCreateIfMissing": {
+          "type": "boolean",
+          "default": true,
+          "description": ""
+        },
+        "asperheader.randomLogo": {
+          "type": "boolean",
+          "default": false,
+          "description": ""
+        },
+        "asperheader.extensionIgnore": {
+          "type": "string[]",
+          "default": [],
+          "description": "This is where you can specify the files on which you wish that the extension will not trigger when the target file is saved."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
