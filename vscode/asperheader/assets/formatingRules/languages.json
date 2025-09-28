@@ -7,7 +7,9 @@
                 "C#",
                 "Java",
                 "JavaScript",
+                "JavaScriptReact",
                 "TypeScript",
+                "TypeScriptReact",
                 "Swift",
                 "Kotlin",
                 "IO",
@@ -78,8 +80,18 @@
                     ".jsx",
                     ".mjs"
                 ],
+                "JavaScriptReact": [
+                    ".js",
+                    ".jsx",
+                    ".mjs"
+                ],
                 "TypeScript": [
-                    ".ts"
+                    ".ts",
+                    ".tsx"
+                ],
+                "TypeScriptReact": [
+                    ".ts",
+                    ".tsx"
                 ],
                 "Swift": [
                     ".swift"

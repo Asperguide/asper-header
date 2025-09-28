@@ -162,6 +162,7 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         updateEditDateMissingBounds: (): string => "Could not update the header: internal header markers were not found.",
         lastModifiedLineNotFound: (): string => "The header does not contain a 'Last Modified' line to update.",
         lastModifiedUpdated: (): string => "Last Modified' date has been updated successfully.",
+        languageNotFound: (LanguageId: string, fileExtension: string): string => `The file language of this document could not be identified, languageID: ${LanguageId}, fileExtention: ${fileExtension}`,
         jsonContent: (jsonContentString: String) => `The content of the comment json file: ${jsonContentString}`,
         messageNotFound: (key: string): string => `Message '${key}' not found.`
     },
@@ -260,6 +261,7 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         noLogoInstanceProvided: (): string => "Aucune instance de randomiseur de logo fournie.",
         randomLogoGatheringFailed: (error: string): string => `La collecte aléatoire de logo a échoué, utilisation du logo par défaut, erreur : "${error}"`,
         ramdomLogoGatheringLogoUndefined: (): string => "Le contenu du logo est indéfini.",
+        languageNotFound: (LanguageId: string, fileExtension: string): string => `La langue du fichier de ce document n'a pas pu être identifiée, languageID : ${LanguageId}, extension du fichier : ${fileExtension}`,
         jsonContent: (jsonContentString: String) => `Contenu du fichier JSON de commentaires : ${jsonContentString}`,
         messageNotFound: (key: string): string => `Message '${key}' introuvable.`
     },
@@ -358,6 +360,7 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         noLogoInstanceProvided: (): string => "Nessuna istanza di randomizzatore logo fornita.",
         randomLogoGatheringFailed: (error: string): string => `La raccolta casuale del logo è fallita, uso del logo predefinito, errore: "${error}"`,
         ramdomLogoGatheringLogoUndefined: (): string => "Il contenuto del logo è indefinito.",
+        languageNotFound: (LanguageId: string, fileExtension: string): string => `Non è stato possibile identificare la lingua del file di questo documento, languageID: ${LanguageId}, estensione del file: ${fileExtension}`,
         jsonContent: (jsonContentString: String) => `Contenuto del file JSON dei commenti: ${jsonContentString}`,
         messageNotFound: (key: string): string => `Messaggio '${key}' non trovato.`
     }

@@ -107,7 +107,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		context.extensionPath,
 		"assets",
 		"formatingRules",
-		"languagesReorganised.min.json"
+		"languages.min.json"
 	);
 	const darlingPath: string = path.join(
 		context.extensionPath,

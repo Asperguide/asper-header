@@ -217,10 +217,11 @@ export class CommentGenerator {
                 commentStructure.singleLine = node.singleLine ?? [];
                 commentStructure.multiLine = node.multiLine ?? [];
                 commentStructure.prompt_comment_opening_type = node.prompt_comment_opening_type ?? false;
-                break;
+                return commentStructure;
             }
             logger.debug(getMessage("arrayNodeContent", `Json[${primaryKey}]`, index, node));
         }
+        logger.error(getMessage("languageNotFound", String(this.languageId), this.fileExtension));
         return commentStructure;
     }
 

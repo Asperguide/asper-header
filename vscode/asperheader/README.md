@@ -112,6 +112,10 @@ None so far.
 - Configurable settings for flexible formatting.
 - Optional random logo insertion.
 
+### 1.0.1
+
+- Add the missing `.tsx` file format to the comment identification logic
+
 ---
 
 ## Following Extension Guidelines

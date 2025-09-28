@@ -1,10 +1,24 @@
 const logLevel = 'info'; // 'silent' | 'info' | 'warning' | 'error'
 
-const esbuild = require("esbuild");
-const { copy } = require("esbuild-plugin-copy");
+
+import fs from "fs";
+import esbuild from "esbuild";
+import { copy } from "esbuild-plugin-copy";
+
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
+
+function minifyJSON(src, dest) {
+ console.log(`Minifying ${src} to ${dest}`);
+  const data = JSON.parse(fs.readFileSync(src, "utf8"));
+  fs.writeFileSync(dest, JSON.stringify(data));
+}
+
+minifyJSON("assets/formatingRules/languages.json", "assets/formatingRules/languages.min.json");
+minifyJSON("assets/bonus/ditf.json", "assets/bonus/ditf.min.json");
+minifyJSON("assets/bonus/watermark.json", "assets/bonus/watermark.min.json");
+
 
 /**
  * @type {import('esbuild').Plugin}
