@@ -3,7 +3,7 @@
   "displayName": "Asper Header",
   "description": "This is an extension that will allow the developers of the Asperguide project to sign their file in an easier way and quicker",
   "version": "1.0.0",
-  "publisher": "your-publisher-id",
+  "publisher": "HenryLetellier",
   "icon": "images/icon/favicon.png",
   "repository": {
     "type": "git",
