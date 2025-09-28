@@ -9,7 +9,7 @@ export interface logo {
     logoContent: string[],
     fileName: string
 }
-export class randomLogo {
+export class RandomLogo {
     private cwd: string | undefined = undefined;
     private rootDir: string | undefined = undefined;
     private liveLogoFiles: LazyFileLoader[] = [];

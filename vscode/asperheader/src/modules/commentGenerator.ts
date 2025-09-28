@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import { minimatch } from 'minimatch';
-import { codeConfig, codeConfigType } from './processConfiguration';
+import { CodeConfig, CodeConfigType } from './processConfiguration';
 import { query } from './querier';
 import { logger } from './logger';
 import { getMessage } from './messageProvider';
 import { LazyFileLoader } from './lazyFileLoad';
+import { RandomLogo, logo } from './randomLogo';
 
 interface CommentStyle {
     singleLine: string[];
@@ -14,7 +15,8 @@ interface CommentStyle {
 
 export class CommentGenerator {
     // Class in charge of building the comment that will be added to the target file
-    private Config: codeConfigType = codeConfig;
+    private Config: CodeConfigType = CodeConfig;
+    private randomLogo: RandomLogo = new RandomLogo();
     private languageComment: LazyFileLoader | undefined = undefined;
     private documentBody: vscode.TextDocument | undefined = undefined;
     private filePath: string | undefined = undefined;
@@ -31,7 +33,7 @@ export class CommentGenerator {
     private projectCopyRight: string = this.Config.get("projectCopyright");
     private addBlankLineAfterMultiline: boolean = this.Config.get("headerAddBlankLineAfterMultiline");
 
-    constructor(languageComment: LazyFileLoader | undefined = undefined, editor: vscode.TextEditor | undefined = undefined) {
+    constructor(languageComment: LazyFileLoader | undefined = undefined, editor: vscode.TextEditor | undefined = undefined, randomLogoInstance: RandomLogo | undefined = undefined) {
         if (languageComment !== undefined) {
             this.languageComment = languageComment;
         } else {
@@ -41,6 +43,11 @@ export class CommentGenerator {
             logger.warning(getMessage("noFocusedEditors"));
         } else {
             this.updateFileInfo(editor);
+        }
+        if (!randomLogoInstance) {
+            logger.warning(getMessage("noLogoInstanceProvided"));
+        } else {
+            this.randomLogo = randomLogoInstance;
         }
     }
 
@@ -308,7 +315,20 @@ export class CommentGenerator {
         // Opening the header
         buildHeader.push(this.headerOpener(commentMiddle, eol, this.projectName));
         // The logo
-        buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Config.get("headerLogoKey"), this.headerLogo));
+        let logoContent = this.headerLogo;
+        if (this.Config.get("randomLogo") === true) {
+            try {
+                const gatheredLogo: logo = await this.randomLogo.getRandomLogoFromFolder();
+                if (gatheredLogo.logoContent !== undefined) {
+                    logoContent = gatheredLogo.logoContent;
+                } else {
+                    logger.error(getMessage("randomLogoGatheringFailed", getMessage("ramdomLogoGatheringLogoUndefined")));
+                }
+            } catch (e) {
+                logger.error(getMessage("randomLogoGatheringFailed", String(e)));
+            }
+        }
+        buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Config.get("headerLogoKey"), logoContent));
         // The project name
         buildHeader.push(this.addSingleLineKey(commentMiddle, eol, this.Config.get("headerProjectKey"), this.projectName));
         // The file name
@@ -494,7 +514,7 @@ export class CommentGenerator {
     }
 
     private async allowedToActivate(): Promise<boolean> {
-        const ignored: string[] = codeConfig.get("extensionIgnore") ?? [];
+        const ignored: string[] = CodeConfig.get("extensionIgnore") ?? [];
 
         for (const pattern of ignored) {
             if (
@@ -508,9 +528,13 @@ export class CommentGenerator {
 
         return true;
     }
+
+    updateLogoInstanceRandomiser(randomLogoInstance: RandomLogo): void {
+        this.randomLogo = randomLogoInstance;
+    }
     async refreshHeader(document: vscode.TextDocument) {
-        const refreshOnSave: boolean = codeConfig.get("refreshOnSave");
-        const promptToCreateIfMissing: boolean = codeConfig.get("promptToCreateIfMissing");
+        const refreshOnSave: boolean = CodeConfig.get("refreshOnSave");
+        const promptToCreateIfMissing: boolean = CodeConfig.get("promptToCreateIfMissing");
         if (!refreshOnSave) {
             return;
         }

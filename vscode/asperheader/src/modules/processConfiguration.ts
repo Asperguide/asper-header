@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as CONST from '../constants';
 
-class configuration {
+class Configuration {
     private statusError: number = CONST.statusError;
     private statusSuccess: number = CONST.statusSuccess;
     private extensionName: string = CONST.extensionName;
@@ -90,6 +90,6 @@ class configuration {
     }
 }
 
-const instance = new configuration();
-export const codeConfig: configuration = instance;
-export type codeConfigType = configuration;
+const instance = new Configuration();
+export const CodeConfig: Configuration = instance;
+export type CodeConfigType = Configuration;

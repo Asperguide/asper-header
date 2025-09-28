@@ -7,15 +7,15 @@ import { MorseTranslator } from './modules/morseCode';
 import { getMessage } from './modules/messageProvider';
 import { LazyFileLoader } from './modules/lazyFileLoad';
 import { CommentGenerator } from './modules/commentGenerator';
-import { codeConfig, codeConfigType } from "./modules/processConfiguration";
+import { CodeConfig, CodeConfigType } from "./modules/processConfiguration";
 import { Watermark } from "./modules/watermark";
-import { randomLogo } from "./modules/randomLogo";
+import { RandomLogo } from "./modules/randomLogo";
 
 // ---- SHared variables ----
 
 const updatingDocuments = new WeakSet<vscode.TextDocument>();
 
-const codeConfiguration: codeConfigType = codeConfig;
+const CodeConfiguration: CodeConfigType = CodeConfig;
 
 const COMMENTS_FORMAT = new LazyFileLoader<any>();
 
@@ -27,7 +27,7 @@ const DARLING: Darling = new Darling();
 
 const WATERMARK: Watermark = new Watermark();
 
-const RANDOM_LOGO: randomLogo = new randomLogo();
+const RANDOM_LOGO: RandomLogo = new RandomLogo();
 
 // --- Helper functions ---
 function getFileInfo(editor: vscode.TextEditor) {
@@ -125,7 +125,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	await WATERMARK.updateFilePath(watermarkPath);
 	await RANDOM_LOGO.updateRootDir(logoPath);
 	await COMMENTS_FORMAT.updateFilePath(jsonLanguagePath);
-	await codeConfiguration.refreshVariables();
+	await CodeConfiguration.refreshVariables();
+	COMMENT_GENERATOR.updateLogoInstanceRandomiser(RANDOM_LOGO);
 	logger.info(getMessage("extensionActivated", moduleName), 3);
 
 
@@ -133,6 +134,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand(`${moduleName}.helloWorld`, helloWorldCommand),
 		vscode.commands.registerCommand(`${moduleName}.sayHelloWorld`, sayHelloWorldCommand),
 		vscode.commands.registerCommand(`${moduleName}.injectHeader`, COMMENT_GENERATOR.injectHeader.bind(COMMENT_GENERATOR)),
+		vscode.commands.registerCommand(`${moduleName}.refreshHeader`, COMMENT_GENERATOR.refreshHeader.bind(COMMENT_GENERATOR)),
 		vscode.commands.registerCommand(`${moduleName}.darling`, DARLING.displayRandomPersonInWindow.bind(DARLING)),
 		vscode.commands.registerCommand(`${moduleName}.author`, WATERMARK.displayRandomAuthorWatermarkInWindow.bind(WATERMARK)),
 		vscode.commands.registerCommand(`${moduleName}.displayRandomLogo`, RANDOM_LOGO.displayRandomLogoInWindow.bind(RANDOM_LOGO)),
