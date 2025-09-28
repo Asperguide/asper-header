@@ -1,71 +1,130 @@
-# asperheader README
+# AsperHeader
 
-This is the README for your extension "asperheader". After writing up a brief description, we recommend including the following sections.
+![AsperHeader Logo](./images/icon/favicon.png)
 
-## Features
+**AsperHeader** is a Visual Studio Code extension built primarily for the **Asperguide development team**.
+It provides an easy and standardized way to generate, insert, and maintain structured file headers across projects.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Although tailored for Asperguide, it is available on the VS Code Marketplace for anyone who may find it useful.
 
 ---
 
-## Following extension guidelines
+## Features
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+- Insert structured headers into your source files with a single command.
+- Embed an **ASCII logo** at the top of the header.
+- Automatically include:
+  - Project name
+  - File name
+  - Creation date
+  - Last modified date (auto-updates on save)
+  - Description block (supports multiline)
+  - Copyright
+  - Tags / keywords (optional)
+  - Purpose section
+  - Watermark
+- Configurable formatting:
+  - Customize comment styles and separators.
+  - Adjust scan length for detecting headers.
+  - Random ASCII logo option.
+- Commands available via Command Palette or keyboard shortcuts:
+  - `AsperHeader: Add a header to the file` (`Ctrl+alt+H`)
+  - `AsperHeader: Refresh the header` (`Ctrl+alt+U`)
+  - `AsperHeader: Display a random logo (in a new window)` (`Ctrl+Alt+Shift+L`)
+  - `AsperHeader: easter egg` (`Ctrl+Shift+D`)
+  - `AsperHeader: diplay the author's name` (`Ctrl+Alt+Shift+A`)
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+### Demo
 
-## Working with Markdown
+![Header insertion demo](images/header-demo.gif)
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+*Above: Injecting a structured header into a file.*
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+![Zooming in ASCII logo](images/logo-zoom.gif)
 
-## For more information
+*Above: Displaying and zooming an ASCII art logo.*
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+---
 
-**Enjoy!**
+## Requirements
+
+None. The extension works out of the box with Visual Studio Code.
+
+---
+
+## Extension Settings
+
+AsperHeader contributes the following settings:
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `asperheader.extensionName` | string | `"AsperHeader"` | Name of the extension being used. |
+| `asperheader.projectCopyright` | string | `"(c) Asperguide"` | Copyright message for the header. |
+| `asperheader.headerOpenerDecorationOpen` | string | `"+==== "` | Opening text for the header frame. |
+| `asperheader.headerOpenerDecorationClose` | string | `" =================+"` | Closing text for the header frame. |
+| `asperheader.headerCommentSpacing` | string | `" "` | Spacing between the comment symbol and the header text. |
+| `asperheader.telegraphBegin` | string | `"BEGIN"` | Text used for header begin marker. |
+| `asperheader.telegraphEnd` | string | `"END"` | Text used for header end marker. |
+| `asperheader.telegraphBlockStop` | string | `"/STOP"` | Marks the end of a header block section. |
+| `asperheader.telegraphEndOfTransmission` | string | `"// AR"` | End-of-transmission marker. |
+| `asperheader.headerAddBlankLineAfterMultiline` | boolean | `false` | Insert a blank line after multiline blocks. |
+| `asperheader.headerKeyDefinitionSeparator` | string | `": "` | Separator between key and value in header. |
+| `asperheader.headerLogoKey` | string | `"LOGO"` | Header key for ASCII logo. |
+| `asperheader.headerProjectKey` | string | `"PROJECT"` | Header key for project name. |
+| `asperheader.headerFileKey` | string | `"FILE"` | Header key for file name. |
+| `asperheader.headerCreationDateKey` | string | `"CREATION DATE"` | Header key for creation date. |
+| `asperheader.headerLastModifiedKey` | string | `"LAST Modified"` | Header key for last modified date. |
+| `asperheader.headerDescriptionKey` | string | `"DESCRIPTION"` | Header key for file description. |
+| `asperheader.headerCopyrightKey` | string | `"COPYRIGHT"` | Header key for copyright. |
+| `asperheader.headerTagKey` | string | `"TAG"` | Header key for tags. |
+| `asperheader.headerPurposeKey` | string | `"PURPOSE"` | Header key for purpose section. |
+| `asperheader.headerTimeSeperatorHour` | string | `":"` | Separator for hours in timestamps. |
+| `asperheader.headerTimeSeperatorMinute` | string | `":"` | Separator for minutes in timestamps. |
+| `asperheader.headerTimeSeperatorSecond` | string | `""` | Separator for seconds in timestamps. |
+| `asperheader.headerTimeAndDateSeperator` | string | `" "` | Separator between time and date. |
+| `asperheader.headerDateSeperatorDay` | string | `"-"` | Separator for day in dates. |
+| `asperheader.headerDateSeperatorMonth` | string | `"-"` | Separator for month in dates. |
+| `asperheader.headerDateSeperatorYear` | string | `""` | Separator for year in dates. |
+| `asperheader.headerLogo` | string[] | *[ASCII logo default]* | Default ASCII logo array. |
+| `asperheader.maxScanLength` | number | `100` | Maximum lines scanned for existing headers. |
+| `asperheader.enableDebug` | boolean | `true` | Enable debug logging. |
+| `asperheader.refreshOnSave` | boolean | `true` | Automatically refresh header on file save. |
+| `asperheader.promptToCreateIfMissing` | boolean | `true` | Prompt to create header if missing. |
+| `asperheader.randomLogo` | boolean | `false` | Insert a random ASCII logo on each header generation. |
+| `asperheader.extensionIgnore` | string[] | `[]` | File extensions to ignore when saving. |
+| `asperheader.useWorkspaceNameWhenAvailable` | boolean | `false` | Use the workspace name when available. |
+
+---
+
+## Known Issues
+
+None so far.
+
+---
+
+## Release Notes
+
+### 1.0.0
+
+- Initial release of **AsperHeader**.
+- Supports injecting structured headers with ASCII logos.
+- Automatic last modified date updates on save.
+- Configurable settings for flexible formatting.
+- Optional random logo insertion.
+
+---
+
+## Following Extension Guidelines
+
+This extension follows [VS Code Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines).
+
+---
+
+## For More Information
+
+- [VS Code Extension Marketplace](https://marketplace.visualstudio.com/)
+- [VS Code Docs](https://code.visualstudio.com/docs)
+
+---
+
+**Enjoy using AsperHeader!**
