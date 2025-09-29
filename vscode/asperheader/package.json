@@ -90,6 +90,31 @@
         "command": "asperheader.author",
         "key": "ctrl+alt+shift+a",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.injectHeader",
+        "key": "cmd+alt+h",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.refreshHeader",
+        "key": "cmd+alt+u",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.displayRandomLogo",
+        "key": "cmd+alt+shift+l",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.darling",
+        "key": "cmd+alt+shift+d",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "asperheader.author",
+        "key": "cmd+alt+shift+a",
+        "when": "editorTextFocus"
       }
     ],
     "configuration": {

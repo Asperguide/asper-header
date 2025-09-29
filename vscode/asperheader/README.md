@@ -28,11 +28,11 @@ Although tailored for Asperguide, it is available on the VS Code Marketplace for
   - Adjust scan length for detecting headers.
   - Random ASCII logo option.
 - Commands available via Command Palette or keyboard shortcuts:
-  - `AsperHeader: Add a header to the file` (`Ctrl+alt+H`)
-  - `AsperHeader: Refresh the header` (`Ctrl+alt+U`)
-  - `AsperHeader: Display a random logo (in a new window)` (`Ctrl+Alt+Shift+L`)
-  - `AsperHeader: easter egg` (`Ctrl+Shift+D`)
-  - `AsperHeader: diplay the author's name` (`Ctrl+Alt+Shift+A`)
+  - `AsperHeader: Add a header to the file` (`Ctrl+Alt+H`), for Mac: (`Cmd+Alt+H`)
+  - `AsperHeader: Refresh the header` (`Ctrl+Alt+U`), for Mac: (`Cmd+Alt+U`)
+  - `AsperHeader: Display a random logo (in a new window)` (`Ctrl+Alt+Shift+L`), for Mac: (`Cmd+Alt+Shift+L`)
+  - `AsperHeader: easter egg` (`Ctrl+Alt+Shift+D`), for Mac: (`Cmd+Alt+Shift+D`)
+  - `AsperHeader: diplay the author's name` (`Ctrl+Alt+Shift+A`), for Mac: (`Cmd+Alt+Shift+A`)
 
 ### Demo
 
@@ -120,6 +120,7 @@ None so far.
 
 - Fix file format parsing error
 - Add more supported vscode languages
+- Add the mac equivalent in keybindings
 
 ---
 
