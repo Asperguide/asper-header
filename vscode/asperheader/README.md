@@ -116,6 +116,11 @@ None so far.
 
 - Add the missing `.tsx` file format to the comment identification logic
 
+### 1.0.2
+
+- Fix file format parsing error
+- Add more supported vscode languages
+
 ---
 
 ## Following Extension Guidelines
