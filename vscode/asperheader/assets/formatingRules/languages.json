@@ -2,179 +2,206 @@
     "langs": [
         {
             "langs": [
-                "C",
-                "C++",
-                "C#",
-                "Java",
-                "JavaScript",
-                "JavaScriptReact",
-                "TypeScript",
-                "TypeScriptReact",
-                "Swift",
-                "Kotlin",
-                "IO",
-                "Dylan",
-                "Fantom",
-                "V",
-                "Zig",
-                "Verilog",
-                "JSONC",
-                "Go",
-                "Rust",
-                "Scala",
-                "D",
-                "Dart",
-                "Objective-C",
-                "Groovy",
-                "Solidity",
-                "Sass",
-                "SCSS",
-                "Less",
-                "Q#",
-                "QML",
-                "Pony",
-                "Processing",
-                "Chapel",
-                "GLSL",
-                "HLSL",
-                "WGSL",
-                "Metal Shading Language (Apple)",
-                "Metal Shading Language",
-                "Cypher (Neo4j)",
-                "Cypher",
-                "UnrealScript",
-                "Gradle",
-                "Gradle (Groovy)",
-                "Gradle (Kotlin DSL)",
-                "Gradle (Groovy/Kotlin DSL)"
+                "c",
+                "c++",
+                "cpp",
+                "cuda-cpp",
+                "c#",
+                "csharp",
+                "java",
+                "javascript",
+                "javascriptreact",
+                "typescript",
+                "typescriptreact",
+                "swift",
+                "kotlin",
+                "io",
+                "dylan",
+                "fantom",
+                "v",
+                "zig",
+                "verilog",
+                "json",
+                "jsonc",
+                "go",
+                "rust",
+                "scala",
+                "d",
+                "dart",
+                "objective-c",
+                "objective-cpp",
+                "groovy",
+                "solidity",
+                "sass",
+                "scss",
+                "less",
+                "q#",
+                "qml",
+                "pony",
+                "processing",
+                "chapel",
+                "glsl",
+                "hlsl",
+                "wgsl",
+                "metal shading language (apple)",
+                "metal shading language",
+                "cypher (neo4j)",
+                "cypher",
+                "unrealscript",
+                "gradle",
+                "gradle (groovy)",
+                "gradle (kotlin dsl)",
+                "gradle (groovy/kotlin dsl)",
+                "shaderlab",
+                "stylus"
             ],
             "prompt_comment_opening_type": false,
-            "singleLine": [
+            "singleline": [
                 "//"
             ],
-            "multiLine": [
+            "multiline": [
                 "/*",
                 "*",
                 "*/"
             ],
             "quirks": "Doc comments use /** ... */",
             "fileExtensions": {
-                "C": [
+                "c": [
                     ".c",
                     ".h"
                 ],
-                "C++": [
+                "c++": [
                     "cpp",
                     "c++",
                     "hpp",
                     "h++"
                 ],
-                "C#": [
+                "cpp": [
+                    "cpp",
+                    "c++",
+                    "hpp",
+                    "h++"
+                ],
+                "cuda-cpp": [
+                    "cu",
+                    "cuh"
+                ],
+                "c#": [
                     "cs"
                 ],
-                "Java": [
+                "csharp": [
+                    "cs"
+                ],
+                "java": [
                     ".java"
                 ],
-                "JavaScript": [
+                "javascript": [
                     ".js",
                     ".jsx",
                     ".mjs"
                 ],
-                "JavaScriptReact": [
+                "javascriptreact": [
                     ".js",
                     ".jsx",
                     ".mjs"
                 ],
-                "TypeScript": [
+                "typescript": [
                     ".ts",
                     ".tsx"
                 ],
-                "TypeScriptReact": [
+                "typescriptreact": [
                     ".ts",
                     ".tsx"
                 ],
-                "Swift": [
+                "swift": [
                     ".swift"
                 ],
-                "Kotlin": [
+                "kotlin": [
                     ".kt",
                     ".kts"
                 ],
-                "IO": [
+                "io": [
                     ".io"
                 ],
-                "Dylan": [
+                "dylan": [
                     ".dylan",
                     ".dyl"
                 ],
-                "Fantom": [
+                "fantom": [
                     ".fan"
                 ],
-                "V": [
+                "v": [
                     ".v"
                 ],
-                "Zig": [
+                "zig": [
                     ".zig"
                 ],
-                "Verilog": [
+                "verilog": [
                     ".v",
                     ".sv",
                     ".vh"
                 ],
-                "JSONC": [
-                    ".jsonc",
+                "json": [
                     ".json"
                 ],
-                "Go": [
+                "jsonc": [
+                    ".jsonc"
+                ],
+                "go": [
                     ".go"
                 ],
-                "Rust": [
+                "rust": [
                     ".rs"
                 ],
-                "Scala": [
+                "scala": [
                     ".scala"
                 ],
-                "D": [
+                "d": [
                     ".d"
                 ],
-                "Dart": [
+                "dart": [
                     ".dart"
                 ],
-                "Objective-C": [
+                "objective-c": [
                     ".m",
                     ".h"
                 ],
-                "Groovy": [
+                "objective-cpp": [
+                    ".m",
+                    ".mm",
+                    ".hpp"
+                ],
+                "groovy": [
                     ".groovy"
                 ],
-                "Solidity": [
+                "solidity": [
                     ".sol"
                 ],
-                "Sass": [
+                "sass": [
                     ".sass"
                 ],
-                "SCSS": [
+                "scss": [
                     ".scss"
                 ],
-                "Less": [
+                "less": [
                     ".less"
                 ],
-                "Q#": [
+                "q#": [
                     ".qs"
                 ],
-                "QML": [
+                "qml": [
                     ".qml"
                 ],
-                "Pony": [
+                "pony": [
                     ".pony"
                 ],
-                "Processing": [
+                "processing": [
                     ".pde"
                 ],
-                "Chapel": [
+                "chapel": [
                     ".chpl"
                 ],
-                "GLSL": [
+                "glsl": [
                     ".glsl",
                     ".vert",
                     ".frag",
@@ -183,45 +210,53 @@
                     ".tese",
                     ".comp"
                 ],
-                "HLSL": [
+                "hlsl": [
                     ".hlsl",
                     ".fx",
                     ".fxh",
                     ".cginc"
                 ],
-                "WGSL": [
+                "wgsl": [
                     ".wgsl"
                 ],
-                "Metal Shading Language (Apple)": [
+                "metal shading language (apple)": [
                     ".metal"
                 ],
-                "Metal Shading Language": [
+                "metal shading language": [
                     ".metal"
                 ],
-                "Cypher (Neo4j)": [
+                "cypher (neo4j)": [
                     ".cyp"
                 ],
-                "Cypher": [
+                "cypher": [
                     ".cyp"
                 ],
-                "UnrealScript": [
+                "unrealscript": [
                     ".uc"
                 ],
-                "Gradle": [
+                "gradle": [
                     ".gradle",
                     ".gradle.kts"
                 ],
-                "Gradle (Groovy)": [
+                "gradle (groovy)": [
                     ".gradle",
                     ".gradle.kts"
                 ],
-                "Gradle (Kotlin DSL)": [
+                "gradle (kotlin dsl)": [
                     ".gradle",
                     ".gradle.kts"
                 ],
-                "Gradle (Groovy/Kotlin DSL)": [
+                "gradle (groovy/kotlin dsl)": [
                     ".gradle",
                     ".gradle.kts"
+                ],
+                "shaderlab": [
+                    ".shader"
+                ],
+                "stylus": [
+                    ".user.css",
+                    ".user.styl",
+                    ".styl"
                 ]
             }
         },
@@ -261,7 +296,7 @@
         },
         {
             "langs": [
-                "Julia"
+                "julia"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -273,7 +308,7 @@
             ],
             "quirks": "Supports nested block comments with #= ... =#.",
             "fileExtensions": {
-                "Julia": [
+                "julia": [
                     ".jl"
                 ]
             }
@@ -299,7 +334,8 @@
         },
         {
             "langs": [
-                "ABAP"
+                "ABAP",
+                "abap"
             ],
             "singleLine": [
                 "*",
@@ -308,6 +344,9 @@
             "multiLine": [],
             "fileExtensions": {
                 "ABAP": [
+                    ".abap"
+                ],
+                "abap": [
                     ".abap"
                 ]
             },
@@ -333,11 +372,11 @@
         },
         {
             "langs": [
-                "REXX",
-                "Pig Latin (Hadoop)",
-                "Pig Latin",
-                "HQL (Hive SQL)",
-                "HQL"
+                "rexx",
+                "pig latin (hadoop)",
+                "pig latin",
+                "hql (hive sql)",
+                "hql"
             ],
             "singleLine": [
                 "--"
@@ -348,20 +387,20 @@
                 "*/"
             ],
             "fileExtensions": {
-                "REXX": [
+                "rexx": [
                     ".rexx",
                     ".rex"
                 ],
-                "Pig Latin (Hadoop)": [
+                "pig latin (hadoop)": [
                     ".pig"
                 ],
-                "Pig Latin": [
+                "pig latin": [
                     ".pig"
                 ],
-                "HQL (Hive SQL)": [
+                "hql (hive sql)": [
                     ".hql"
                 ],
-                "HQL": [
+                "hql": [
                     ".hql"
                 ]
             },
@@ -389,6 +428,59 @@
         },
         {
             "langs": [
+                "handlebars"
+            ],
+            "singleLine": [],
+            "multiLine": [
+                "{{!--",
+                "--",
+                "--}}"
+            ],
+            "fileExtensions": {
+                "handlebars": [
+                    ".hbs",
+                    ".handlebars"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "haml"
+            ],
+            "singleLine": [
+                "/"
+            ],
+            "multiLine": [
+                "-#",
+                "-",
+                "-#"
+            ],
+            "fileExtensions": {
+                "haml": [
+                    ".haml"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "slim"
+            ],
+            "singleLine": [
+                "/"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "slim": [
+                    ".slim",
+                    ".html.slim"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
                 "J"
             ],
             "singleLine": [
@@ -404,7 +496,7 @@
         },
         {
             "langs": [
-                "INI"
+                "ini"
             ],
             "singleLine": [
                 ";",
@@ -412,7 +504,7 @@
             ],
             "multiLine": [],
             "fileExtensions": {
-                "INI": [
+                "ini": [
                     ".ini"
                 ]
             },
@@ -455,22 +547,47 @@
         },
         {
             "langs": [
-                "Shell",
-                "Shellscript",
-                "Apache",
-                "Nginx",
-                "Dockerfile",
-                "Makefile",
-                "TOML",
-                "Tcl",
-                "Expect",
-                "Org-mode",
-                "CMake",
-                "Nial",
-                "OpenGL ARB Assembly",
-                "Godot GDScript",
-                "Boo",
-                "Ninja build files"
+                "coffeescript"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [
+                "###",
+                "#",
+                "###"
+            ],
+            "quirks": "No native multi-line comments. Multi-line can be faked with here-docs like `: <<'EOF' ... EOF`.",
+            "fileExtensions": {
+                "coffeescript": [
+                    ".coffee.md",
+                    ".litcoffee"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "shell",
+                "shellscript",
+                "apache",
+                "nginx",
+                "dockerfile",
+                "dockerfile",
+                "dockercompose",
+                "makefile",
+                "toml",
+                "tcl",
+                "expect",
+                "org-mode",
+                "cmake",
+                "nial",
+                "opengl arb assembly",
+                "godot gdscript",
+                "boo",
+                "ninja build files",
+                "git-commit",
+                "git-rebase"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -478,63 +595,71 @@
             ],
             "multiLine": [],
             "quirks": "No native multi-line comments. Multi-line can be faked with here-docs like `: <<'EOF' ... EOF`.",
-            "fileExtensions": {
-                "Shell": [
+            "fileextensions": {
+                "shell": [
                     ".sh",
                     ".bash",
                     ".zsh",
                     ".ksh",
                     ".fish"
                 ],
-                "Shellscript": [
+                "shellscript": [
                     ".sh",
                     ".bash",
                     ".zsh",
                     ".ksh",
                     ".fish"
                 ],
-                "Apache": [
+                "apache": [
                     ".conf"
                 ],
-                "Nginx": [
+                "nginx": [
                     ".conf"
                 ],
-                "Dockerfile": [
-                    "Dockerfile",
+                "dockerfile": [
+                    "dockerfile",
                     "dockerfile"
                 ],
-                "Makefile": [
+                "dockercompose": [
+                    "dockercompose.yaml",
+                    "dockercompose.yml",
+                    "docker-compose.yaml",
+                    "docker-compose.yml"
+                ],
+                "makefile": [
+                    "makefile",
                     "Makefile"
                 ],
-                "TOML": [
+                "toml": [
                     ".toml"
                 ],
-                "Tcl": [
+                "tcl": [
                     ".tcl"
                 ],
-                "Expect": [
+                "expect": [
                     ".exp"
                 ],
-                "Org-mode": [
+                "org-mode": [
                     ".org"
                 ],
-                "CMake": [
+                "cmake": [
+                    "cmakelists.txt",
                     "CMakeLists.txt",
                     ".cmake"
                 ],
-                "Nial": [
+                "nial": [
                     ".nial"
                 ],
-                "OpenGL ARB Assembly": [
+                "opengl arb assembly": [
                     ".arb"
                 ],
-                "Godot GDScript": [
+                "godot gdscript": [
                     ".gd"
                 ],
-                "Boo": [
+                "boo": [
                     ".boo"
                 ],
-                "Ninja build files": [
+                "ninja build files": [
                     ".ninja"
                 ]
             }
@@ -556,7 +681,7 @@
         },
         {
             "langs": [
-                "Python"
+                "python"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -569,7 +694,7 @@
             ],
             "quirks": "Triple quotes are technically strings, but often used as block comments/docstrings.",
             "fileExtensions": {
-                "Python": [
+                "python": [
                     ".py",
                     ".pyw",
                     ".pyi"
@@ -718,7 +843,8 @@
                 "Cortex-M",
                 "PDP-11",
                 "VAX",
-                "Clojure"
+                "Clojure",
+                "clojure"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -815,6 +941,11 @@
                     ".clj",
                     ".cljs",
                     ".cljc"
+                ],
+                "clojure": [
+                    ".clj",
+                    ".cljs",
+                    ".cljc"
                 ]
             }
         },
@@ -843,16 +974,17 @@
         },
         {
             "langs": [
-                "YAML",
-                "Awk",
-                "Sed",
-                "R",
-                "Elixir",
-                "GAS",
-                "Perl",
-                "MIPS",
-                "RISC-V",
-                "Crystal"
+                "yaml",
+                "awk",
+                "sed",
+                "r",
+                "elixir",
+                "gas",
+                "perl",
+                "perl6",
+                "mips",
+                "risc-v",
+                "crystal"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -861,51 +993,65 @@
             "multiLine": [],
             "quirks": "Must be at line start (no inline after data in some parsers).",
             "fileExtensions": {
-                "YAML": [
+                "yaml": [
                     ".yml",
                     ".yaml"
                 ],
-                "Awk": [
+                "awk": [
                     ".awk"
                 ],
-                "Sed": [
+                "sed": [
                     ".sed"
                 ],
-                "R": [
+                "r": [
                     ".r",
                     ".R"
                 ],
-                "Elixir": [
+                "elixir": [
                     ".ex",
                     ".exs"
                 ],
-                "GAS": [
+                "gas": [
                     ".s",
-                    ".S"
+                    ".s"
                 ],
-                "Perl": [
+                "perl": [
                     ".pl",
                     ".pm",
                     ".t"
                 ],
-                "MIPS": [
+                "perl6": [
+                    ".p6",
+                    ".pl",
+                    ".pl6",
+                    ".pm",
+                    ".pm6",
+                    ".pm6",
+                    ".rakumod",
+                    ".pod",
+                    ".pod6"
+                ],
+                "mips": [
                     ".s",
                     ".asm"
                 ],
-                "RISC-V": [
+                "risc-v": [
                     ".s",
-                    ".S"
+                    ".s"
                 ],
-                "Crystal": [
+                "crystal": [
                     ".cr"
                 ]
             }
         },
         {
             "langs": [
-                "HTML",
-                "XML",
-                "Markdown"
+                "html",
+                "xml",
+                "markdown",
+                "svelte",
+                "vue",
+                "vue-html"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [],
@@ -916,17 +1062,45 @@
             ],
             "quirks": "SGML-style, must not be nested.",
             "fileExtensions": {
-                "HTML": [
+                "html": [
                     ".html",
                     ".htm"
                 ],
-                "Markdown": [
+                "markdown": [
                     ".md",
                     ".markdown"
                 ],
-                "XML": [
+                "xml": [
                     ".xml",
                     ".xhtml"
+                ],
+                "svelte": [
+                    ".svelte",
+                    ".html"
+                ],
+                "vue": [
+                    ".vue"
+                ],
+                "vue-html": [
+                    ".vue"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "xsl"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [],
+            "multiLine": [
+                "<xsl:comment>",
+                "--",
+                "</xsl:comment>"
+            ],
+            "quirks": "SGML-style, must not be nested.",
+            "fileExtensions": {
+                "xsl": [
+                    ".xsl"
                 ]
             }
         },
@@ -956,6 +1130,7 @@
         {
             "langs": [
                 "CSS",
+                "css",
                 "PL/I"
             ],
             "prompt_comment_opening_type": false,
@@ -968,6 +1143,9 @@
             "quirks": "Only block comments are supported. No single-line comment syntax like `//`.",
             "fileExtensions": {
                 "CSS": [
+                    ".css"
+                ],
+                "css": [
                     ".css"
                 ],
                 "PL/I": [
@@ -1005,7 +1183,7 @@
         },
         {
             "langs": [
-                "PHP"
+                "php"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1019,7 +1197,7 @@
             ],
             "quirks": "Supports C-style `/* */` multi-line comments. Both `//` and `#` are valid single-line comment starters.",
             "fileExtensions": {
-                "PHP": [
+                "php": [
                     ".php",
                     ".phtml"
                 ]
@@ -1027,7 +1205,7 @@
         },
         {
             "langs": [
-                "Ruby"
+                "ruby"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1039,7 +1217,7 @@
             ],
             "quirks": "`=begin`/`=end` must start at column 0. Single-line `#` comments can appear anywhere.",
             "fileExtensions": {
-                "Ruby": [
+                "ruby": [
                     ".rb",
                     ".rbw"
                 ]
@@ -1113,7 +1291,8 @@
         },
         {
             "langs": [
-                "Batch"
+                "Batch",
+                "bat"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1124,6 +1303,10 @@
             "quirks": ":: is a hack; REM is the official keyword.",
             "fileExtensions": {
                 "Batch": [
+                    ".bat",
+                    ".cmd"
+                ],
+                "bat": [
                     ".bat",
                     ".cmd"
                 ]
@@ -1358,8 +1541,8 @@
         },
         {
             "langs": [
-                "Erlang",
-                "PostScript"
+                "erlang",
+                "postScript"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1368,18 +1551,18 @@
             "multiLine": [],
             "quirks": "No block comments.",
             "fileExtensions": {
-                "Erlang": [
+                "erlang": [
                     ".erl",
                     ".hrl"
                 ],
-                "PostScript": [
+                "postScript": [
                     ".ps"
                 ]
             }
         },
         {
             "langs": [
-                "Haskell"
+                "haskell"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1392,7 +1575,7 @@
             ],
             "quirks": "Nested block comments are supported.",
             "fileExtensions": {
-                "Haskell": [
+                "haskell": [
                     ".hs",
                     ".lhs"
                 ]
@@ -1400,7 +1583,7 @@
         },
         {
             "langs": [
-                "Pascal"
+                "pascal"
             ],
             "singleLine": [],
             "multiLine": [
@@ -1409,9 +1592,27 @@
                 "*)"
             ],
             "fileExtensions": {
-                "Pascal": [
+                "pascal": [
                     ".pas",
                     ".pp"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "diff"
+            ],
+            "singleLine": [
+                "#"
+            ],
+            "multiLine": [],
+            "fileExtensions": {
+                "diff": [
+                    ".diff",
+                    ".patch",
+                    ".gz",
+                    ".bz2"
                 ]
             },
             "prompt_comment_opening_type": false
@@ -1435,12 +1636,12 @@
         },
         {
             "langs": [
-                "OCaml",
-                "ReasonML",
-                "Modula2",
-                "Modula-2",
-                "Oberon",
-                "Coq"
+                "ocaml",
+                "reasonml",
+                "modula2",
+                "modula-2",
+                "oberon",
+                "coq"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [],
@@ -1451,34 +1652,35 @@
             ],
             "quirks": "Supports nested block comments.",
             "fileExtensions": {
-                "OCaml": [
+                "ocaml": [
                     ".ml",
                     ".mli"
                 ],
-                "ReasonML": [
+                "reasonml": [
                     ".re",
                     ".rei"
                 ],
-                "Modula2": [
+                "modula2": [
                     ".mod",
                     ".def"
                 ],
-                "Modula-2": [
+                "modula-2": [
                     ".mod",
                     ".def"
                 ],
-                "Oberon": [
+                "oberon": [
                     ".ob",
                     ".oh"
                 ],
-                "Coq": [
+                "coq": [
                     ".v"
                 ]
             }
         },
         {
             "langs": [
-                "F#"
+                "f#",
+                "fsharp"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1491,7 +1693,11 @@
             ],
             "quirks": "Inherited OCaml-style block comments plus C-style single-line.",
             "fileExtensions": {
-                "F#": [
+                "f#": [
+                    ".fs",
+                    ".fsi"
+                ],
+                "fsharp": [
                     ".fs",
                     ".fsi"
                 ]
@@ -1566,7 +1772,7 @@
         },
         {
             "langs": [
-                "Lua"
+                "lua"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1579,16 +1785,16 @@
             ],
             "quirks": "Multi-line can also be nested with '--[=[ ... ]=]'.",
             "fileExtensions": {
-                "Lua": [
+                "lua": [
                     ".lua"
                 ]
             }
         },
         {
             "langs": [
-                "TeX",
-                "LaTeX",
-                "BibTeX"
+                "tex",
+                "latex",
+                "bibtex"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -1597,15 +1803,15 @@
             "multiLine": [],
             "quirks": "Entire line after % is ignored.",
             "fileExtensions": {
-                "TeX": [
+                "tex": [
                     ".tex",
                     ".sty",
                     ".cls"
                 ],
-                "LaTeX": [
+                "latex": [
                     ".tex"
                 ],
-                "BibTeX": [
+                "bibtex": [
                     ".bib"
                 ]
             }
@@ -1719,51 +1925,55 @@
         },
         {
             "langs": [
-                "Whitespace",
-                "Malbolge",
-                "Chef",
-                "Brainfuck",
-                "Befunge",
-                "Shakespeare (SPL)",
-                "Shakespeare",
-                "SPIR-V",
-                "DOS_COM",
-                "PE_Binary"
+                "whitespace",
+                "malbolge",
+                "chef",
+                "brainfuck",
+                "befunge",
+                "shakespeare (spl)",
+                "shakespeare",
+                "spir-v",
+                "dos_com",
+                "pe_binary",
+                "plaintext"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [],
             "multiLine": [],
             "quirks": "Only space, tab, LF are instructions; all else ignored.",
             "fileExtensions": {
-                "Whitespace": [
+                "whitespace": [
                     ".ws"
                 ],
-                "Malbolge": [
+                "malbolge": [
                     ".mb"
                 ],
-                "Chef": [
+                "chef": [
                     ".chef"
                 ],
-                "Befunge": [
+                "befunge": [
                     ".bf"
                 ],
-                "Shakespeare (SPL)": [
+                "shakespeare (spl)": [
                     ".spl"
                 ],
-                "Shakespeare": [
+                "shakespeare": [
                     ".spl"
                 ],
-                "SPIR-V": [
+                "spir-v": [
                     ".spv"
                 ],
-                "DOS_COM": [
+                "dos_com": [
                     ".com"
                 ],
-                "PE_Binary": [
+                "pe_binary": [
                     ".exe",
                     ".dll",
                     ".scr",
                     ".ocx"
+                ],
+                "plaintext": [
+                    ".txt"
                 ]
             }
         },
@@ -1901,7 +2111,7 @@
         },
         {
             "langs": [
-                "Texinfo"
+                "texinfo"
             ],
             "singleLine": [
                 "@c",
@@ -1909,7 +2119,7 @@
             ],
             "multiLine": [],
             "fileExtensions": {
-                "Texinfo": [
+                "texinfo": [
                     ".texi",
                     ".txi"
                 ]
@@ -1918,7 +2128,24 @@
         },
         {
             "langs": [
-                "PowerShell"
+                "razor"
+            ],
+            "singleLine": [],
+            "multiLine": [
+                "@*",
+                "*",
+                "*@"
+            ],
+            "fileExtensions": {
+                "razor": [
+                    ".razor"
+                ]
+            },
+            "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "powershell"
             ],
             "singleLine": [
                 "#"
@@ -1929,7 +2156,7 @@
                 "#>"
             ],
             "fileExtensions": {
-                "PowerShell": [
+                "powershell": [
                     ".ps1",
                     ".psm1"
                 ]
@@ -1938,8 +2165,8 @@
         },
         {
             "langs": [
-                "VB",
-                "VB.NET"
+                "vb",
+                "vb.net"
             ],
             "singleLine": [
                 "'",
@@ -1947,14 +2174,38 @@
             ],
             "multiLine": [],
             "fileExtensions": {
-                "VB": [
+                "vb": [
                     ".vb"
                 ],
-                "VB.NET": [
+                "vb.net": [
                     ".vb"
                 ]
             },
             "prompt_comment_opening_type": false
+        },
+        {
+            "langs": [
+                "jade",
+                "pug"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "//-"
+            ],
+            "multiLine": [
+                "<!--",
+                "--",
+                "-->"
+            ],
+            "quirks": "",
+            "fileExtensions": {
+                "jade": [
+                    ".jade"
+                ],
+                "pug": [
+                    ".pug"
+                ]
+            }
         },
         {
             "langs": [
