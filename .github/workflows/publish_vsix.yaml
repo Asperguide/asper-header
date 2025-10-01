@@ -38,9 +38,6 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install deps
-        run: npm ci
-
       - name: Adjust engines.vscode
         run: |
           node <<'EOF'
@@ -62,6 +59,9 @@ jobs:
           EOF
         env:
           VSCODE_VERSION: ${{ matrix.vscode_version }}
+
+      - name: Install deps
+        run: npm ci
 
       - name: Build extension
         run: npm run compile --if-present
