@@ -2,11 +2,12 @@ name: doxygen_generator
 
 # version: 1.0.0.commando
 #          1.0.1.commando # removed the need of secrets for the user e-mail and name
+#          1.0.2.commando # change the tag to only trigger when a -doc is appended to it.
 
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*.*.*-doc"
     branches:
       - main
       - dev-workflow-doxygen
