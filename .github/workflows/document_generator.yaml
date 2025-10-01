@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
       - name: Fetch doxygen docker
@@ -111,7 +111,7 @@ jobs:
           ls -a ${{env.OUTPUT_GENERATION}}/${{env.HTML_GENERATION}}
       - name: Save cache
         id: cache-save
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           key: ${{env.CACHE_KEY}}
           path: ${{env.OUTPUT_GENERATION}}
@@ -125,12 +125,12 @@ jobs:
       ICON_PATH: doxygen_generation/favicon/
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
       - name: Get generated documentation
         id: cache-documentation-restore
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           key: ${{ env.CACHE_KEY }}
           enableCrossOsArchive: true
@@ -266,7 +266,7 @@ jobs:
 
       - name: Save cache
         id: cache-save
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           key: ${{env.CACHE_KEY_CLEANED}}
           path: ${{env.TEMPORARY_FOLDER}}
@@ -283,13 +283,13 @@ jobs:
     if: success()
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
 
       - name: Get generated documentation
         id: html-cache-restore
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
           path: ${{ env.OUTPUT_GENERATION }}
@@ -301,7 +301,7 @@ jobs:
             cache_key_doxygen
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v5.0.0
 
       - name: Show restored content
         run: |
@@ -309,14 +309,14 @@ jobs:
           ls -aR ${{env.OUTPUT_GENERATION}}
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4.0.0
         with:
           # Upload selected content
           path: ${{env.OUTPUT_GENERATION}}/${{env.HTML_GENERATION}}
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4.0.3
 
   export_other_formats_when_present:
     runs-on: ubuntu-latest
@@ -326,13 +326,13 @@ jobs:
       DOCUMENTATION_ZIP_NAME: documentation.zip
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
 
       - name: Get generated documentation
         id: cache-documentation-restore
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
           enableCrossOsArchive: true
@@ -585,7 +585,7 @@ jobs:
           } >> "$GITHUB_OUTPUT" # anchor point
 
       - name: Publish binary as GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.3.3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ${{ steps.anchor-point.outputs.AP}}
@@ -603,7 +603,7 @@ jobs:
     needs: [export_other_formats_when_present, publish_html]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.0.0
         with:
           fetch-depth: 0
       - name: Delete Created cache
