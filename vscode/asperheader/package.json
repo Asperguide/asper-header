@@ -20,12 +20,6 @@
   "categories": [
     "Other"
   ],
-  "files": [
-    "images/icon/favicon.png",
-    "images/demo",
-    "README.md",
-    "LICENSE"
-  ],
   "activationEvents": [
     "onStartupFinished",
     "onCommand:asperheader.helloWorld",
