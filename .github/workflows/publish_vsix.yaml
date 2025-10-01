@@ -67,7 +67,7 @@ jobs:
         run: npm run compile --if-present
 
       - name: Installing required package managers
-        run: npm install -g vsce ovsx
+        run: npm install -g @vscode/vsce ovsx
 
       - name: Package extension
         run: npx vsce package
