@@ -36,13 +36,8 @@ Although tailored for Asperguide, it is available on the VS Code Marketplace for
 
 ### Demo
 
-![Header insertion demo](images/header-demo.gif)
-
-*Above: Injecting a structured header into a file.*
-
-![Zooming in ASCII logo](images/logo-zoom.gif)
-
-*Above: Displaying and zooming an ASCII art logo.*
+Bellow is a video demoing the different features of the extension:
+![Extension demo](./images/demo/asper_header_timeline.gif)
 
 ---
 
