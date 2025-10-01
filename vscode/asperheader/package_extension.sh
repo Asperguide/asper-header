@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Packaging extension..."
 echo "Installing vsce locally"
-npm install --include=dev vsce
+npm install --save-dev vsce
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
     echo "Install step failed, se above for more details."
