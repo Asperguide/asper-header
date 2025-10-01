@@ -93,8 +93,16 @@ async function updateSaveSafe(document: vscode.TextDocument) {
  * Refresh the name of the cached workspace if any is activated
  */
 function refreshWorkspaceName() {
-	const workspaceFolders = vscode.workspace.workspaceFolders;
-	const workspaceName = workspaceFolders && workspaceFolders.length > 0 ? workspaceFolders[0].name : undefined;
+	let workspaceName: string | undefined;
+
+	if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+		workspaceName = vscode.workspace.workspaceFolders[0].name;
+	}
+	else if ((vscode.workspace as any).rootPath) {
+		const rootPath = (vscode.workspace as any).rootPath as string;
+		workspaceName = rootPath.split(/[\\/]/).pop();
+	}
+
 	CodeConfig.setWorkspaceName(workspaceName);
 }
 
