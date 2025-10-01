@@ -1,0 +1,79 @@
+name: Multi-version Publish
+
+on:
+  workflow_dispatch: # run manually
+  push:
+    tags:
+      - "v*.*.*" # publish when you tag a release
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        vscode_version:
+          [
+            "1.0.0",
+            "1.14.0",
+            "1.20.0",
+            "1.30.0",
+            "1.40.0",
+            "1.50.0",
+            "1.60.0",
+            "1.70.0",
+            "1.80.0",
+            "1.90.0",
+            "1.100.0",
+            "1.104.0",
+          ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Adjust engines.vscode
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const current = "1.104.0"; // your real minimum requirement
+          const target = process.env.VSCODE_VERSION;
+          pkg.engines.vscode = `^${target}`;
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+
+          if (target < current) {
+            let readme = fs.readFileSync('README.md', 'utf8');
+            const warning = `\n> ⚠️ **Compatibility Notice:** This build targets VS Code < ${current}. It is not tested and may break. Provided only for backward compatibility.\n`;
+            if (!readme.includes("⚠️ **Compatibility Notice:**")) {
+              readme = warning + readme;
+              fs.writeFileSync('README.md', readme);
+            }
+          }
+          EOF
+        env:
+          VSCODE_VERSION: ${{ matrix.vscode_version }}
+
+      - name: Build extension
+        run: npm run compile --if-present
+
+      - name: Installing required package managers
+        run: npm install -g vsce ovsx
+
+      - name: Package extension
+        run: npx vsce package
+
+      - name: Publish to Marketplace
+        run: npx vsce publish -p ${{ secrets.VSCE_TOKEN }}
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_TOKEN }}
+
+      - name: Publish to Open VSX
+        run: npx ovsx publish -p ${{ secrets.OVSX_TOKEN }}
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_TOKEN }}
