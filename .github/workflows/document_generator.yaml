@@ -1,6 +1,7 @@
 name: doxygen_generator
 
 # version: 1.0.0.commando
+#          1.0.1.commando # removed the need of secrets for the user e-mail and name
 
 on:
   push:
