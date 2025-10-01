@@ -38,16 +38,34 @@ jobs:
         with:
           node-version: 24
 
-      - name: Adjust engines.vscode
+      - name: Adjust package.json for matrix target
         run: |
           node <<'EOF'
           const fs = require('fs');
           const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-          const current = "1.104.0"; // your real minimum requirement
+          const current = "1.104.0"; // real minimum requirement
           const target = process.env.VSCODE_VERSION;
+
+          // Force engines.vscode
           pkg.engines.vscode = `^${target}`;
+
+          // Map VS Code versions to available @types/vscode
+          function mapTypesVersion(vscodeVersion) {
+            const [major, minor] = vscodeVersion.split('.').map(Number);
+
+            // Oldest available types are ~1.26.0
+            if (major === 1 && minor < 26) {
+              return "1.26.0";
+            }
+            return vscodeVersion;
+          }
+
+          if (!pkg.devDependencies) pkg.devDependencies = {};
+          pkg.devDependencies["@types/vscode"] = mapTypesVersion(target);
+
           fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
 
+          // Add README warning if below current
           if (target < current) {
             let readme = fs.readFileSync('README.md', 'utf8');
             const warning = `\n> ⚠️ **Compatibility Notice:** This build targets VS Code < ${current}. It is not tested and may break. Provided only for backward compatibility.\n`;
@@ -80,7 +98,7 @@ jobs:
           EOF
 
       - name: Install deps
-        run: npm ci
+        run: npm install
 
       - name: Build extension
         run: npm run compile --if-present
