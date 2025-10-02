@@ -649,7 +649,7 @@ HIDE_SCOPE_NAMES       = NO
 # YES the compound reference will be hidden.
 # The default value is: NO.
 
-HIDE_COMPOUND_REFERENCE= NO
+HIDE_COMPOUND_REFERENCE = NO
 
 # If the SHOW_HEADERFILE tag is set to YES then the documentation for a class
 # will show which file needs to be included to use the class.
@@ -759,7 +759,7 @@ GENERATE_BUGLIST       = YES
 # the documentation.
 # The default value is: YES.
 
-GENERATE_DEPRECATEDLIST= YES
+GENERATE_DEPRECATEDLIST = YES
 
 # The ENABLED_SECTIONS tag can be used to enable conditional documentation
 # sections, marked by \if <section_label> ... \endif and \cond <section_label>
@@ -1007,8 +1007,10 @@ FILE_PATTERNS          = *.c \
                          *.h++ \
                          *.py \
                          *.pyw \
-                         *.js \
                          *.ts \
+                         *.tsx \
+                         *.js \
+                         *.jsx \
                          Makefile
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
@@ -2402,7 +2404,14 @@ INCLUDE_PATH           =
 
 INCLUDE_FILE_PATTERNS  = *.h \
                          *.hpp \
-                         *.h++
+                         *.h++ \
+                         *.py \
+                         *.pyw \
+                         *.ts \
+                         *.tsx \
+                         *.js \
+                         *.jsx \
+                         Makefile
 
 # The PREDEFINED tag can be used to specify one or more macro names that are
 # defined before the preprocessor is started (similar to the -D option of e.g.
