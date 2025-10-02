@@ -161,6 +161,7 @@ jobs:
           path: "${{env.WORKING_DIRECTORY}}/*.vsix"
 
       - name: Publish to Marketplace
+        if: ${{matrix.vscode_version}} == ${{env.LATEST_VERSION}}
         run: npx vsce publish -p ${{ secrets.VSCE_TOKEN }}
         env:
           VSCE_PAT: ${{ secrets.VSCE_TOKEN }}
