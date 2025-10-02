@@ -58,6 +58,7 @@ jobs:
           fi
 
           # Export validated tag for use by later steps in this job
+          echo "TAG_VERSION=$tag" >> $GITHUB_OUTPUT
           echo "TAG_VERSION=$tag" >> $GITHUB_ENV
           echo "Using TAG_VERSION=$tag"
 
@@ -72,7 +73,7 @@ jobs:
             process.exit(1);
           }
           const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-          const tagVersion = ${{steps.set-package-version.outputs.TAG_VERSION}};
+          const tagVersion = "${{steps.set-package-version.outputs.TAG_VERSION}}";
           pkg.version = tagVersion;
           fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
           console.log('Updated package.json.version ->', tagVersion);
