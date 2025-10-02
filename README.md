@@ -37,7 +37,9 @@ Although tailored for Asperguide, it is available on the VS Code Marketplace for
 ### Demo
 
 Bellow is a video demoing the different features of the extension:
-![Extension demo](https://raw.github.com/Asperguide/asper-header/main/images/demo/asper_header_timeline.gif)
+
+If animation fails to load, [click here (gif)](https://github.com/Asperguide/asper-header/blob/main/images/demo/asper_header_timeline.gif) or [here (mp4)](https://github.com/Asperguide/asper-header/blob/main/images/demo/asper_header_timeline.mp4)
+![Extension demo](./images/demo/asper_header_timeline.gif)
 
 ---
 
