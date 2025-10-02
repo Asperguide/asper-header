@@ -8,8 +8,8 @@ if [ $STATUS -ne 0 ]; then
     exit $STATUS
 fi
 echo "Installing vsce locally"
-npm install --save-dev vsce
-# npm install --no-save vsce
+# npm install --save-dev vsce
+npm install --no-save vsce
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
     echo "Install step failed, se above for more details."
