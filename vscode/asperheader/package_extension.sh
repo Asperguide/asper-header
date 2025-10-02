@@ -15,6 +15,8 @@ if [ $STATUS -ne 0 ]; then
     echo "Install step failed, se above for more details."
     exit $STATUS
 fi
+echo "Copying readme from the root of the repository to the vscode extension..."
+cp -vf ../../README.md ./README.md
 echo "Copying license from the root of the repository to the vscode extension..."
 cp -vf ../../LICENSE ./LICENSE
 echo "Copying the changelog from the root of the repository to the vscode extension..."
