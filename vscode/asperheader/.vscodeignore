@@ -12,6 +12,8 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+# Ignore videos because they are not needed in the release file
+**/*.mp4
 # Ignore old asset files
 **/assets/**/old/**
 # Ignore xcf files
@@ -25,5 +27,3 @@ vsc-extension-quickstart.md
 # Ignore the source assets folder (original files)
 assets/**
 assets/**/*.min.json
-# Ignore videos because they are not needed in the release file
-*.mp4
