@@ -6,6 +6,9 @@ on:
     tags:
       - "v*.*.*" # publish when you tag a release
 
+permissions:
+  contents: write
+
 env:
   WORKING_DIRECTORY: "vscode/asperheader"
   LATEST_VERSION: "1.104.0"
