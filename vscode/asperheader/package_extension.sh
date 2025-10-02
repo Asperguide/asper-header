@@ -17,6 +17,8 @@ if [ $STATUS -ne 0 ]; then
 fi
 echo "Copying license from the root of the repository to the vscode extension..."
 cp -vf ../../LICENSE ./LICENSE
+echo "Copying the changelog from the root of the repository to the vscode extension..."
+cp -vf ../../CHANGELOG.md ./CHANGELOG.md
 echo "Copying the images and demos from the root of the repository to the vscode extension..."
 cp -rvf ../../images/* ./images
 echo "Removing the existing dist folder..."
@@ -39,3 +41,5 @@ if [ $? -ne 0 ]; then
         exit $STATUS
     fi
 fi
+echo "Displaying included files..."
+npx vsce ls --tree
