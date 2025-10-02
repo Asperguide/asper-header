@@ -155,7 +155,7 @@ jobs:
         run: npm install -g @vscode/vsce ovsx
 
       - name: Package extension
-        run: npx vsce package
+        run: npx vsce package -o asperheader-${{ matrix.vscode_version }}-${{ steps.set-package-version.outputs.TAG_VERSION }}.vsix
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
