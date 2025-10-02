@@ -7,9 +7,9 @@ if [ $STATUS -ne 0 ]; then
     echo "Install step failed, se above for more details."
     exit $STATUS
 fi
-echo "Installing vsce locally"
-# npm install --save-dev vsce
-npm install --no-save vsce
+echo "Installing @vscode/vsce locally"
+# npm install --save-dev @vscode/vsce
+npm install --no-save @vscode/vsce
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
     echo "Install step failed, se above for more details."
