@@ -23,5 +23,7 @@ vsc-extension-quickstart.md
 # Ignore the packing script
 **/package_extension.sh
 # Ignore the source assets folder (original files)
-assets/
+assets/**
 assets/**/*.min.json
+# Ignore videos because they are not needed in the release file
+*.mp4
