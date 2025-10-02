@@ -161,13 +161,13 @@ jobs:
           path: "${{env.WORKING_DIRECTORY}}/*.vsix"
 
       - name: Publish to Marketplace
-        if: ${{matrix.vscode_version}} == ${{env.LATEST_VERSION}}
+        if: ${{matrix.vscode_version == env.LATEST_VERSION}}
         run: npx vsce publish -p ${{ secrets.VSCE_TOKEN }}
         env:
           VSCE_PAT: ${{ secrets.VSCE_TOKEN }}
 
       - name: Publish to Open VSX
-        if: ${{matrix.vscode_version}} == ${{env.LATEST_VERSION}}
+        if: ${{matrix.vscode_version == env.LATEST_VERSION}}
         run: npx ovsx publish -p ${{ secrets.OVSX_TOKEN }}
         env:
           OVSX_PAT: ${{ secrets.OVSX_TOKEN }}
