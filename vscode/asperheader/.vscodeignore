@@ -21,9 +21,11 @@ vsc-extension-quickstart.md
 # Ignore all .json
 **/*.json
 # But explicitly keep .min.json
-!**/*.min.json
+# !**/*.min.json
 # Ignore the packing script
 **/package_extension.sh
 # Ignore the source assets folder (original files)
 assets/**
-assets/**/*.min.json
+# assets/**/*.min.json
+# keep the min.json in the assets of the build folder
+!dist/assets/**/*.min.json
