@@ -192,14 +192,6 @@ async function main() {
 						to: ['./assets/formatingRules/']
 					},
 					{
-						from: ['./assets/icon/icon_v2_cleaned.png'],
-						to: ['./assets/icon/'],
-					},
-					{
-						from: ['./README.md', './CHANGELOG.md'],
-						to: ['./'],
-					},
-					{
 						from: ["./assets/asciiArt/**/*.txt"],
 						to: ['./assets/asciiArt/'],
 					},
