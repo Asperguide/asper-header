@@ -37,24 +37,44 @@ jobs:
         with:
           node-version: 24
 
-      - name: Set package.json version from tag
+      - name: Set package.json version from tag (strict 3 or 4 numeric parts)
+        id: set-package-version
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
-          TAG_VERSION="${GITHUB_REF##refs/tags/}"
-          echo "Tag version: $TAG_VERSION"
+          # Extract raw tag (e.g. refs/tags/v1.2.3 -> v1.2.3)
+          raw_tag="${GITHUB_REF##refs/tags/}"
+          echo "Raw tag: $raw_tag"
 
+          # Remove optional leading 'v' or 'V'
+          tag="${raw_tag#v}"
+          tag="${tag#V}"
+          echo "Normalized tag: $tag"
+
+          # Validate: exactly 3 or 4 numeric components separated by dots
+          if [[ ! "$tag" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::Tag '$raw_tag' does NOT match required format 'X.Y.Z' or 'X.Y.Z.W' (numbers only)."
+            echo "::error::Examples: v1.2.3  or  v1.2.3.4"
+            exit 1
+          fi
+
+          # Export validated tag for use by later steps in this job
+          echo "TAG_VERSION=$tag" >> $GITHUB_ENV
+          echo "Using TAG_VERSION=$tag"
+
+          # Update package.json.version
           node <<'EOF'
           const fs = require('fs');
-          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-
+          const pkgPath = 'package.json';
+          if (!fs.existsSync(pkgPath)) {
+            console.error('package.json not found in the current working directory.');
+            process.exit(1);
+          }
+          const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
           const tagVersion = process.env.TAG_VERSION;
-
-          // Update version in package.json
           pkg.version = tagVersion;
-
-          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+          console.log('Updated package.json.version ->', tagVersion);
           EOF
-        env:
-          TAG_VERSION: ${{ github.ref }}
 
       - name: Adjust package.json for matrix target
         run: |
