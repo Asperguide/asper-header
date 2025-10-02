@@ -1,6 +1,6 @@
 # AsperHeader
 
-![AsperHeader Logo](./images/icon/favicon.png)
+![AsperHeader Logo](./images/icon/favicon_transparent.png)
 
 **AsperHeader** is a Visual Studio Code extension built primarily for the **Asperguide development team**.
 It provides an easy and standardized way to generate, insert, and maintain structured file headers across projects.
@@ -121,6 +121,12 @@ None so far.
 - Fix file format parsing error
 - Add more supported vscode languages
 - Add the mac equivalent in keybindings
+
+### 1.0.3
+
+- Fix esbuild script to fail on missing files
+- Update the modules logo
+- Update functions to work with older versions of the vscode library
 
 ---
 
