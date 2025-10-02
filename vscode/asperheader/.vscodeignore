@@ -29,3 +29,5 @@ assets/**
 # assets/**/*.min.json
 # keep the min.json in the assets of the build folder
 !dist/assets/**/*.min.json
+**/images/demo/*.gif
+**/images/demo/*.mp4
