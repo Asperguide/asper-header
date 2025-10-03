@@ -1,8 +1,9 @@
 name: doxygen_generator
 
-# version: 1.0.0.commando
-#          1.0.1.commando # removed the need of secrets for the user e-mail and name
-#          1.0.2.commando # change the tag to only trigger when a -doc is appended to it.
+# version: 1.0.0
+#          1.0.1 # removed the need of secrets for the user e-mail and name
+#          1.0.2 # change the tag to only trigger when a -doc is appended to it.
+#          1.0.3 # Update the way the tag is processed in the flow
 
 on:
   push:
@@ -31,6 +32,7 @@ env:
   MAN_INSTALL_PATH: doxygen_generation/man/installer.sh
   HTML_SRC_PATH: doxygen_generation/html
   HTML_SERVER_SPAWNER_NAME: launch_server.sh
+  HTML_ICON_PATH: doxygen_generation/favicon/
   # Variables for specifying build locations
   HTML_GENERATION: html
   TEMPORARY_FOLDER: tmp_documentation
@@ -39,7 +41,7 @@ env:
   SETUP_FILE: setup.py
   TAG_FILE: version.txt
   IS_RELEASE: is_release.txt
-  LATEST_TAG: ""
+  LATEST_TAG: "${{ github.ref_name }}"
   # Variable containing the reference key for the cache of each main section
   CACHE_KEY: doxygen-cache-key
   CACHE_KEY_CLEANED: doxygen-cache-key-cleaned
@@ -56,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Fetch doxygen docker
@@ -64,7 +66,7 @@ jobs:
           docker pull ${{env.DOCKER_NAME}}
       - name: Create required folders
         run: |
-          mkdir -p ${{env.OUTPUT_GENERATION}} ${{env.OUTPUT_GENERATION}}/${{env.HTML_GENERATION}}
+          mkdir -p ${{ env.OUTPUT_GENERATION }}/${{ env.HTML_GENERATION }}
       - name: Create dummy page for html renders
         run: |
           HTML_CONTENT='<!DOCTYPE html><html lang="en"><head>'
@@ -90,56 +92,51 @@ jobs:
           echo -e "$HTML_CONTENT" > ${{env.OUTPUT_GENERATION}}/${{env.HTML_GENERATION}}/index.html
       - name: Run doxygen docker
         run: |
-          RUN_COMMAND="cd /app && cp -v ${{env.DOXYFILE}} ./Doxyfile && doxygen ; exit $?"
-          docker run -t -v "$(pwd)":"/app" -v "$(pwd)/${{env.OUTPUT_GENERATION}}":"/${{env.OUTPUT_GENERATION}}" ${{env.DOCKER_NAME}} /bin/bash -c "$RUN_COMMAND"
-          if [ $? -ne 0 ]
-          then
-            exit 1
-          fi
+          RUN_COMMAND="cd /app && cp -v ${{ env.DOXYFILE }} ./Doxyfile && doxygen ; exit $?"
+          docker run -t -v "$(pwd)":"/app" -v "$(pwd)/${{ env.OUTPUT_GENERATION }}":"/${{ env.OUTPUT_GENERATION }}" ${{ env.DOCKER_NAME }} /bin/bash -c "$RUN_COMMAND"
       - name: Reclaim ownership
         run: |
           echo "Owning the generated content (replacing root by the current user account)"
-          sudo chown $USER:$USER -Rv ${{env.OUTPUT_GENERATION}}
+          sudo chown -Rv $USER:$USER ${{ env.OUTPUT_GENERATION }}
           echo "Granting all users read-write rights on the files"
-          chmod a+rw -Rv ${{env.OUTPUT_GENERATION}}
+          chmod -Rv a+rw ${{ env.OUTPUT_GENERATION }}
+
       - name: Display generated content
         run: |
-          ls -a
           echo "Displaying the content of: ${{env.OUTPUT_GENERATION}}"
-          ls -a ${{env.OUTPUT_GENERATION}}
+          ls -a ${{ env.OUTPUT_GENERATION }}
           echo "Displaying the content of: ${{env.OUTPUT_GENERATION}}/${{env.HTML_GENERATION}}"
-          ls -a ${{env.OUTPUT_GENERATION}}/${{env.HTML_GENERATION}}
+          ls -a ${{ env.OUTPUT_GENERATION }}/${{ env.HTML_GENERATION }}
       - name: Save cache
         id: cache-save
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v4
         with:
-          key: ${{env.CACHE_KEY}}
-          path: ${{env.OUTPUT_GENERATION}}
+          key: ${{ env.CACHE_KEY }}
+          path: ${{ env.OUTPUT_GENERATION }}
           enableCrossOsArchive: true
 
   clean_up_generation:
     runs-on: ubuntu-latest
     needs: build_doxygen
     if: success()
-    env:
-      ICON_PATH: doxygen_generation/favicon/
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Get generated documentation
         id: cache-documentation-restore
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v4
         with:
           key: ${{ env.CACHE_KEY }}
-          enableCrossOsArchive: true
           path: ${{ env.OUTPUT_GENERATION }}
+          enableCrossOsArchive: true
           restore-keys: |
             doxygen-cache-key
             cache-key-doxygen
             doxygen_cache_key
             cache_key_doxygen
+      
       - name: Making temporary folder permanent
         run: |
           echo "Content at './'"  
@@ -151,10 +148,12 @@ jobs:
           ls -a ${{ env.TEMPORARY_FOLDER }}/
           echo "Content of: ${{ env.OUTPUT_GENERATION }}/"
           ls -a ${{ env.OUTPUT_GENERATION }}/
+      
       - name: Listing content of temporary folder
         run: |
           echo "Contents of ${{env.TEMPORARY_FOLDER}}"
           ls -a ${{env.TEMPORARY_FOLDER}}
+      
       - name: Copy the icons to the generated documentation
         run: |
           echo "Content of temporary folder: ${{ env.TEMPORARY_FOLDER }}"
@@ -173,9 +172,10 @@ jobs:
             FINAL_PATH="$i/files/icon"
             echo "Final path = $FINAL_PATH"
             mkdir -p "$FINAL_PATH"
-            cp -rv ${{env.ICON_PATH}}/* "$FINAL_PATH"
+            cp -rv ${{env.HTML_ICON_PATH}}/* "$FINAL_PATH"
             ls -a -ls --color=auto "$FINAL_PATH"
           done
+      
       - name: Generate latex if present
         run: |
           if [ -e "${{env.TEMPORARY_FOLDER}}/${{ env.OUTPUT_GENERATION }}/latex" ]; then
@@ -194,6 +194,7 @@ jobs:
           else
             echo "No latex folder found, not generating anything"
           fi
+      
       - name: Inject install file if man is present
         run: |
           if [ -e "${{env.TEMPORARY_FOLDER}}/${{ env.OUTPUT_GENERATION }}/man" ]; then
@@ -209,7 +210,7 @@ jobs:
 
       - name: Inject external html ressources if html is present
         run: |
-          if [ -e "${{env.TEMPORARY_FOLDER}}/${{ env.OUTPUT_GENERATION}}/html" ]; then
+          if [ -e "${{env.TEMPORARY_FOLDER}}/${{ env.OUTPUT_GENERATION }}/html" ]; then
             CWD=$(pwd)
             cd "${{env.TEMPORARY_FOLDER}}/${{ env.OUTPUT_GENERATION }}/html"
             if [ -e "$CWD/${{env.HTML_SRC_PATH}}/files" ]; then
@@ -266,10 +267,10 @@ jobs:
 
       - name: Save cache
         id: cache-save
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v4
         with:
-          key: ${{env.CACHE_KEY_CLEANED}}
-          path: ${{env.TEMPORARY_FOLDER}}
+          key: ${{ env.CACHE_KEY_CLEANED }}
+          path: ${{ env.TEMPORARY_FOLDER }}
           enableCrossOsArchive: true
 
   publish_html:
@@ -283,13 +284,13 @@ jobs:
     if: success()
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Get generated documentation
         id: html-cache-restore
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v4
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
           path: ${{ env.OUTPUT_GENERATION }}
@@ -301,7 +302,7 @@ jobs:
             cache_key_doxygen
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5.0.0
+        uses: actions/configure-pages@v5
 
       - name: Show restored content
         run: |
@@ -309,34 +310,34 @@ jobs:
           ls -aR ${{env.OUTPUT_GENERATION}}
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4.0.0
+        uses: actions/upload-pages-artifact@v4
         with:
           # Upload selected content
-          path: ${{env.OUTPUT_GENERATION}}/${{env.HTML_GENERATION}}
+          path: ${{ env.OUTPUT_GENERATION }}/${{ env.HTML_GENERATION }}
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.3
+        uses: actions/deploy-pages@v4
 
   export_other_formats_when_present:
     runs-on: ubuntu-latest
-    needs: [clean_up_generation]
+    needs: clean_up_generation
     if: success()
     env:
       DOCUMENTATION_ZIP_NAME: documentation.zip
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Get generated documentation
         id: cache-documentation-restore
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v4
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
-          enableCrossOsArchive: true
           path: ${{ env.TEMPORARY_FOLDER }}
+          enableCrossOsArchive: true
           restore-keys: |
             doxygen-cache-key
             cache-key-doxygen
@@ -346,87 +347,6 @@ jobs:
       - name: List directory content
         run: |
           ls -a
-
-      - name: Get Latest Tag
-        id: get_latest_tag
-        run: |
-          echo "Getting tags"
-          # git fetch --tags # Make sure to fetch the tags first
-          echo "Updated the list"
-          latest_tag=$(git tag --list "v*" | sort -rV | head -n 1)
-          echo "Latest tag = $latest_tag"
-          if [ "$latest_tag" == "" ]; then
-            echo "No tags found matching 'v*'."
-            latest_tag="v1.0.0"
-            echo "Using a default tag: $latest_tag"
-          else
-            echo "Latest Tag: $latest_tag"
-          fi
-          echo "$latest_tag" > ${{env.TAG_FILE}}
-          echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
-          echo -e "\n\n\n\n\n\n\n\n\n"
-          echo "new_tag = $latest_tag"
-          echo "env.new_tag = ${{env.TAG_FILE}}"
-          echo "cat env.new_tag = $(cat ${{env.TAG_FILE}})"
-          echo "env.LATEST_TAG = ${{env.LATEST_TAG}}"
-          echo -e "\n\n\n\n\n\n\n\n\n"
-
-      - name: Check if Latest Tag is a Release
-        id: is_release
-        run: |
-          latest_tag="$(cat ${{env.TAG_FILE}})"
-          is_release="false"
-          latest_updated_tag=$(git tag --list "v*" | sort -rV | head -n 1)
-          if [[ $latest_updated_tag == $latest_tag ]]; then
-            is_release="true"
-          fi
-          echo "$is_release" > ${{env.IS_RELEASE}}
-          echo -e "\n\n\n\n\n\n\n\n\n"
-          echo "Is_release = $is_release"
-          echo "env.Is_release = ${{env.is_release}}"
-          echo "cat env.Is_release = $(cat ${{env.is_release}})"
-          echo -e "\n\n\n\n\n\n\n\n\n"
-
-      - name: Increment Tag Version
-        id: increment_tag
-        run: |
-          is_release="$(cat ${{env.IS_RELEASE}})"
-          latest_tag="$(cat ${{env.TAG_FILE}})"
-          echo "ls = '$(ls)'"
-          echo "is_release = $is_release"
-          echo "latest_tag = $latest_tag"
-          if [[ $is_release == "true" ]]; then
-            # Parse the latest tag and increment the version component you want
-            # Example: Convert "v1.2.3" to "v1.2.4"
-            new_tag="${latest_tag/v/}"  # Remove the leading "v"
-            echo "new_tag = $new_tag"
-            IFS='.' read -ra version <<< "$new_tag"
-            echo "declare -p version = $(declare -p $version)"
-            echo "declare -p version[0] = $(declare -p ${version[0]})"
-            echo "declare -p version[1] = $(declare -p ${version[1]})"
-            echo "declare -p version[2] = $(declare -p ${version[2]})"
-            echo "version[2]+1 = $(expr "${version[2]}" + 1)"
-            echo "version[*] = ${version[*]}"
-            echo "version = ${version}"
-            echo "#version = ${#version}"
-            echo "version[0] = ${version[0]}"
-            echo "version[1] = ${version[1]}"
-            echo "version[2] = ${version[2]}"
-            version[2]=$(expr "${version[2]}" + 1)  # Increment the third version component
-            echo "Version = ${version[*]}"
-            new_tag="v${version[0]}.${version[1]}.${version[2]}"
-            echo "New Tag: $new_tag"
-            echo "$new_tag" > ${{env.TAG_FILE}}
-            echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
-          else
-            echo "Latest tag is not a release. Skipping tag increment."
-          fi
-          echo -e "\n\n\n\n\n\n\n\n\n"
-          echo "new_tag = $new_tag"
-          echo "env.is_release = $(cat ${{env.IS_RELEASE}})"
-          echo "cat env.new_tag = $(cat ${{env.TAG_FILE}})"
-          echo "cat env.is_release = $(cat ${{env.IS_RELEASE}})"
-          echo -e "\n\n\n\n\n\n\n\n\n"
 
       - name: determine e-mail
         id: get-email
@@ -454,8 +374,8 @@ jobs:
 
       - name: Update author
         run: |
-          git config --local user.name "${{github.actor}}"
-          git config --local user.email "${{steps.get-email.outputs.trigger_email}}"
+          git config --local user.name "${GITHUB_ACTOR}"
+          git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
       - name: Get tag title
         run: |
@@ -585,7 +505,7 @@ jobs:
           } >> "$GITHUB_OUTPUT" # anchor point
 
       - name: Publish binary as GitHub release
-        uses: softprops/action-gh-release@v2.3.3
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ${{ steps.anchor-point.outputs.AP}}
@@ -603,12 +523,12 @@ jobs:
     needs: [export_other_formats_when_present, publish_html]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Delete Created cache
         env:
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh cache list
           gh cache delete --all
