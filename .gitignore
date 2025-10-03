@@ -55,3 +55,6 @@ genv
 wenv
 lenv
 menv
+
+# No test cache
+**/.vscode-test/**
