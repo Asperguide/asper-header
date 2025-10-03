@@ -111,6 +111,34 @@ None so far.
 
 ---
 
+## Supported Languages
+
+AsperHeader now provides **comprehensive multilingual support** for user interface messages, error reporting, and interactive elements. Each language includes full translations with culturally appropriate phrasing and proper handling of technical terminology.  
+
+The extension currently supports the following languages:
+
+| Language | Locale Code |
+|----------|-------------|
+| English (US) | `en` |
+| French | `fr` |
+| Italian | `it` |
+| Spanish | `es` |
+| German | `de` |
+| Japanese | `ja` |
+| Korean | `ko` |
+| Russian | `ru` |
+| Portuguese (Brazil) | `pt-br` |
+| Turkish | `tr` |
+| Polish | `pl` |
+| Czech | `cs` |
+| Hungarian | `hu` |
+| Simplified Chinese | `zh-cn` |
+| Traditional Chinese | `zh-tw` |
+
+> **Note:** If a message is missing in a given language, it will automatically fall back to English (`en`) to ensure consistent functionality across all locales.
+
+---
+
 ## Release Notes
 
 ### 1.0.0
@@ -145,6 +173,11 @@ None so far.
 - Update the doxygen comments to make the code clearer
 - Refactor some minor sections of the code
 - Add more unit tests for module stability
+
+### 1.0.5
+
+- Add 12 more languages to the module (es, zh-cn, zh-tw, de, ja, ko, ru, pt-br, tr, pl, cs, hu)
+- Update `messageReference.ts` in order to support such languages
 
 ---
 

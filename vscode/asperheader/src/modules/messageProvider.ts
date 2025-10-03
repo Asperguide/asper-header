@@ -102,7 +102,7 @@ import { messages } from './messageReference';
  */
 class MessageProvider {
     /** @brief Current editor language detected from VS Code environment */
-    private locale: string = vscode.env.language;
+    private locale: string = vscode.env.language.toLowerCase();
 
     /** @brief Key for the message returned when a requested message is missing */
     private messageNotFound: string = "messageNotFound";

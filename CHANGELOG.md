@@ -7,12 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.5] - 03/10/2025
+
+### Added
+
+- Full multilingual support for the AsperHeader module, now supporting:
+  - English (UK) `en`
+  - French `fr`
+  - Italian `it`
+  - Spanish `es`
+  - German `de`
+  - Japanese `ja`
+  - Korean `ko`
+  - Russian `ru`
+  - Portuguese (Brazil) `pt-br`
+  - Turkish `tr`
+  - Polish `pl`
+  - Czech `cs`
+  - Hungarian `hu`
+  - Simplified Chinese `zh-cn`
+  - Traditional Chinese `zh-tw`
+- Complete translations for all existing message keys, preserving parameter placeholders and functionality across languages.
+- Automatic fallback to English (`en`) for missing translations to ensure consistent behavior.
+
+### Changed
+
+- Updated `messageReference.ts` to integrate the new language translations.
+
+---
+
 ## [1.0.4] - 03/10/2025
 
-### Fixed
+### Added
 
-- The copy button functionality
-- The import path in the file regarding the required json file as the name had changed but not been reflected in the code
+- More unit tests for module stability
 
 ### Changed
 
@@ -20,9 +48,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - The doxygen comments to make the code clearer
 - Some minor sections of the code
 
-### Added
+### Fixed
 
-- More unit tests for module stability
+- The copy button functionality
+- The import path in the file regarding the required json file as the name had changed but not been reflected in the code
 
 ---
 
