@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.4] - 03/10/2025
+
+### Fixed
+
+- The copy button functionality
+- The import path in the file regarding the required json file as the name had changed but not been reflected in the code
+
+### Changed
+
+- The logger so that the non-gui based can be visible in non-debug mode
+- The doxygen comments to make the code clearer
+- Some minor sections of the code
+
+### Added
+
+- More unit tests for module stability
+
+---
+
 ## [1.0.3] - 02/10/2025
 
 ### Added

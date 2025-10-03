@@ -137,6 +137,15 @@ None so far.
 - Update the modules logo
 - Update functions to work with older versions of the vscode library
 
+### 1.0.4
+
+- Fix the copy button functionality
+- Update the logger so that the non-gui based can be visible in non-debug mode
+- Fix import path in the file regarding the required json file as the name had changed but not been reflected in the code
+- Update the doxygen comments to make the code clearer
+- Refactor some minor sections of the code
+- Add more unit tests for module stability
+
 ---
 
 ## Following Extension Guidelines
