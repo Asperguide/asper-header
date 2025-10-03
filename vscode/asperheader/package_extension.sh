@@ -32,6 +32,13 @@ if [ $STATUS -ne 0 ]; then
     echo "Pre-publishing step failed, se above for more details."
     exit $STATUS
 fi
+echo "Running tests..."
+npm run test
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Test run failed, see above for more details."
+    exit $STATUS
+fi
 echo "Running the intergrated vsce:package (if present)..."
 npm run vsce:package
 if [ $? -ne 0 ]; then
