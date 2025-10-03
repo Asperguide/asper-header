@@ -531,9 +531,10 @@ jobs:
           git fetch origin main:main
           git checkout main
 
-          echo "$(date)" > .github/last_triggered_by_tag
-          git add .github/last_triggered_by_tag
-          git commit -m "Trigger HTML deployment from tag ${{ github.ref_name }}"
+          TRIGGER_FILE=".github/last_triggered_by_tag_doxygen"
+          echo "$(date)" > $TRIGGER_FILE
+          git add $TRIGGER_FILE
+          git commit -m "[TRIGGER] HTML deployment from tag ${{ github.ref_name }}"
 
           # Push back to main
           git push origin main
