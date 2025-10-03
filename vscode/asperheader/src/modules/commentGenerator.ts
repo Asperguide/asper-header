@@ -250,7 +250,7 @@ export class CommentGenerator {
         }
         const jsonContent = await this.languageComment?.get();
         // logger.info(getMessage("jsonContent", JSON.stringify(jsonContent)));
-        if ((primaryKey in jsonContent) === false) {
+        if (!jsonContent || (primaryKey in jsonContent) === false) {
             logger.Gui.error(getMessage("unknownFileStructure"));
             return commentStructure;
         }
@@ -755,22 +755,22 @@ export class CommentGenerator {
         let lineOpenerFound: boolean = false;
         let lineCloserFound: boolean = false;
         for (let i = 0; i < scanLines; i++) {
-            const lineText = this.documentBody.lineAt(i).text + this.determineNewLine(eol);
-            if (lineText === opener && lineCloserFound) {
+            const lineText = this.documentBody.lineAt(i).text;
+            if (lineText === opener.trimEnd() && lineCloserFound) {
                 logger.Gui.warning(getMessage("brokenHeader"));
                 return false;
             }
-            if (lineText === closer && !lineOpenerFound) {
+            if (lineText === closer.trimEnd() && !lineOpenerFound) {
                 logger.Gui.warning(getMessage("brokenHeader"));
                 return false;
             }
-            if (lineText === opener && (!lineCloserFound && !lineOpenerFound)) {
+            if (lineText === opener.trimEnd() && (!lineCloserFound && !lineOpenerFound)) {
                 lineOpenerFound = true;
                 this.headerInnerStart = i;
                 logger.info(getMessage("headerOpenerFound"));
                 continue;
             }
-            if (lineText === closer && (!lineCloserFound && lineOpenerFound)) {
+            if (lineText === closer.trimEnd() && (!lineCloserFound && lineOpenerFound)) {
                 this.headerInnerEnd = i;
                 logger.info(getMessage("headerOpenerAndCloserFound"));
                 return true;
