@@ -734,6 +734,9 @@ class Log {
      * GUI notification level (Gui.debug method) rather than console level.
      */
     debug(message: string, searchDepth: number | undefined = undefined) {
+        if (this.LI.debugEnabled() === false) {
+            return;
+        }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
         final += CodeConfig.get("extensionName") + " ";

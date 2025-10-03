@@ -218,7 +218,7 @@ export const defaultHeaderLogo: string[] = [
 export const defaultMaxScanLength: number = 100;
 
 /** @brief Global debug mode flag for development and troubleshooting */
-export const enableDebug: boolean = true;
+export const enableDebug: boolean = false;
 
 // ============================================================================
 // Behavioral Feature Toggles
