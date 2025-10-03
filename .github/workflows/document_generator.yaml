@@ -193,7 +193,7 @@ jobs:
             else
               echo "No Makefile found, not generating anything"
             fi
-            cd $CWDxs
+            cd $CWD
           else
             echo "No latex folder found, not generating anything"
           fi
@@ -294,7 +294,7 @@ jobs:
 
       - name: Get generated documentation
         id: html-cache-restore
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
         uses: actions/cache@v4
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
