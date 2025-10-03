@@ -284,7 +284,7 @@ jobs:
     # The system on which we are running the actions
     runs-on: ubuntu-latest
     needs: clean_up_generation
-    if: success()
+    if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -531,17 +531,20 @@ jobs:
           git fetch origin main:main
           git checkout main
 
-          # Create empty commit
-          git commit --allow-empty -m "Trigger HTML deployment from tag ${{ github.ref_name }}"
+          echo "$(date)" > .github/last_triggered_by_tag
+          git add .github/last_triggered_by_tag
+          git commit -m "Trigger HTML deployment from tag ${{ github.ref_name }}"
 
           # Push back to main
           git push origin main
+
+
 
   clean_created_cache:
     name: Clear the cache generated during the build time
     permissions: write-all
     runs-on: ubuntu-latest
-    needs: [export_other_formats_when_present, publish_html]
+    needs: export_other_formats_when_present
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
