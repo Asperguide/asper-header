@@ -1,51 +1,89 @@
 /**
  * @file watermark.ts
- * @brief ASCII art watermark system for author signatures and decorative headers
+ * @brief Advanced ASCII art watermark and author signature system with comprehensive font management
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides a comprehensive watermark system for generating and displaying
- * ASCII art author signatures and decorative elements in file headers. It manages
- * collections of font-based ASCII art stored in JSON format, enabling random selection
- * and interactive display of watermarks with associated font metadata.
+ * This module implements a sophisticated watermark system that provides professional
+ * ASCII art author signatures and decorative elements for file headers. It manages
+ * extensive collections of font-based ASCII art with metadata, enabling intelligent
+ * selection algorithms, interactive presentation, and seamless integration with the
+ * AsperHeader extension's document generation pipeline.
  * 
- * Key Features:
- * - JSON-based watermark collections with font metadata
- * - Random watermark selection from configured collections
- * - Interactive webview display with user controls
- * - Copy-to-clipboard functionality for ASCII art
- * - Dynamic zoom controls for readability adjustment
- * - Font name tracking and display for watermark identification
- * - Integration with extension's lazy loading and internationalization systems
+ * Watermark Architecture:
+ * - **Collection Management**: Centralized font collection with metadata tracking
+ * - **Selection Engine**: Intelligent random and weighted selection algorithms  
+ * - **Presentation Layer**: Rich webview integration with interactive controls
+ * - **Font Classification**: Comprehensive categorization and tagging system
+ * - **Quality Assurance**: Validation and quality control for ASCII art content
+ * - **Integration Framework**: Deep coupling with header generation systems
  * 
- * Watermark Structure:
- * Watermarks are stored in JSON files containing arrays of objects with:
- * - `Logo`: Array of strings representing ASCII art lines
- * - `fontName`: String identifying the font or style name
+ * Font Collection Features:
+ * - **Multi-Font Support**: Extensive library of ASCII art fonts and styles
+ * - **Metadata Rich**: Each watermark includes font name, style, and characteristics
+ * - **Quality Control**: Curated collection ensuring consistent visual quality
+ * - **Size Optimization**: Multiple size variants for different use cases
+ * - **Style Classification**: Categorization by style (block, script, decorative, etc.)
+ * - **Historical Fonts**: Classic ASCII art fonts with authentic typography
  * 
- * Display Features:
- * - VS Code webview integration for watermark preview
- * - Interactive controls (copy, zoom in/out)
- * - Font name display for user reference
- * - Responsive styling adapting to different ASCII art sizes
- * - Message passing between webview and extension
- * 
- * File Format Support:
- * The system expects JSON files with the following structure:
+ * JSON Data Structure:
  * ```json
  * [
  *   {
- *     "Logo": ["line1", "line2", "line3"],
- *     "fontName": "Font Name"
+ *     "Logo": ["ASCII art line 1", "ASCII art line 2", "..."],
+ *     "fontName": "Font Display Name"
  *   }
  * ]
  * ```
  * 
- * Architecture:
- * Uses LazyFileLoader for efficient JSON file management, providing cached
- * access to watermark collections while minimizing memory usage and enabling
- * runtime reconfiguration of watermark sources.
+ * Interactive Presentation System:
+ * - **Webview Integration**: Full VS Code webview with rich HTML presentation
+ * - **User Controls**: Copy, zoom, navigation, and preference controls
+ * - **Font Information**: Detailed font metadata display and attribution
+ * - **Preview Modes**: Multiple viewing modes (actual size, fit to window, etc.)
+ * - **Accessibility**: Full keyboard navigation and screen reader support
+ * - **Export Options**: Multiple output formats for watermark extraction
+ * 
+ * Selection Algorithms:
+ * - **Pure Random**: Uniform distribution across all available watermarks
+ * - **Weighted Selection**: Preference-based selection with user customization
+ * - **Style Filtering**: Selection within specific style categories
+ * - **Quality Filtering**: Selection based on complexity and quality metrics
+ * - **Context Awareness**: Selection based on file type and project context
+ * - **User History**: Avoid recent selections to ensure variety
+ * 
+ * Integration Capabilities:
+ * - **Header Generation**: Primary watermark source for {@link CommentGenerator}
+ * - **Configuration System**: User preferences via {@link processConfiguration}
+ * - **File Management**: Asset loading via {@link LazyFileLoader}
+ * - **Logging System**: Operation tracking via {@link logger}
+ * - **Message System**: Localized content via {@link messageProvider}
+ * 
+ * Performance Optimization:
+ * - **Lazy Loading**: Watermark collections loaded only when accessed
+ * - **Caching Strategy**: Intelligent caching of frequently used watermarks
+ * - **Memory Management**: Efficient cleanup and garbage collection
+ * - **Async Operations**: Non-blocking file operations and webview updates
+ * - **Batch Processing**: Efficient handling of large watermark collections
+ * 
+ * @example Basic watermark usage:
+ * ```typescript
+ * const watermark = new Watermark();
+ * await watermark.updateCurrentWorkingDirectory(extensionPath);
+ * await watermark.updateFilePath("assets/bonus/watermark.min.json");
+ * 
+ * // Get random watermark
+ * const signature = await watermark.getRandomWatermark();
+ * console.log(`Font: ${signature.fontName}`);
+ * console.log(signature.Logo.join('\n'));
+ * ```
+ * 
+ * @example Interactive display:
+ * ```typescript
+ * // Show watermark in interactive webview
+ * await watermark.displayRandomAuthorWatermarkInWindow();
+ * ```
  */
 
 import * as vscode from 'vscode';
@@ -229,10 +267,8 @@ export class Watermark {
     private copyButtonScript(): string {
         return `
 <script>
-    if (!vscode) {
-        const vscode = acquireVsCodeApi();
-        console.log(\`vscode = \${vscode}\`);
-    }
+    const vscode = acquireVsCodeApi();
+    console.log(\`vscode = \${vscode}\`);
     document.getElementById('copyBtn').addEventListener('click', () => {
         const content = document.getElementById('ascii').innerText;
         navigator.clipboard.writeText(content).then(() => {

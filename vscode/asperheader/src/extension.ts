@@ -1,3 +1,45 @@
+/**
+ * @file extension.ts
+ * @brief Main extension entry point for AsperHeader VS Code extension
+ * @author Henry Letellier
+ * @version 1.0.4
+ * @date 2025
+ * 
+ * This file serves as the primary activation point for the AsperHeader VS Code extension,
+ * providing comprehensive file header management with ASCII art integration, multi-language
+ * support, and automated documentation features. The extension orchestrates various
+ * modules to deliver a cohesive development experience for file organization and
+ * documentation standardization.
+ * 
+ * Key responsibilities include:
+ * - Extension lifecycle management (activation/deactivation)
+ * - Command registration and routing
+ * - Module initialization and dependency injection
+ * - Workspace configuration and state management
+ * - Document save event handling with header refresh
+ * 
+ * The extension integrates multiple specialized modules:
+ * - CommentGenerator: Automated header injection and refresh
+ * - RandomLogo: ASCII art logo selection and display
+ * - Darling: Easter egg functionality with character display
+ * - Watermark: Author watermark management
+ * - MorseTranslator: Text-to-Morse code conversion utilities
+ * - Logger: Dual-channel logging system for development and user feedback
+ * 
+ * @example Extension activation workflow:
+ * ```typescript
+ * // Extension activates automatically when VS Code loads
+ * // Commands become available in Command Palette:
+ * // - "AsperHeader: Hello World"
+ * // - "AsperHeader: Say Hello World"
+ * // - "AsperHeader: Inject Header"
+ * // - "AsperHeader: Refresh Header"
+ * // - "AsperHeader: Display Random Logo"
+ * 
+ * // Headers auto-refresh on file save when configured
+ * ```
+ */
+
 import * as path from "path";
 import * as vscode from 'vscode';
 import { moduleName } from './constants';
@@ -30,6 +72,16 @@ const WATERMARK: Watermark = new Watermark();
 const RANDOM_LOGO: RandomLogo = new RandomLogo();
 
 // --- Helper functions ---
+
+/**
+ * @brief Extracts comprehensive file information from VS Code text editor
+ * @param editor Active VS Code text editor instance
+ * @return Object containing file path, name, extension, and language ID
+ * 
+ * Analyzes the active editor's document to extract metadata used for
+ * header generation and file processing. Essential for context-aware
+ * operations across different file types and languages.
+ */
 function getFileInfo(editor: vscode.TextEditor) {
 	const document = editor.document;
 	const filePath = document.uri.fsPath;
@@ -43,14 +95,21 @@ function getFileInfo(editor: vscode.TextEditor) {
 // --- Command implementations ---
 
 /**
- * Command: Hello World
+ * @brief Displays a simple greeting message from the extension
+ * 
+ * Basic command implementation showing informational notification
+ * to verify extension functionality and user interaction.
  */
 function helloWorldCommand() {
 	vscode.window.showInformationMessage(getMessage("helloWorldGreetingsCommand", moduleName));
 }
 
 /**
- * Command: Say Hello with file info
+ * @brief Inserts greeting message with current file information
+ * 
+ * Advanced hello command that analyzes the active editor and
+ * inserts contextual information including file path, extension,
+ * and language type. Demonstrates file analysis capabilities.
  */
 async function sayHelloWorldCommand() {
 	const editor = vscode.window.activeTextEditor;
@@ -69,7 +128,12 @@ async function sayHelloWorldCommand() {
 }
 
 /**
- * Update checks to avoid concurrency during a save trigger
+ * @brief Thread-safe document update handler for save events
+ * @param document VS Code text document being saved
+ * 
+ * Implements concurrency control to prevent multiple simultaneous
+ * header updates during save operations. Uses WeakSet tracking
+ * to ensure atomic updates and prevent corruption.
  */
 async function updateSaveSafe(document: vscode.TextDocument) {
 	if (updatingDocuments.has(document)) {
@@ -90,7 +154,11 @@ async function updateSaveSafe(document: vscode.TextDocument) {
 }
 
 /**
- * Refresh the name of the cached workspace if any is activated
+ * @brief Updates cached workspace name from VS Code workspace state
+ * 
+ * Analyzes current workspace configuration to extract and cache
+ * the workspace name for use in header generation. Handles both
+ * workspace folders and legacy root path configurations.
  */
 function refreshWorkspaceName() {
 	let workspaceName: string | undefined;
@@ -107,9 +175,21 @@ function refreshWorkspaceName() {
 }
 
 /**
- * Activate extension
+ * @brief Main extension activation entry point
+ * @param context VS Code extension context providing access to extension resources
+ * 
+ * Orchestrates complete extension initialization including:
+ * - Module dependency injection and configuration
+ * - Asset path resolution for templates and resources
+ * - Command registration for user interaction
+ * - Event handler setup for document management
+ * - Logger initialization with installation state
+ * 
+ * Called automatically by VS Code when extension loads or
+ * when activation events are triggered.
  */
 export async function activate(context: vscode.ExtensionContext) {
+	logger.updateInstallationState(context);
 	logger.Gui.debug(`context.extensionPath: ${context.extensionPath}`);
 	const jsonLanguagePath: string = path.join(
 		context.extensionPath,
@@ -160,6 +240,10 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 /**
- * Deactivate extension
+ * @brief Extension cleanup and deactivation handler
+ * 
+ * Called when extension is deactivated, disabled, or VS Code closes.
+ * Currently implements graceful shutdown without explicit cleanup
+ * as modules handle their own resource management.
  */
 export function deactivate() { }

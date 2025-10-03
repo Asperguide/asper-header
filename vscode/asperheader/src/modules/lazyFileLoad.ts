@@ -1,21 +1,75 @@
 /**
  * @file lazyFileLoad.ts
- * @brief Lazy loading file system utility with caching and type safety
+ * @brief Advanced lazy loading file system utility with intelligent caching and type safety
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides a generic lazy file loader that supports caching,
- * automatic JSON parsing, and flexible path resolution. It's designed to
- * efficiently load configuration files, data files, and other resources
- * on-demand while maintaining type safety through TypeScript generics.
+ * This module implements a sophisticated lazy loading file system utility that serves as
+ * the foundation for efficient resource management throughout the AsperHeader extension.
+ * It provides intelligent caching, automatic content parsing, flexible path resolution,
+ * and comprehensive error handling while maintaining full type safety through generics.
  * 
- * Key features:
- * - Lazy loading with automatic caching
- * - JSON and text file support
- * - Relative and absolute path resolution
- * - Type-safe file content handling
- * - Cache invalidation and reload functionality
+ * Design Philosophy:
+ * - **Performance First**: Minimize file I/O through intelligent caching strategies
+ * - **Type Safety**: Leverage TypeScript generics for compile-time type checking
+ * - **Flexibility**: Support diverse file formats and path resolution patterns
+ * - **Error Resilience**: Comprehensive error handling with graceful degradation
+ * - **Resource Efficiency**: Memory-conscious caching with selective retention
+ * 
+ * Core Features:
+ * - **Lazy Loading**: Files loaded only when first accessed, reducing startup time
+ * - **Intelligent Caching**: In-memory caching with cache invalidation and refresh
+ * - **Format Flexibility**: Support for JSON, JSONC, plain text, and custom formats
+ * - **Path Resolution**: Automatic resolution of relative and absolute paths
+ * - **Type Safety**: Generic type parameters ensure compile-time content validation
+ * - **Error Recovery**: Graceful handling of missing files, parse errors, and I/O failures
+ * 
+ * File Format Support:
+ * - **JSON Files**: Automatic parsing with error handling and validation
+ * - **JSONC Files**: JSON with comments support for configuration files
+ * - **Text Files**: Raw text content with encoding detection
+ * - **Custom Formats**: Extensible parsing system for specialized file types
+ * - **Binary Files**: Basic support for binary content with appropriate type handling
+ * 
+ * Caching Strategy:
+ * - **Memory Caching**: Parsed content cached in memory for subsequent access
+ * - **Invalidation**: Manual cache invalidation and automatic refresh mechanisms
+ * - **Memory Management**: Intelligent cache size management and cleanup
+ * - **Performance Monitoring**: Optional cache hit/miss statistics for optimization
+ * 
+ * Integration Points:
+ * This utility serves as the backbone for resource loading across the extension:
+ * - **Configuration Loading**: Language definitions and formatting rules
+ * - **Asset Management**: ASCII art files and logo collections  
+ * - **Template System**: Header templates and message definitions
+ * - **Internationalization**: Message files and localization resources
+ * 
+ * Error Handling Strategy:
+ * - **File Not Found**: Graceful fallback to default content or error reporting
+ * - **Parse Errors**: Detailed error messages with context information
+ * - **Permission Issues**: Clear error reporting for filesystem access problems
+ * - **Network Issues**: Timeout handling for remote file access (future enhancement)
+ * 
+ * @example Basic usage with JSON configuration:
+ * ```typescript
+ * const configLoader = new LazyFileLoader<ConfigType>();
+ * await configLoader.updateCurrentWorkingDirectory(extensionPath);
+ * await configLoader.updateFilePath("config/settings.json");
+ * 
+ * const config = await configLoader.loadContent();
+ * console.log(config.someProperty); // Type-safe access
+ * ```
+ * 
+ * @example Advanced usage with custom parsing:
+ * ```typescript
+ * const loader = new LazyFileLoader<CustomType>();
+ * loader.setCustomParser((content: string) => {
+ *     return parseCustomFormat(content);
+ * });
+ * 
+ * const data = await loader.loadContent();
+ * ```
  */
 
 import * as fs from 'fs';

@@ -1,13 +1,58 @@
 /**
  * @file commentGenerator.ts
- * @brief Comment generator module for creating file headers with logos and metadata
+ * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides functionality to generate and manage file headers with
- * customizable logos, project information, and metadata. It supports multiple
- * comment styles and automatic header refresh on file save.
+ * This module serves as the core engine for generating, injecting, and managing 
+ * file headers with customizable logos, project metadata, and timestamp tracking.
+ * It provides intelligent comment style detection, multi-language support, and
+ * seamless integration with the VS Code workspace environment.
+ * 
+ * Architecture Overview:
+ * - **CommentGenerator**: Main orchestrator class managing header lifecycle
+ * - **Language Detection**: Automatic identification of file types and comment styles
+ * - **Template System**: Flexible header templates with variable substitution  
+ * - **Logo Integration**: Dynamic logo selection from ASCII art collections
+ * - **Metadata Management**: Creation date, modification tracking, and file properties
+ * - **Configuration Integration**: Deep integration with {@link processConfiguration} system
+ * 
+ * Key Dependencies:
+ * - {@link LazyFileLoader}: Lazy loading of language configuration files
+ * - {@link RandomLogo}: ASCII art logo selection and management
+ * - {@link querier}: User interaction and input validation
+ * - {@link logger}: Comprehensive logging and error reporting
+ * - {@link processConfiguration}: Extension configuration and workspace settings
+ * 
+ * Supported Features:
+ * - Multi-line and single-line comment generation
+ * - Language-specific comment syntax adaptation
+ * - Automatic header refresh on file save
+ * - Project name and workspace integration
+ * - Telegraph-style protocol markers for structured headers
+ * - Copyright and authorship attribution
+ * - File description and purpose documentation
+ * 
+ * Integration Points:
+ * This module integrates with the extension's save event handlers, workspace
+ * configuration system, and user interface components to provide seamless
+ * header management throughout the development workflow.
+ * 
+ * @example Basic header injection:
+ * ```typescript
+ * const generator = new CommentGenerator(lazyFileLoader);
+ * generator.updateLogoInstanceRandomiser(randomLogo);
+ * await generator.injectHeader(); // Injects header to active editor
+ * ```
+ * 
+ * @example Automatic refresh setup:
+ * ```typescript
+ * // In extension activation
+ * vscode.workspace.onDidSaveTextDocument(async (document) => {
+ *     await generator.refreshHeader(document);
+ * });
+ * ```
  */
 
 import * as vscode from 'vscode';
@@ -36,19 +81,55 @@ interface CommentStyle {
 }
 
 /**
- * @class CommentGenerator
- * @brief Main class responsible for generating and managing file headers
+ * @class CommentGenerator  
+ * @brief Intelligent file header generation and management system
  * 
- * This class handles the creation, injection, and updating of file headers with
- * project metadata, logos, creation/modification dates, and other customizable
- * information. It supports multiple programming languages and comment styles.
+ * The CommentGenerator class serves as the central orchestrator for all header-related
+ * operations within the AsperHeader extension. It provides comprehensive functionality
+ * for creating, updating, and maintaining file headers with rich metadata, ASCII art
+ * logos, and language-appropriate comment formatting.
  * 
- * Key features:
- * - Automatic language detection and comment style selection
- * - Random logo generation from asset collections
- * - Header refresh on file save
- * - Metadata tracking (creation date, last modified, etc.)
- * - Multi-language support through configuration files
+ * Core Responsibilities:
+ * - **Header Lifecycle Management**: Creation, injection, refresh, and validation
+ * - **Language Adaptation**: Automatic detection and appropriate comment style selection
+ * - **Template Processing**: Dynamic variable substitution in header templates
+ * - **Logo Integration**: Seamless integration with {@link RandomLogo} for ASCII art
+ * - **Metadata Tracking**: Creation timestamps, modification dates, and file properties
+ * - **User Interaction**: Prompting for missing information and configuration
+ * 
+ * Architectural Features:
+ * - **Lazy Loading**: Language configurations loaded on-demand for performance
+ * - **Configuration Integration**: Deep coupling with {@link CodeConfig} settings
+ * - **Error Resilience**: Comprehensive error handling and user feedback
+ * - **Workspace Awareness**: Context-sensitive behavior based on workspace state
+ * - **Multi-Language Support**: Extensible system supporting diverse programming languages
+ * 
+ * Header Structure:
+ * Generated headers follow a structured format including:
+ * - Opening decoration and logo placement
+ * - Project identification and file metadata  
+ * - Creation and modification timestamps
+ * - Description, purpose, and copyright information
+ * - Telegraph protocol markers for structured communication
+ * - Closing decoration and formatting
+ * 
+ * Performance Considerations:
+ * - Language configurations cached after first load
+ * - Header parsing optimized for large files
+ * - Minimal VS Code API calls to reduce overhead
+ * - Efficient string manipulation and template processing
+ * 
+ * @example Advanced usage with configuration:
+ * ```typescript
+ * const generator = new CommentGenerator(configLoader);
+ * generator.updateLogoInstanceRandomiser(logoProvider);
+ * 
+ * // Configure behavior
+ * await generator.refreshHeader(document, {
+ *     forceUpdate: true,
+ *     preserveDescription: false
+ * });
+ * ```
  */
 export class CommentGenerator {
     /** @brief Configuration object containing all extension settings */
@@ -200,8 +281,8 @@ export class CommentGenerator {
                     const extensionsForLang = nodeFileExtensions[langName] ?? [];
                     for (let extIndex = 0; extIndex < extensionsForLang.length; extIndex++) {
                         let dot: string = "";
-                        if (extensionsForLang[extIndex].length >0 && extensionsForLang[extIndex][0] === ".") {
-                            dot=".";
+                        if (extensionsForLang[extIndex].length > 0 && extensionsForLang[extIndex][0] === ".") {
+                            dot = ".";
                         }
                         if (extensionsForLang[extIndex] === `${dot}${this.fileExtension}`) {
                             nodeFound = true;
@@ -215,6 +296,7 @@ export class CommentGenerator {
                 }
             }
 
+            logger.debug(getMessage("arrayNodeContent", `Json[${primaryKey}]`, index, node));
             if (nodeFound) {
                 logger.Gui.info(getMessage("identifiedLanguage", locatedName));
                 logger.info(getMessage("arrayNodeContent", `Json[${primaryKey}]`, index, node));
@@ -223,7 +305,6 @@ export class CommentGenerator {
                 commentStructure.prompt_comment_opening_type = node.prompt_comment_opening_type ?? false;
                 return commentStructure;
             }
-            logger.debug(getMessage("arrayNodeContent", `Json[${primaryKey}]`, index, node));
         }
         logger.error(getMessage("languageNotFound", String(this.languageId), this.fileExtension));
         return commentStructure;

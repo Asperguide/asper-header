@@ -1,40 +1,82 @@
 /**
  * @file randomLogo.ts
- * @brief Random ASCII art logo system for dynamic header content generation
+ * @brief Comprehensive ASCII art logo management and interactive display system
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides a comprehensive system for managing and displaying random ASCII art
- * logos in file headers and interactive webview panels. It supports recursive file discovery,
- * lazy loading of logo content, and interactive display features including copy functionality
- * and zoom controls.
+ * This module implements a sophisticated ASCII art logo management system that serves as
+ * the visual centerpiece of the AsperHeader extension. It provides intelligent logo
+ * discovery, selection, caching, and interactive presentation capabilities with deep
+ * integration into VS Code's webview architecture and the extension's broader ecosystem.
  * 
- * Key Features:
- * - Recursive discovery of ASCII art files from directory structures
- * - Random logo selection from available collections
- * - Lazy loading with caching for efficient memory usage
- * - Interactive webview display with user controls
- * - Copy-to-clipboard functionality for ASCII art
- * - Zoom controls for better readability
- * - Integration with extension's internationalization system
+ * Core Architecture:
+ * - **Discovery Engine**: Recursive filesystem traversal for ASCII art asset discovery
+ * - **Selection Algorithm**: Intelligent randomization with category-aware selection
+ * - **Caching Layer**: Memory-efficient lazy loading with selective caching strategies
+ * - **Display System**: Rich webview integration with interactive user controls
+ * - **Integration Framework**: Seamless coupling with {@link CommentGenerator} and header systems
+ * - **Performance Optimization**: Async operations and minimal memory footprint
  * 
- * File Support:
- * - Text files (.txt) containing ASCII art
- * - Line-by-line logo storage format
- * - Automatic file type filtering and validation
- * - Support for various ASCII art formats and sizes
+ * Asset Management:
+ * - **File Discovery**: Recursive scanning of asset directories for .txt logo files
+ * - **Category Organization**: Hierarchical organization (Android, Apple, Linux, Windows systems)
+ * - **Metadata Extraction**: Automatic filename parsing and category classification
+ * - **Content Validation**: ASCII art format validation and line-by-line processing
+ * - **Lazy Loading**: On-demand loading via {@link LazyFileLoader} for memory efficiency
+ * - **Cache Management**: Intelligent caching with selective retention policies
  * 
- * Display Features:
- * - VS Code webview integration for logo preview
- * - Interactive controls (copy, zoom in/out)
- * - Responsive styling for different logo sizes
- * - Message passing between webview and extension
+ * Interactive Features:
+ * - **Webview Presentation**: Full VS Code webview integration with rich HTML/CSS/JS
+ * - **User Controls**: Copy-to-clipboard, zoom controls, and navigation interfaces
+ * - **Message Passing**: Bidirectional communication between webview and extension
+ * - **Responsive Design**: Adaptive layouts for different ASCII art sizes and styles
+ * - **Accessibility**: Keyboard navigation and screen reader support
+ * - **Internationalization**: Multi-language support via {@link messageProvider}
  * 
- * Architecture:
- * The system uses LazyFileLoader for efficient file management, maintaining
- * a collection of logo loaders that can be accessed randomly. This approach
- * minimizes memory usage while providing quick access to logo content.
+ * Selection Algorithms:
+ * - **Pure Random**: Uniform distribution across all available logos
+ * - **Weighted Selection**: Preference-based selection with user customization
+ * - **Category Filtering**: System-specific or theme-based logo selection
+ * - **Exclusion Lists**: User-defined patterns for logo filtering
+ * - **Fallback Mechanisms**: Graceful degradation when preferred logos unavailable
+ * 
+ * Integration Points:
+ * - **Header Generation**: Primary logo source for {@link CommentGenerator}
+ * - **Configuration System**: Deep integration with {@link processConfiguration}
+ * - **Logging Framework**: Comprehensive error reporting via {@link logger}
+ * - **User Interface**: Interactive webview panels and status notifications
+ * - **File System**: Async file operations with error resilience
+ * 
+ * Performance Characteristics:
+ * - **Memory Efficiency**: Lazy loading prevents unnecessary RAM usage
+ * - **Async Operations**: Non-blocking file I/O and directory traversal
+ * - **Caching Strategy**: LRU-style caching for frequently accessed logos
+ * - **Error Resilience**: Graceful handling of missing files and corrupted assets
+ * - **Scalability**: Support for large ASCII art collections without performance degradation
+ * 
+ * @example Basic logo selection:
+ * ```typescript
+ * const randomLogo = new RandomLogo();
+ * await randomLogo.updateCurrentWorkingDirectory(extensionPath);
+ * await randomLogo.updateRootDir(path.join(extensionPath, "assets", "asciiArt"));
+ * 
+ * const logo = await randomLogo.getRandomLogo();
+ * console.log(logo.lines); // ASCII art lines ready for header injection
+ * ```
+ * 
+ * @example Interactive webview display:
+ * ```typescript
+ * // Display logo in interactive webview with controls
+ * await randomLogo.displayRandomLogoInWindow();
+ * ```
+ * 
+ * @example Integration with header generation:
+ * ```typescript
+ * const commentGenerator = new CommentGenerator(configLoader);
+ * commentGenerator.updateLogoInstanceRandomiser(randomLogo);
+ * // Logo will be automatically included in generated headers
+ * ```
  */
 
 import * as fs from 'fs/promises';
@@ -241,10 +283,8 @@ export class RandomLogo {
     private copyButtonScript(): string {
         return `
 <script>
-    if (!vscode) {
-        const vscode = acquireVsCodeApi();
-        console.log(\`vscode = \${vscode}\`);
-    }
+    const vscode = acquireVsCodeApi();
+    console.log(\`vscode = \${vscode}\`);
     document.getElementById('copyBtn').addEventListener('click', () => {
         const content = document.getElementById('ascii').innerText;
         navigator.clipboard.writeText(content).then(() => {

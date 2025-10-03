@@ -1,37 +1,83 @@
 /**
  * @file messageProvider.ts
- * @brief Internationalization (i18n) message provider with intelligent language detection and fallback
+ * @brief Comprehensive internationalization engine with intelligent language detection and message orchestration
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides the core internationalization engine for the AsperHeader extension,
- * implementing intelligent message retrieval with automatic language detection and robust
- * fallback mechanisms. It works in conjunction with messageReference.ts to deliver
- * localized content throughout the extension.
+ * This module serves as the central internationalization (i18n) engine for the AsperHeader
+ * extension, providing sophisticated message management with automatic language detection,
+ * dynamic parameter interpolation, and robust fallback mechanisms. It ensures consistent
+ * multilingual user experiences across all extension interfaces and interactions.
  * 
- * Architecture:
- * - **MessageProvider**: Core logic for language detection and message retrieval
- * - **messageReference**: Centralized message dictionary (imported from ./messageReference)
- * - **Singleton Pattern**: Single instance ensures consistent language settings
+ * I18n Architecture:
+ * - **Language Detection**: Automatic detection from VS Code environment and user preferences
+ * - **Message Dictionary**: Centralized message repository via {@link messageReference}
+ * - **Fallback Chain**: Hierarchical fallback (user locale → English → first available)
+ * - **Parameter System**: Dynamic parameter interpolation with type safety
+ * - **Caching Layer**: Intelligent caching for frequently accessed messages
+ * - **Error Recovery**: Graceful handling of missing translations and malformed messages
  * 
- * Key Features:
- * - Automatic VS Code language detection from environment
- * - Intelligent fallback chain: user locale → English → first available
- * - Dynamic parameter interpolation through function-based messages
- * - Type-safe message retrieval with method overloading
- * - Missing message handling with debugging information
- * - Language override capabilities for testing and special cases
+ * Language Support Matrix:
+ * - **English (en)**: Primary language with complete coverage (fallback language)
+ * - **French (fr)**: Full translation coverage for all extension messages
+ * - **Italian (it)**: Complete localization with cultural adaptations
+ * - **Extensibility**: Plugin architecture for additional language support
  * 
- * Supported Languages:
- * - English (en) - Primary/fallback language
- * - French (fr) - Complete translation coverage
- * - Italian (it) - Complete translation coverage
+ * Message Types:
+ * - **Static Messages**: Simple string translations for UI elements
+ * - **Parameterized Messages**: Dynamic content with variable substitution
+ * - **Function Messages**: Complex messages with computation and formatting
+ * - **Pluralization**: Context-aware plural forms for different languages
+ * - **Rich Content**: HTML/Markdown support for formatted notifications
  * 
- * Usage Patterns:
+ * Parameter Interpolation System:
+ * - **Named Parameters**: `{paramName}` style parameter substitution
+ * - **Positional Parameters**: Sequential parameter replacement for simple messages
+ * - **Type Safety**: TypeScript support for parameter validation
+ * - **Escaping**: Automatic escaping for security in HTML contexts
+ * - **Formatting**: Number, date, and currency formatting per locale
+ * 
+ * Fallback Strategy:
+ * 1. **User Locale**: Attempt to use detected VS Code language
+ * 2. **English Fallback**: Default to English if user locale unavailable
+ * 3. **First Available**: Use first available translation as last resort
+ * 4. **Debug Mode**: Return message key with parameters for development
+ * 5. **Error Handling**: Clear error messages for missing translations
+ * 
+ * Integration Points:
+ * This module provides localized content throughout the extension ecosystem:
+ * - **User Interface**: All VS Code notifications and webview content
+ * - **Error Messages**: Localized error reporting and diagnostic information
+ * - **Configuration**: Setting descriptions and validation messages
+ * - **Header Content**: Template text and generated content localization
+ * - **Logging**: Debug and information messages for development
+ * 
+ * Performance Optimization:
+ * - **Lazy Loading**: Language packs loaded only when needed
+ * - **Message Caching**: Frequently used messages cached in memory
+ * - **Batch Operations**: Efficient handling of bulk message requests
+ * - **Memory Management**: Automatic cleanup of unused language data
+ * 
+ * @example Basic message retrieval:
  * ```typescript
- * getMessage("fileLoaded", "/path/to/file");
- * getMessage("error", { language: "fr" }, "error details");
+ * // Simple message
+ * const greeting = getMessage("welcome");
+ * 
+ * // Parameterized message
+ * const fileMessage = getMessage("fileLoaded", "/path/to/file.txt");
+ * 
+ * // Language override
+ * const frenchError = getMessage("error", { language: "fr" }, errorDetails);
+ * ```
+ * 
+ * @example Advanced usage with complex parameters:
+ * ```typescript
+ * const complexMessage = getMessage("operationComplete", {
+ *     count: 42,
+ *     duration: "5.2s", 
+ *     success: true
+ * });
  * ```
  */
 

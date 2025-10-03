@@ -1,14 +1,79 @@
 /**
  * @file darling.ts
- * @brief Character display module for showing random anime characters with ASCII art
+ * @brief Interactive character showcase system featuring "Darling in the FranXX" characters with rich presentation
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides functionality to load and display random anime characters
- * from the "Darling in the FranXX" series. It creates webview panels showing
- * character information, quotes, descriptions, and ASCII art representations
- * with interactive features like copy and zoom functionality.
+ * This module implements an engaging character display system that serves as an Easter egg
+ * feature within the AsperHeader extension. It provides immersive character presentations
+ * from the "Darling in the FranXX" anime series, complete with ASCII art, biographical
+ * information, memorable quotes, and interactive webview interfaces.
+ * 
+ * Feature Overview:
+ * - **Character Database**: Comprehensive collection of "Darling in the FranXX" characters
+ * - **ASCII Art Integration**: High-quality ASCII representations of each character
+ * - **Interactive Webview**: Rich HTML presentation with responsive design
+ * - **Randomization System**: Intelligent random character selection algorithms
+ * - **Copy Functionality**: Easy ASCII art copying for external use
+ * - **Zoom Controls**: Adjustable display sizing for optimal viewing
+ * - **Multilingual Support**: Internationalized character information and UI
+ * 
+ * Character Data Structure:
+ * - **Personal Information**: Name, romaji, age, and physical characteristics
+ * - **Narrative Elements**: Memorable quotes and detailed character descriptions
+ * - **Visual Content**: Multi-line ASCII art representations with consistent formatting
+ * - **Metadata**: Character IDs, series context, and classification information
+ * - **Localization**: Multi-language support for character descriptions and quotes
+ * 
+ * Presentation System:
+ * - **Webview Architecture**: Full VS Code webview integration with rich HTML/CSS
+ * - **Responsive Design**: Adaptive layouts for different screen sizes and orientations
+ * - **Interactive Controls**: User interface elements for enhanced user experience
+ * - **Animation Support**: Smooth transitions and visual effects for character display
+ * - **Accessibility**: Screen reader support and keyboard navigation compatibility
+ * 
+ * Technical Architecture:
+ * - **Lazy Loading**: Character data loaded on-demand via {@link LazyFileLoader}
+ * - **Caching Strategy**: Intelligent caching of character data and ASCII art
+ * - **Error Resilience**: Graceful handling of missing character data or corrupted files
+ * - **Performance**: Optimized rendering for smooth user interactions
+ * - **Memory Management**: Efficient resource cleanup and garbage collection
+ * 
+ * Integration Points:
+ * - **Extension Ecosystem**: Seamless integration with AsperHeader's core functionality
+ * - **Configuration System**: User preferences for character display and behavior
+ * - **Logging Framework**: Comprehensive operation logging via {@link logger}
+ * - **Message System**: Localized content delivery via {@link messageProvider}
+ * - **Asset Management**: Coordination with extension asset loading systems
+ * 
+ * Easter Egg Philosophy:
+ * This module embodies the playful spirit of software development, providing users
+ * with delightful surprises that enhance their development experience while
+ * maintaining professional functionality. It demonstrates advanced webview
+ * capabilities and serves as a showcase for the extension's technical prowess.
+ * 
+ * @example Character display activation:
+ * ```typescript
+ * const darling = new Darling();
+ * await darling.updateCurrentWorkingDirectory(extensionPath);
+ * await darling.updateFilePath("assets/bonus/ditf.min.json");
+ * 
+ * // Display random character
+ * await darling.displayRandomPersonInWindow();
+ * ```
+ * 
+ * @example Character data structure:
+ * ```typescript
+ * interface Person {
+ *     id: number;
+ *     name: string;
+ *     romaji: string;
+ *     quote: string;
+ *     imageContent: string[]; // ASCII art lines
+ *     // ... additional character properties
+ * }
+ * ```
  */
 
 import * as vscode from 'vscode';
@@ -169,10 +234,8 @@ export class Darling {
     private copyButtonScript(): string {
         return `
 <script>
-    if (!vscode) {
-        const vscode = acquireVsCodeApi();
-        console.log(\`vscode = \${vscode}\`);
-    }
+    const vscode = acquireVsCodeApi();
+    console.log(\`vscode = \${vscode}\`);
     document.getElementById('copyBtn').addEventListener('click', () => {
         const content = document.getElementById('ascii').innerText;
         navigator.clipboard.writeText(content).then(() => {

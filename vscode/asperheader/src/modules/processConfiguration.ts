@@ -1,36 +1,67 @@
 /**
  * @file processConfiguration.ts
- * @brief Configuration management system for AsperHeader extension settings
+ * @brief Advanced configuration management and settings orchestration for AsperHeader
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides comprehensive configuration management for the AsperHeader extension,
- * handling both default values from constants and user-customized settings from VS Code.
- * It implements a dynamic configuration system that can be refreshed at runtime to
- * reflect user preference changes.
+ * This module implements a sophisticated configuration management system that serves as the
+ * central nervous system for all AsperHeader extension settings. It provides seamless
+ * integration between default constants, user preferences, and workspace-specific
+ * configurations while maintaining type safety and runtime flexibility.
  * 
- * Key Features:
- * - Centralized configuration management for all extension settings
- * - Dynamic loading from VS Code workspace configuration
- * - Fallback mechanism to default constants when settings are missing
- * - Runtime configuration refresh without extension restart
- * - Type-safe configuration access with proper defaults
- * - Singleton pattern for consistent configuration state
+ * Architecture Overview:
+ * - **Configuration Layer**: Hierarchical settings resolution (user → workspace → defaults)
+ * - **Dynamic Updates**: Real-time configuration refresh without extension restart
+ * - **Type Safety**: Comprehensive TypeScript interfaces for all configuration values
+ * - **Caching Strategy**: Intelligent caching with selective refresh for performance
+ * - **Validation Engine**: Input validation and sanitization for all user settings
+ * - **Integration Points**: Deep coupling with {@link constants} and VS Code APIs
  * 
- * Configuration Categories:
- * - Header formatting and decoration settings
- * - Telegraph-style symbols and separators
- * - Date and time formatting options
- * - Logo and visual content configuration
- * - File scanning and processing limits
- * - Feature toggles (debug mode, auto-refresh, etc.)
- * - File exclusion patterns and filters
+ * Configuration Domains:
+ * - **Visual Formatting**: Header decorations, separators, and visual styling options
+ * - **Telegraph Protocol**: Communication markers, block terminators, and transmission symbols
+ * - **Temporal Settings**: Date/time formats, timezone handling, and timestamp preferences  
+ * - **Logo Management**: ASCII art selection, randomization, and display preferences
+ * - **Performance Tuning**: File scanning limits, processing thresholds, and optimization settings
+ * - **Feature Control**: Debug modes, auto-refresh behavior, and experimental features
+ * - **File Processing**: Extension filters, ignore patterns, and inclusion rules
+ * - **Workspace Context**: Project naming, author attribution, and workspace-specific overrides
  * 
- * Architecture:
- * The system maintains a local cache of configuration values that can be refreshed
- * from VS Code settings. This allows for immediate access to configuration without
- * repeated VS Code API calls while enabling dynamic updates when needed.
+ * Design Principles:
+ * - **Fail-Safe Defaults**: Always provide sensible fallback values for missing settings
+ * - **Minimal VS Code Calls**: Cache frequently accessed values to reduce API overhead
+ * - **Hot Reloading**: Support configuration changes without extension restart
+ * - **Backward Compatibility**: Graceful handling of deprecated or removed settings
+ * - **Performance First**: Optimize for frequent access patterns in header generation
+ * 
+ * Integration Strategy:
+ * This module serves as the authoritative source for all configuration throughout
+ * the extension ecosystem, providing consistent behavior across all modules including
+ * {@link CommentGenerator}, {@link RandomLogo}, {@link logger}, and user interface components.
+ * 
+ * @example Configuration access patterns:
+ * ```typescript
+ * // Simple value retrieval
+ * const extensionName = CodeConfig.get("extensionName");
+ * 
+ * // Refresh from VS Code settings
+ * await CodeConfig.refreshVariables();
+ * 
+ * // Workspace-specific settings
+ * const projectName = CodeConfig.get("projectName") || CodeConfig.getWorkspaceName();
+ * ```
+ * 
+ * @example Advanced configuration management:
+ * ```typescript
+ * // Listen for configuration changes
+ * vscode.workspace.onDidChangeConfiguration((event) => {
+ *     if (event.affectsConfiguration('asperheader')) {
+ *         await CodeConfig.refreshVariables();
+ *         logger.info('Configuration refreshed');
+ *     }
+ * });
+ * ```
  */
 
 import * as vscode from 'vscode';

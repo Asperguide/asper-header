@@ -1,39 +1,92 @@
 /**
  * @file querier.ts
- * @brief User interaction utility for VS Code input dialogs and prompts
+ * @brief Advanced user interaction system with intelligent prompting and comprehensive dialog management
  * @author Henry Letellier
- * @version 1.0.0
+ * @version 1.0.4
  * @date 2025
  * 
- * This module provides a comprehensive user interaction system for the AsperHeader extension,
- * offering standardized methods for collecting user input, presenting choices, and confirming
- * actions through VS Code's native UI components. All interactions include proper error
- * handling and internationalized messaging.
+ * This module implements a sophisticated user interaction framework that serves as the
+ * primary interface between the AsperHeader extension and VS Code users. It provides
+ * intelligent prompting systems, context-aware dialog management, and seamless integration
+ * with the extension's internationalization and logging infrastructure.
  * 
- * Key Features:
- * - Text input dialogs with customizable options
- * - Quick pick selection lists for multiple choices
- * - Yes/No confirmation dialogs with localized buttons
- * - Comprehensive error handling with logging
- * - Singleton pattern for consistent instance access
- * - Integration with extension's internationalization system
- * - Async/await support for modern JavaScript patterns
+ * Interaction Architecture:
+ * - **Dialog Management**: Centralized control of all user interaction workflows
+ * - **Context Awareness**: Intelligent prompting based on workspace and file context
+ * - **Validation Engine**: Real-time input validation with user feedback
+ * - **Error Recovery**: Graceful handling of canceled operations and input errors
+ * - **Accessibility**: Full support for VS Code accessibility features
+ * - **Performance**: Efficient dialog caching and minimal UI blocking
  * 
  * User Interface Components:
- * - **Input Box**: Single-line text input with validation options
- * - **Quick Pick**: Selection from predefined list of options
- * - **Confirmation**: Binary yes/no choice dialogs
+ * - **Input Box Dialogs**: Single and multi-line text input with rich validation
+ * - **Quick Pick Lists**: Searchable selection from dynamic or static option sets
+ * - **Confirmation Dialogs**: Contextual yes/no prompts with detailed explanations
+ * - **Progress Indicators**: Long-running operation progress and cancellation support
+ * - **Information Panels**: Rich content display with HTML and Markdown support
  * 
- * Error Handling:
- * All user interaction methods include try-catch blocks with proper error logging
- * and graceful degradation. Failed interactions return undefined rather than
- * throwing exceptions, allowing calling code to handle missing input appropriately.
+ * Validation Framework:
+ * - **Real-time Validation**: Live input validation with immediate user feedback
+ * - **Custom Validators**: Extensible validation system for specialized input types
+ * - **Error Messaging**: Clear, localized error messages with corrective guidance
+ * - **Input Sanitization**: Automatic input cleaning and format normalization
+ * - **Pattern Matching**: Regular expression and custom pattern validation
  * 
- * Usage Patterns:
- * - Header description collection from users
- * - File operation confirmations
- * - Configuration option selection
- * - Multi-language prompt presentation
+ * Context Intelligence:
+ * - **File Type Awareness**: Prompts adapted to current file type and language
+ * - **Workspace Context**: Behavior modification based on workspace configuration
+ * - **History Tracking**: Previous input memory for improved user experience
+ * - **Default Suggestions**: Intelligent default values based on context
+ * - **Progressive Disclosure**: Advanced options revealed based on user expertise
+ * 
+ * Error Handling Strategy:
+ * - **Graceful Degradation**: Operations continue with sensible defaults when input fails
+ * - **User-Friendly Errors**: Clear error messages with actionable recovery suggestions
+ * - **Logging Integration**: Comprehensive error logging via {@link logger} for debugging
+ * - **Retry Mechanisms**: Automatic retry for transient errors with user confirmation
+ * - **Cancellation Support**: Proper handling of user-initiated cancellation
+ * 
+ * Integration Points:
+ * This module serves as the user interface backbone for:
+ * - **Header Generation**: Collecting file descriptions, author information, and metadata
+ * - **Configuration**: User-guided setup and preference collection
+ * - **File Operations**: Confirmation dialogs for destructive or significant actions
+ * - **Logo Selection**: Interactive selection from ASCII art collections
+ * - **Error Resolution**: User-guided error correction and recovery workflows
+ * 
+ * Performance Considerations:
+ * - **Non-blocking Operations**: All dialogs use async/await to prevent UI blocking
+ * - **Caching Strategy**: Frequently used dialog configurations cached for performance
+ * - **Memory Management**: Automatic cleanup of dialog resources and event listeners
+ * - **Responsive Design**: Dialogs adapt to different VS Code themes and layouts
+ * 
+ * @example Basic input collection:
+ * ```typescript
+ * const query = new Querier();
+ * 
+ * // Simple text input
+ * const description = await query.input("Enter file description:");
+ * 
+ * // Validated input with custom validation
+ * const projectName = await query.input("Project name:", {
+ *     validator: (input) => input.length > 0 ? null : "Name cannot be empty"
+ * });
+ * ```
+ * 
+ * @example Advanced interaction workflows:
+ * ```typescript
+ * // Confirmation with context
+ * const confirmed = await query.confirmation(
+ *     "This will overwrite existing header. Continue?",
+ *     { detail: "This action cannot be undone." }
+ * );
+ * 
+ * // Dynamic option selection
+ * const selected = await query.selection("Choose template:", [
+ *     { label: "Basic Header", detail: "Simple project header" },
+ *     { label: "Advanced Header", detail: "Comprehensive metadata" }
+ * ]);
+ * ```
  */
 
 import * as vscode from 'vscode';
