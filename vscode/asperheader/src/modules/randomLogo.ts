@@ -178,7 +178,7 @@ export class RandomLogo {
     async updateRootDir(basePath: string): Promise<boolean> {
         this.rootDir = basePath;
         try {
-            this.gatherAllLogoFiles(this.rootDir);
+            await this.gatherAllLogoFiles(this.rootDir);
             return true;
         } catch (e) {
             logger.error(getMessage("logoRootDirUpdateError", String(e)));
