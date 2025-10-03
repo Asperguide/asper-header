@@ -2,7 +2,7 @@
  * @file watermark.test.ts
  * @brief Comprehensive unit tests for the Watermark ASCII art signature system
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This test suite provides extensive coverage for the Watermark module, which manages

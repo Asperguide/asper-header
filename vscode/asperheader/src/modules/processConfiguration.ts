@@ -2,7 +2,7 @@
  * @file processConfiguration.ts
  * @brief Advanced configuration management and settings orchestration for AsperHeader
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module implements a sophisticated configuration management system that serves as the

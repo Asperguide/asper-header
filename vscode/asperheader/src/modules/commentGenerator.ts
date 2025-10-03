@@ -2,7 +2,7 @@
  * @file commentGenerator.ts
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module serves as the core engine for generating, injecting, and managing 

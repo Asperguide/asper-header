@@ -2,7 +2,7 @@
  * @file morse.test.ts
  * @brief Comprehensive test suite for Morse code translation functionality
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module provides extensive testing coverage for the MorseTranslator class,

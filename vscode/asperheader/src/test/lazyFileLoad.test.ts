@@ -2,7 +2,7 @@
  * @file lazyFileLoad.test.ts
  * @brief Comprehensive test suite for LazyFileLoader with real file operations
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module provides extensive testing coverage for the LazyFileLoader class,
@@ -45,7 +45,7 @@ suite('LazyFileLoader Test Suite', function () {
 
     setup(async () => {
         loader = new LazyFileLoader<TestConfig>();
-        
+
         // Create temporary directory for test files
         tempDir = await fs.mkdtemp(path.join(__dirname, 'temp-lazyloader-'));
         testFilePath = path.join(tempDir, 'test-config.json');
@@ -77,10 +77,10 @@ suite('LazyFileLoader Test Suite', function () {
             const loader = new LazyFileLoader<string>();
             const textFile = path.join(tempDir, 'test.txt');
             const testContent = 'Hello, World!\nThis is a test file.';
-            
+
             await fs.writeFile(textFile, testContent);
             await loader.updateFilePath(textFile);
-            
+
             const result = await loader.get();
             assert.strictEqual(result, testContent);
         });
@@ -88,7 +88,7 @@ suite('LazyFileLoader Test Suite', function () {
         test('should handle empty JSON file', async () => {
             await fs.writeFile(testFilePath, '{}');
             await loader.updateFilePath(testFilePath);
-            
+
             const result = await loader.get();
             assert.strictEqual(typeof result, 'object');
             assert.strictEqual(Object.keys(result || {}).length, 0);
@@ -103,14 +103,14 @@ suite('LazyFileLoader Test Suite', function () {
 
             // First load
             const result1 = await loader.get();
-            
+
             // Modify file content after first load
             const modifiedData: TestConfig = { name: 'modified', value: 200, enabled: true };
             await fs.writeFile(testFilePath, JSON.stringify(modifiedData));
-            
+
             // Second load should return cached content
             const result2 = await loader.get();
-            
+
             assert.strictEqual(result1?.name, result2?.name);
             assert.strictEqual(result1?.value, result2?.value);
             assert.strictEqual(result2?.name, 'cached'); // Should be original, not modified
@@ -128,7 +128,7 @@ suite('LazyFileLoader Test Suite', function () {
             // Modify file and reload
             const updatedData: TestConfig = { name: 'updated', value: 2, enabled: false };
             await fs.writeFile(testFilePath, JSON.stringify(updatedData));
-            
+
             const result2 = await loader.reload();
             assert.strictEqual(result2?.name, 'updated');
             assert.strictEqual(result2?.value, 2);
@@ -174,7 +174,7 @@ suite('LazyFileLoader Test Suite', function () {
 
             await loader.updateCurrentWorkingDirectory(tempDir);
             await loader.updateFilePath('test-config.json');
-            
+
             const result = await loader.get();
             assert.strictEqual(result?.name, 'relative');
         });
@@ -190,7 +190,7 @@ suite('LazyFileLoader Test Suite', function () {
         test('should return undefined for non-existent file', async () => {
             const nonExistentPath = path.join(tempDir, 'nonexistent.json');
             await loader.updateFilePath(nonExistentPath);
-            
+
             // LazyFileLoader throws error for non-existent files instead of returning undefined
             try {
                 const result = await loader.get();
@@ -204,7 +204,7 @@ suite('LazyFileLoader Test Suite', function () {
             const malformedJson = '{ name: "test", value: 42, invalid }';
             await fs.writeFile(testFilePath, malformedJson);
             await loader.updateFilePath(testFilePath);
-            
+
             const result = await loader.get();
             assert.strictEqual(result, undefined);
         });
@@ -222,7 +222,7 @@ suite('LazyFileLoader Test Suite', function () {
 
             const success = await loader.updateFilePath(testFilePath);
             assert.strictEqual(success, true);
-            
+
             const retrievedPath = loader.getFilePath();
             assert.strictEqual(retrievedPath, testFilePath);
         });
@@ -269,7 +269,7 @@ suite('LazyFileLoader Test Suite', function () {
         test('should handle complex nested objects with type safety', async () => {
             const complexLoader = new LazyFileLoader<ComplexTestData>();
             const complexFile = path.join(tempDir, 'complex.json');
-            
+
             const testData: ComplexTestData = {
                 metadata: {
                     version: '1.0.0',
@@ -280,9 +280,9 @@ suite('LazyFileLoader Test Suite', function () {
 
             await fs.writeFile(complexFile, JSON.stringify(testData));
             await complexLoader.updateFilePath(complexFile);
-            
+
             const result = await complexLoader.get();
-            
+
             assert.ok(result);
             if (result) { // Type guard to handle possible undefined
                 assert.strictEqual(result.metadata.version, '1.0.0');
@@ -304,9 +304,9 @@ suite('LazyFileLoader Test Suite', function () {
 
             await fs.writeFile(jsoncFile, jsoncContent);
             await loader.updateFilePath(jsoncFile);
-            
+
             const result = await loader.get();
-            
+
             // Note: Basic JSON.parse doesn't handle comments, this test verifies the extension detection
             // In real implementation, you might use a JSONC parser
             assert.strictEqual(result, undefined); // Expected to fail with standard JSON.parse

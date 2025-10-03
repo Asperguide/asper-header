@@ -2,7 +2,7 @@
  * @file processConfiguration.test.ts
  * @brief Comprehensive unit tests for the processConfiguration module
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This test suite provides exhaustive validation of the Configuration class and

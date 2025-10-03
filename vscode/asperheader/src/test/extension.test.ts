@@ -2,7 +2,7 @@
  * @file extension.test.ts
  * @brief Comprehensive test suite for AsperHeader extension core functionality
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module provides the main test suite for validating the core functionality

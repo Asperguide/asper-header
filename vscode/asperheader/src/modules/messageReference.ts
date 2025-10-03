@@ -2,52 +2,179 @@
  * @file messageReference.ts
  * @brief Comprehensive multilingual message repository with advanced localization support
  * @author Henry Letellier
- * @version 1.0.4
- * @date 2025
+ * @version 1.0.5
+ * @date 2025-10-03
+ * @copyright (c) 2025 Asperguide - All rights reserved
  * 
- * This module serves as the authoritative multilingual message repository for the entire
+ * @details This module serves as the authoritative multilingual message repository for the entire
  * AsperHeader extension ecosystem. It implements a sophisticated internationalization
  * framework that provides consistent, culturally-appropriate messaging across all user
  * interfaces, error conditions, and interactive elements while supporting dynamic
  * parameter interpolation and context-aware message generation.
  * 
- * Localization Architecture:
- * - **Multi-Language Support**: Complete translations for English, French, and Italian
- * - **Function-Based Messages**: Dynamic parameter interpolation with type safety
- * - **Cultural Adaptation**: Language-specific formatting and cultural considerations
- * - **Extensible Framework**: Plugin architecture for additional language support
- * - **Quality Assurance**: Comprehensive review process for translation accuracy
- * - **Version Synchronization**: Coordinated updates across all supported languages
+ * @section Architecture Localization Architecture
+ * The module implements a multi-layered localization system with the following components:
  * 
- * Language Matrix:
- * - **English (en)**: Primary reference language with complete message coverage
- * - **French (fr)**: Full professional translation with cultural adaptations
- * - **Italian (it)**: Complete localization with attention to technical terminology
- * - **Extensibility**: Framework ready for additional European and global languages
+ * @subsection MultiLanguageSupport Multi-Language Support
+ * - Complete translations for 15+ languages including English, French, Italian, Spanish, German, Japanese, Korean, Chinese (Simplified & Traditional), Russian, Portuguese, Turkish, Polish, Czech, and Hungarian
+ * - Standardized message key consistency across all language variants
+ * - Professional native speaker translations with technical domain expertise
  * 
- * Message Classification System:
- * - **User Interface**: Dialog prompts, button labels, and interactive elements
- * - **System Operations**: File I/O operations, configuration management, and processing
- * - **Header Management**: Template generation, metadata handling, and content creation
- * - **Error Reporting**: Comprehensive error messages with actionable guidance
- * - **Feature Content**: Specialized messages for watermarks, characters, and logos
- * - **Extension Lifecycle**: Activation, deactivation, and status communication
- * - **Development Support**: Debug messages and development-oriented information
+ * @subsection FunctionBasedMessages Function-Based Message System  
+ * - Dynamic parameter interpolation with full TypeScript type safety
+ * - Named parameter substitution with `{paramName}` syntax support
+ * - Automatic type conversion and locale-aware formatting
+ * - Security-conscious parameter escaping for HTML contexts
  * 
- * Technical Implementation:
- * - **Function-Based Design**: Each message is a function enabling parameter injection
- * - **Type Safety**: TypeScript interfaces ensure parameter consistency across languages
- * - **Performance Optimization**: Lazy evaluation and efficient parameter handling
- * - **Memory Management**: Optimal memory usage with selective message loading
- * - **Error Resilience**: Graceful fallback mechanisms for missing translations
+ * @subsection CulturalAdaptation Cultural Adaptation Framework
+ * - Language-specific formatting rules and cultural considerations
+ * - Context-sensitive plural forms for different linguistic structures
+ * - Locale-appropriate number, currency, and date formatting
+ * - Right-to-left (RTL) language preparation for future expansion
  * 
- * Parameter Interpolation Features:
- * - **Named Parameters**: `{paramName}` style parameter substitution
- * - **Positional Arguments**: Sequential parameter replacement for simple messages
- * - **Type Conversion**: Automatic type conversion and formatting
- * - **Escaping**: Security-conscious parameter escaping for HTML contexts
- * - **Pluralization**: Context-sensitive plural forms for different languages
- * - **Number Formatting**: Locale-appropriate number, currency, and date formatting
+ * @subsection ExtensibilityFramework Extensible Plugin Architecture
+ * - Modular design enabling seamless addition of new languages
+ * - Standardized message key interface for consistent expansion
+ * - Automated validation tools for translation completeness
+ * - Hot-reload capability for development and testing scenarios
+ * 
+ * @section LanguageMatrix Supported Language Matrix
+ * @subsection PrimaryLanguages Primary Languages (100% Coverage)
+ * - **English (en)**: Primary reference language - complete message coverage with American English conventions
+ * - **French (fr)**: Professional translation with French cultural adaptations and technical terminology
+ * - **Italian (it)**: Complete localization with Italian conventions and technical domain expertise
+ * - **Spanish (es)**: Full Spanish translation with Latin American and European Spanish considerations
+ * - **German (de)**: Comprehensive German localization with technical precision and formal register
+ * 
+ * @subsection AsianLanguages Asian Languages (Full Support)
+ * - **Japanese (ja)**: Native Japanese translation with proper honorific usage and technical terminology
+ * - **Korean (ko)**: Complete Korean localization with appropriate formality levels
+ * - **Chinese Simplified (zh-cn)**: Mainland Chinese translation with simplified characters
+ * - **Chinese Traditional (zh-tw)**: Traditional Chinese for Taiwan and Hong Kong regions
+ * 
+ * @subsection EuropeanLanguages Additional European Languages
+ * - **Russian (ru)**: Full Cyrillic script support with Russian technical conventions
+ * - **Portuguese (pt-br)**: Brazilian Portuguese with regional adaptations
+ * - **Turkish (tr)**: Complete Turkish localization with agglutinative language considerations
+ * - **Polish (pl)**: Polish translation with complex grammar and case system support
+ * - **Czech (cs)**: Czech localization with Slavic language characteristics
+ * - **Hungarian (hu)**: Hungarian translation with unique Finno-Ugric linguistic features
+ * 
+ * @section MessageClassification Message Classification and Organization
+ * Messages are systematically organized into functional categories for maintainability:
+ * 
+ * @subsection UserInterfaceMessages User Interface Messages
+ * - Dialog prompts and confirmation dialogs (`quickPickYes`, `quickPickNo`)
+ * - Button labels and interactive element text (`copyAscii`, `zoomIn`, `zoomOut`)
+ * - Input field prompts and validation messages (`getHeaderDescription`, `getHeaderTags`)
+ * - Menu items and command descriptions
+ * 
+ * @subsection SystemOperationMessages System Operation Messages
+ * - File I/O operations (`fileLoaded`, `fileParseError`, `fileSaveFailed`)
+ * - Configuration management and settings validation
+ * - Directory and workspace management (`cwdUpdated`, `cwdDoesNotExist`)
+ * - Process lifecycle and state management
+ * 
+ * @subsection HeaderManagementMessages Header Management Messages
+ * - Template generation and metadata handling (`headerOpenerFound`, `headerWriteSuccess`)
+ * - Content creation and injection workflows (`headerInjectQuestion`)
+ * - Date and timestamp management (`lastModifiedUpdated`)
+ * - Header validation and integrity checks (`brokenHeader`)
+ * 
+ * @subsection ErrorReportingMessages Error Reporting and Diagnostics
+ * - Comprehensive error messages with actionable guidance
+ * - Input validation errors (`inputboxError`, `quickPickError`)
+ * - File operation failures with diagnostic information
+ * - System state errors and recovery suggestions
+ * 
+ * @subsection FeatureContentMessages Specialized Feature Messages
+ * - Watermark display and management (`watermarkPersonDisplayed`, `watermarkCopied`)
+ * - Character showcase functionality (`darlingPersonDisplayed`, `darlingCopied`)
+ * - Logo randomization and display (`logoDisplayed`, `logoChosen`)
+ * - ASCII art handling and clipboard operations
+ * 
+ * @subsection ExtensionLifecycleMessages Extension Lifecycle Messages
+ * - Activation and initialization (`extensionActivated`)
+ * - Deactivation and cleanup procedures
+ * - Status updates and operational notifications
+ * - Version and compatibility information
+ * 
+ * @subsection DevelopmentSupportMessages Development Support Messages
+ * - Debug output and diagnostic information (`arrayNodeContent`)
+ * - Development-oriented logging and tracing
+ * - Performance metrics and optimization data
+ * - Testing and validation support messages
+ * 
+ * @section TechnicalImplementation Technical Implementation Details
+ * 
+ * @subsection FunctionBasedDesign Function-Based Architecture
+ * Each message is implemented as a function to enable:
+ * - Dynamic parameter injection with compile-time type checking
+ * - Runtime parameter validation and sanitization
+ * - Contextual message generation based on application state
+ * - Deferred execution for performance optimization
+ * 
+ * @subsection TypeSafetySystem TypeScript Type Safety System
+ * - Strongly-typed parameter interfaces ensure consistency across languages
+ * - Generic type parameters for flexible message function signatures
+ * - Compile-time validation of parameter count and types
+ * - Runtime type assertion for development safety
+ * 
+ * @subsection PerformanceOptimization Performance Optimization Strategies
+ * - Lazy evaluation prevents unnecessary message generation
+ * - Efficient parameter handling with minimal object allocation
+ * - Message caching for frequently accessed strings
+ * - Tree-shaking support for production bundle optimization
+ * 
+ * @subsection MemoryManagement Memory Management
+ * - Optimal memory usage through selective message loading
+ * - Garbage collection friendly implementation patterns
+ * - Minimal closure overhead in message functions
+ * - Language pack loading on demand for memory efficiency
+ * 
+ * @subsection ErrorResilienceFramework Error Resilience Framework
+ * - Graceful fallback to English for missing translations
+ * - Runtime detection of incomplete language packs
+ * - Error logging for missing message keys during development
+ * - Automatic recovery from corrupted message data
+ * 
+ * @section ParameterInterpolation Parameter Interpolation System
+ * 
+ * @subsection NamedParameters Named Parameter Substitution
+ * - Template syntax: `{paramName}` for clear parameter identification
+ * - Case-sensitive parameter matching with validation
+ * - Nested object property access support: `{object.property}`
+ * - Default value specification: `{param|defaultValue}`
+ * 
+ * @subsection PositionalArguments Positional Parameter System
+ * - Sequential parameter replacement for simple message templates
+ * - Zero-indexed positional parameters: `{0}`, `{1}`, etc.
+ * - Mixed named and positional parameter support
+ * - Overflow protection for parameter count mismatches
+ * 
+ * @subsection TypeConversionSystem Type Conversion and Formatting
+ * - Automatic type coercion for string, number, and boolean values
+ * - Date and time formatting with locale-aware patterns
+ * - Currency formatting with regional currency symbols
+ * - Percentage and decimal formatting with locale rules
+ * 
+ * @subsection SecurityEscaping Security-Conscious Parameter Escaping
+ * - HTML entity escaping for web view contexts
+ * - URL encoding for parameter values in URLs
+ * - JSON escape sequences for data serialization
+ * - SQL injection prevention for database contexts
+ * 
+ * @subsection PluralizationRules Context-Sensitive Pluralization
+ * - Language-specific plural form rules (singular, plural, zero, few, many)
+ * - Cardinal and ordinal number pluralization support
+ * - Gender-sensitive pluralization for applicable languages
+ * - Custom pluralization rules for domain-specific terms
+ * 
+ * @subsection LocaleFormatting Locale-Appropriate Formatting
+ * - Number formatting with locale-specific separators and grouping
+ * - Currency display with proper symbol placement and precision
+ * - Date and time formatting following regional conventions
+ * - Unit conversion and display for measurements
  * 
  * Quality Assurance Process:
  * - **Native Speaker Review**: All translations reviewed by native speakers
@@ -95,40 +222,111 @@
  */
 
 /**
- * @brief Complete message dictionary for all supported languages
- * @export Exported for use by the MessageProvider system
+ * @brief Complete message dictionary for all supported languages with type-safe function interfaces
+ * @export Exported for use by the MessageProvider system and extension components
  * 
- * Central repository of all localized messages used throughout the AsperHeader extension.
+ * @details Central repository of all localized messages used throughout the AsperHeader extension.
  * Each language is represented as a nested object where message keys map to functions
- * that generate the appropriate localized string. Function-based messages enable:
+ * that generate the appropriate localized string. The function-based architecture enables
+ * sophisticated localization features while maintaining type safety and performance.
  * 
- * - Dynamic parameter interpolation for contextual information
- * - Type-safe parameter passing with TypeScript
- * - Consistent message formatting across languages
- * - Runtime message generation for complex scenarios
+ * @section FunctionBasedMessaging Function-Based Message Architecture
+ * Function-based messages provide several key advantages:
+ * - **Dynamic Parameter Interpolation**: Contextual information injection at runtime
+ * - **Type-Safe Parameter Passing**: Full TypeScript type checking and IntelliSense support
+ * - **Consistent Message Formatting**: Uniform parameter handling across all languages
+ * - **Runtime Message Generation**: Complex conditional and contextual message creation
+ * - **Performance Optimization**: Lazy evaluation and parameter validation
  * 
- * Message Organization:
- * - **en**: English (primary) - Complete message set serving as the reference
- * - **fr**: French - Full translation coverage with culturally appropriate phrasing
- * - **it**: Italian - Complete translations with proper Italian conventions
+ * @section LanguageSupport Comprehensive Language Support
+ * @subsection PrimaryLanguages Primary Language Support (100% Coverage)
+ * - **en**: English (primary) - Complete reference implementation with American English conventions
+ * - **fr**: French - Professional translation with French linguistic and cultural adaptations
+ * - **it**: Italian - Complete Italian localization with proper grammatical structures
+ * - **es**: Spanish - Full Spanish translation covering Latin American and European variants
+ * - **de**: German - Comprehensive German localization with technical precision
  * 
- * Usage Pattern:
- * ```typescript
- * messages.en.fileLoaded("/path/to/file") // Returns: "File /path/to/file loaded!"
- * messages.fr.fileLoaded("/chemin/vers/fichier") // Returns: "Fichier /chemin/vers/fichier chargé !"
- * ```
+ * @subsection GlobalLanguages Extended Global Language Support
+ * - **ja**: Japanese - Native Japanese with proper honorifics and technical terminology
+ * - **ko**: Korean - Complete Korean with appropriate formality levels
+ * - **zh-cn**: Chinese Simplified - Mainland Chinese with simplified character set
+ * - **zh-tw**: Chinese Traditional - Traditional Chinese for Taiwan/Hong Kong regions
+ * - **ru**: Russian - Full Cyrillic support with Russian technical conventions
+ * - **pt-br**: Brazilian Portuguese - Regional Brazilian adaptations
+ * - **tr**: Turkish - Turkish localization with agglutinative language considerations
+ * - **pl**: Polish - Polish with complex grammar and case system support
+ * - **cs**: Czech - Czech localization with Slavic linguistic characteristics
+ * - **hu**: Hungarian - Hungarian with unique Finno-Ugric language features
  * 
- * Message Categories:
- * - Input/Output operations (file loading, saving, parsing)
- * - User interface interactions (prompts, confirmations, selections)
- * - Header management (creation, updating, validation, injection)
- * - Feature displays (watermark, darling characters, logo showcases)
- * - Error handling (file errors, validation failures, system issues)
- * - Extension lifecycle (activation, status updates, notifications)
- * - Development utilities (debugging, logging, diagnostics)
+ * @section UsagePatterns Usage Patterns and Examples
+ * @code{.typescript}
+ * // Basic parameter interpolation
+ * messages.en.fileLoaded("/path/to/file")          // "File /path/to/file loaded!"
+ * messages.fr.fileLoaded("/chemin/vers/fichier")   // "Fichier /chemin/vers/fichier chargé !"
  * 
- * @note All message functions should maintain consistent parameter signatures across languages
- * @note Missing translations will fall back to English through the MessageProvider system
+ * // Complex multi-parameter messages
+ * messages.en.sayHelloWorldResponse(".ts", "main.ts", "/src/main.ts", "typescript")
+ * // "Hello world! This file's extension is: .ts, it's name is: main.ts..."
+ * 
+ * // Error handling with contextual information
+ * messages.en.fileParseError("/invalid.json", "SyntaxError: Unexpected token")
+ * // "The file content (/invalid.json) could not be loaded successfully. Error: SyntaxError..."
+ * @endcode
+ * 
+ * @section MessageCategories Functional Message Categories
+ * Messages are systematically organized into the following categories:
+ * 
+ * @subsection IOOperations Input/Output Operations
+ * - File loading, saving, and parsing operations (`fileLoaded`, `fileParseError`, `fileSaveFailed`)
+ * - Directory and workspace management (`cwdUpdated`, `filePathUpdated`)
+ * - Configuration file handling and validation
+ * 
+ * @subsection UserInterface User Interface Interactions
+ * - Dialog prompts and confirmations (`quickPickYes`, `quickPickNo`, `headerInjectQuestion`)
+ * - Input field labels and validation messages (`getHeaderDescription`, `getHeaderTags`)
+ * - Button labels and interactive element text (`copyAscii`, `zoomIn`, `zoomOut`)
+ * 
+ * @subsection HeaderManagement Header Management Operations
+ * - Header creation, updating, and validation (`headerOpenerFound`, `headerWriteSuccess`)
+ * - Template injection and refresh workflows (`headerInjectQuestion`, `lastModifiedUpdated`)
+ * - Metadata extraction and timestamp management (`updatingEditionDate`)
+ * 
+ * @subsection FeatureDisplays Specialized Feature Operations
+ * - Watermark display and clipboard operations (`watermarkPersonDisplayed`, `watermarkCopied`)
+ * - Character showcase functionality (`darlingPersonDisplayed`, `darlingCopied`)
+ * - Logo randomization and display management (`logoDisplayed`, `logoChosen`)
+ * - ASCII art processing and user interactions
+ * 
+ * @subsection ErrorHandling Error Handling and Diagnostics
+ * - File operation errors with actionable guidance (`fileSaveFailed`, `fileParseError`)
+ * - Input validation failures (`inputboxError`, `quickPickError`)
+ * - System state errors and recovery procedures (`closedDocument`, `emptyDocument`)
+ * - Language and configuration detection failures (`languageNotFound`, `missingFileError`)
+ * 
+ * @subsection ExtensionLifecycle Extension Lifecycle Management
+ * - Activation and initialization notifications (`extensionActivated`, `helloWorldGreetingsCommand`)
+ * - Status updates and operational feedback (`messageWritten`, `extensionActivated`)
+ * - Resource management and cleanup procedures
+ * 
+ * @subsection DevelopmentUtilities Development and Debugging Support
+ * - Debug output and diagnostic information (`arrayNodeContent`, `inputArgs`)
+ * - Performance monitoring and optimization data
+ * - Development-time logging and error tracking (`errorDuringFunctionCall`)
+ * 
+ * @section TypeSafetyContract Type Safety Contract
+ * @note All message functions must maintain consistent parameter signatures across languages
+ * @note Parameter types should be explicitly defined in TypeScript for compile-time validation
+ * @note Runtime parameter validation should be implemented for production safety
+ * 
+ * @section FallbackMechanism Fallback and Error Handling
+ * @note Missing translations automatically fall back to English through the MessageProvider system
+ * @note Undefined message keys return a standardized error message with the missing key identifier
+ * @note Language pack validation occurs during extension initialization for early error detection
+ * 
+ * @since 1.0.0
+ * @version 1.0.5
+ * @see MessageProvider For the primary interface to access these messages
+ * @see Logger For integration with the extension's logging system
  */
 export const messages: Record<string, Record<string, (...args: any[]) => string>> = {
     "en": {

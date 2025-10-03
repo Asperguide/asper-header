@@ -2,7 +2,7 @@
  * @file messageProvider.test.ts
  * @brief Comprehensive test suite for MessageProvider with message template validation
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module provides extensive testing coverage for the MessageProvider module,
@@ -22,7 +22,7 @@ import { getMessage } from '../modules/messageProvider';
 import { messages } from '../modules/messageReference';
 
 suite('MessageProvider Test Suite', function () {
-    
+
     suite('Basic Message Retrieval', () => {
         test('should retrieve simple messages without parameters', () => {
             // Test messages that don't require parameters
@@ -39,7 +39,7 @@ suite('MessageProvider Test Suite', function () {
         test('should handle messages with single parameters', () => {
             const testPath = '/test/path/file.json';
             const fileLoaded = getMessage("fileLoaded", testPath);
-            
+
             assert.ok(typeof fileLoaded === 'string');
             assert.ok(fileLoaded.includes(testPath));
             assert.strictEqual(fileLoaded, `File ${testPath} loaded!`);
@@ -49,7 +49,7 @@ suite('MessageProvider Test Suite', function () {
             const oldPath = '/old/path';
             const newPath = '/new/path';
             const pathUpdated = getMessage("filePathUpdated", oldPath, newPath);
-            
+
             assert.ok(typeof pathUpdated === 'string');
             assert.ok(pathUpdated.includes(oldPath));
             assert.ok(pathUpdated.includes(newPath));
@@ -182,7 +182,7 @@ suite('MessageProvider Test Suite', function () {
         test('should have meaningful error messages', () => {
             const filePath = '/test/file.json';
             const error = 'Syntax error at line 5';
-            
+
             const parseError = getMessage("fileParseError", filePath, error);
             assert.ok(parseError.includes(filePath), 'Parse error should include file path');
             assert.ok(parseError.includes(error), 'Parse error should include error details');
@@ -192,7 +192,7 @@ suite('MessageProvider Test Suite', function () {
         test('should have informative status messages', () => {
             const absolutePath = '/absolute/path/to/file.json';
             const loadedMsg = getMessage("fileLoaded", absolutePath);
-            
+
             assert.ok(loadedMsg.includes(absolutePath), 'Loaded message should include file path');
             assert.ok(loadedMsg.toLowerCase().includes('loaded'), 'Loaded message should mention loaded');
 
@@ -203,7 +203,7 @@ suite('MessageProvider Test Suite', function () {
         test('should have clear directory change messages', () => {
             const oldCwd = '/old/directory';
             const newCwd = '/new/directory';
-            
+
             const cwdUpdate = getMessage("cwdUpdated", oldCwd, newCwd);
             assert.ok(cwdUpdate.includes(oldCwd), 'CWD update should include old directory');
             assert.ok(cwdUpdate.includes(newCwd), 'CWD update should include new directory');
@@ -220,7 +220,7 @@ suite('MessageProvider Test Suite', function () {
             // Test that similar messages follow consistent patterns
             const loadedMsg = getMessage("fileLoaded", "/test/file");
             const unloadedMsg = getMessage("fileUnloaded", "/test/file");
-            
+
             // Check actual message format - loaded ends with '!', unloaded may not
             assert.ok(loadedMsg.endsWith('!') || loadedMsg.endsWith('.'), 'Loaded message should end with punctuation');
             // Adjust expectation for unloaded message based on actual implementation
@@ -248,10 +248,10 @@ suite('MessageProvider Test Suite', function () {
             // Test repeated calls to the same message
             const message1 = getMessage("fileRefreshed");
             const message2 = getMessage("fileRefreshed");
-            
+
             // Should return identical results
             assert.strictEqual(message1, message2);
-            
+
             // Test with parameters
             const paramMsg1 = getMessage("fileLoaded", "/same/path");
             const paramMsg2 = getMessage("fileLoaded", "/same/path");
@@ -263,22 +263,22 @@ suite('MessageProvider Test Suite', function () {
         test('should handle large parameter strings efficiently', () => {
             const largePath = '/very/long/path/with/many/segments/'.repeat(100) + 'file.json';
             const startTime = Date.now();
-            
+
             const result = getMessage("fileLoaded", largePath);
             const elapsed = Date.now() - startTime;
-            
+
             assert.ok(elapsed < 100, 'Message generation should complete quickly even with large parameters');
             assert.ok(result.includes(largePath));
         });
 
         test('should handle rapid successive calls efficiently', () => {
             const startTime = Date.now();
-            
+
             for (let i = 0; i < 1000; i++) {
                 getMessage("fileRefreshed");
                 getMessage("fileLoaded", `/test/file${i}.json`);
             }
-            
+
             const elapsed = Date.now() - startTime;
             assert.ok(elapsed < 1000, 'Rapid message generation should complete within reasonable time');
         });

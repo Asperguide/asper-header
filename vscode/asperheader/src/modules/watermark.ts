@@ -2,7 +2,7 @@
  * @file watermark.ts
  * @brief Advanced ASCII art watermark and author signature system with comprehensive font management
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module implements a sophisticated watermark system that provides professional

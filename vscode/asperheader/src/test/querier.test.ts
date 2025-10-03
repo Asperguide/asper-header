@@ -2,7 +2,7 @@
  * @file querier.test.ts
  * @brief Test suite for the Query user interaction system
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  */
 

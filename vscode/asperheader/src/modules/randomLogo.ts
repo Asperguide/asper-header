@@ -2,7 +2,7 @@
  * @file randomLogo.ts
  * @brief Comprehensive ASCII art logo management and interactive display system
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module implements a sophisticated ASCII art logo management system that serves as

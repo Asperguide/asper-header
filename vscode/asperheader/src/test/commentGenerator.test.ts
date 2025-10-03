@@ -2,7 +2,7 @@
  * @file commentGenerator.test.ts
  * @brief Test suite for the CommentGenerator header generation system
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This test suite provides comprehensive coverage for the CommentGenerator module,

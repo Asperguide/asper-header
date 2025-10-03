@@ -2,7 +2,7 @@
  * @file logger.ts
  * @brief Advanced dual-channel logging system for VS Code extension development
  * @author Henry Letellier
- * @version 1.0.4
+ * @version 1.0.5
  * @date 2025
  * 
  * This module implements a sophisticated logging infrastructure designed specifically
