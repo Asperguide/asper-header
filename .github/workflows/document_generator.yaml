@@ -1,9 +1,10 @@
 name: doxygen_generator
 
 # version: 1.0.0
-#          1.0.1 # removed the need of secrets for the user e-mail and name
+#          1.0.1 # removed the need of secrets for the user e-mail and name.
 #          1.0.2 # change the tag to only trigger when a -doc is appended to it.
-#          1.0.3 # Update the way the tag is processed in the flow
+#          1.0.3 # Update the way the tag is processed in the flow.
+#          1.0.4 # the page is now published from the main branch regardless of the branch having triggered the flow.
 
 on:
   push:
@@ -286,6 +287,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
+          branch: main
           fetch-depth: 0
 
       - name: Get generated documentation
