@@ -519,12 +519,27 @@ suite('Logger Test Suite', () => {
         });
 
         test('should log debug messages to output channel', () => {
+            // Mock debug configuration to be enabled
+            const originalGet = CodeConfig.get;
+            CodeConfig.get = (key: string) => {
+                if (key === "enableDebug") {
+                    return true;
+                }
+                return originalGet.call(CodeConfig, key);
+            };
+
+            const initialLineCount = mockOutputChannel._lines.length;
             logger.debug("Test debug message");
 
-            const logLine = mockOutputChannel._lines[mockOutputChannel._lines.length - 1];
+            // Restore original configuration
+            CodeConfig.get = originalGet;
 
-            assert.ok(logLine.includes('DEBUG:'), 'Should include DEBUG prefix');
-            assert.ok(logLine.includes('Test debug message'), 'Should include message text');
+            // Check if a new line was added
+            assert.ok(mockOutputChannel._lines.length > initialLineCount, 'Should add debug message to output channel when debug is enabled');
+            
+            const logLine = mockOutputChannel._lines[mockOutputChannel._lines.length - 1];
+            assert.ok(logLine && logLine.includes('DEBUG:'), 'Should include DEBUG prefix');
+            assert.ok(logLine && logLine.includes('Test debug message'), 'Should include message text');
         });
 
         test('should include caller information in log messages', () => {
@@ -646,6 +661,15 @@ suite('Logger Test Suite', () => {
             // let's test the actual functionality by verifying the output channel receives
             // the correct formatted messages for each log level instead
 
+            // Mock debug configuration to be enabled for debug messages
+            const originalGet = CodeConfig.get;
+            CodeConfig.get = (key: string) => {
+                if (key === "enableDebug") {
+                    return true;
+                }
+                return originalGet.call(CodeConfig, key);
+            };
+
             // Create logger in development mode
             const devContext = { extensionMode: vscode.ExtensionMode.Development } as MockExtensionContext;
             const devLogger = new (logger.constructor as any)(devContext);
@@ -662,10 +686,13 @@ suite('Logger Test Suite', () => {
             devLogger.error("Test error message");
             devLogger.debug("Test debug message");
 
+            // Restore original configuration
+            CodeConfig.get = originalGet;
+
             // Verify that each log level produced the expected output format
             const outputLines = mockOutputChannel._lines;
 
-            // Should have 4 lines of output
+            // Should have 4 lines of output (including debug when enabled)
             assert.strictEqual(outputLines.length, 4, 'Should have logged 4 messages to output channel');
 
             // Check that each message contains the correct log level prefix
