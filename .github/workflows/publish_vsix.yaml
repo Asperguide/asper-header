@@ -5,6 +5,7 @@ on:
   push:
     tags:
       - "v*.*.*" # publish when you tag a release
+      - "!v*.*.*-doc"
 
 permissions:
   contents: write
