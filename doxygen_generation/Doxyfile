@@ -48,7 +48,7 @@ PROJECT_NAME           = "Asper Header"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 1
+PROJECT_NUMBER         = 1.0.3
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -348,7 +348,14 @@ OPTIMIZE_OUTPUT_SLICE  = NO
 #
 # Note see also the list of default file extension mappings.
 
-EXTENSION_MAPPING      =
+EXTENSION_MAPPING      = ts=JavaScript \
+                         tsx=JavaScript \
+                         js=JavaScript \
+                         jsx=JavaScript \
+                         jsm=JavaScript \
+                         py=Python \
+                         pyw=Python \
+                         Makefile=Bash
 
 # If the MARKDOWN_SUPPORT tag is enabled then doxygen pre-processes all comments
 # according to the Markdown format, which allows for more readable
@@ -1011,6 +1018,7 @@ FILE_PATTERNS          = *.c \
                          *.tsx \
                          *.js \
                          *.jsx \
+                         *.jsm \
                          Makefile
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
@@ -2411,6 +2419,7 @@ INCLUDE_FILE_PATTERNS  = *.h \
                          *.tsx \
                          *.js \
                          *.jsx \
+                         *.jsm \
                          Makefile
 
 # The PREDEFINED tag can be used to specify one or more macro names that are
