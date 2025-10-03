@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.6] - 03/10/2025
+
+### Fixed
+
+- Debug functions that should check if debug is enabled before firering
+- Debug option that was set to true by default, it is now false.
+
+---
+
 ## [1.0.5] - 03/10/2025
 
 ### Added

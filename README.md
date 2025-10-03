@@ -179,6 +179,11 @@ The extension currently supports the following languages:
 - Add 12 more languages to the module (es, zh-cn, zh-tw, de, ja, ko, ru, pt-br, tr, pl, cs, hu)
 - Update `messageReference.ts` in order to support such languages
 
+### 1.0.6
+
+- Fix the debug check
+- Fix test with the logger
+
 ---
 
 ## Following Extension Guidelines
