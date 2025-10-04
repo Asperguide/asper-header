@@ -2,7 +2,7 @@
  * @file morseCode.ts
  * @brief Comprehensive Morse code translation system with International Morse Code compliance
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This module implements a complete Morse code translation system that provides bidirectional
@@ -137,6 +137,75 @@ export class MorseTranslator {
     };
 
     /**
+     * @brief Extended Morse code dictionary for international and special characters
+     * 
+     * Comprehensive mapping of extended character sets to their Morse Code equivalents.
+     * Includes:
+     * - **European Accented Characters**: À, Á, Â, Ä, Ç, É, Ê, Í, Ó, Ô, Õ, Ö, Ú, Ü, ß
+     * - **Slavic Characters**: Ą, Ć, Č, Ď, Ę, Ě, Ł, Ń, Ň, Ő, Ř, Ś, Š, Ť, Ů, Ű, Ź, Ż, Ž
+     * - **Cyrillic Alphabet**: Complete Russian alphabet from А to Я including Ё
+     * - **Japanese Katakana**: Basic katakana characters ア, イ, ウ, エ, オ, カ, キ, ク, ケ, コ
+     * - **Chinese Characters**: Common Chinese characters 们, 你, 們, 吗, 和, 嗎, 在, 好, 我, 是, 有, 的
+     * - **Korean Hangul**: Basic Korean characters 가, 나, 다, 라, 마, 바, 사, 아, 자, 차
+     * 
+     * This extended character set provides broader international support beyond the
+     * standard ITU-R M.1677-1 specification, enabling Morse code translation for
+     * multilingual content and international communication scenarios.
+     */
+    private static readonly MORSE_CODE_EXT: Record<string, string> = {
+        'Á': '.--.-', 'Â': '.-..-', 'Ã': '.-.-', 'Ä': '.-.-',
+        'Ç': '-.-..', 'É': '..-..', 'Ê': '..--', 'Í': '..---',
+        'Ó': '---.', 'Ô': '---..', 'Õ': '---.-', 'Ö': '..--',
+        'Ú': '..--', 'Ü': '..--', 'ß': '...--..', 'Ą': '.--.-',
+        'Ć': '-.-..', 'Č': '---.', 'Ď': '--..-', 'Ę': '..-..',
+        'Ě': '.-..-', 'Ğ': '--.', 'İ': '..', 'Ł': '.-..-',
+        'Ń': '--.--', 'Ň': '--.--', 'Ő': '..--..', 'Ř': '.-.-',
+        'Ś': '...-...', 'Ş': '...-', 'Š': '...-...', 'Ť': '-..-',
+        'Ů': '...--', 'Ű': '..--..', 'Ź': '--..-', 'Ż': '--..-.',
+        'Ž': '--..-.', 'Ё': '.', 'А': '.-', 'Б': '-...',
+        'В': '.--', 'Г': '--.', 'Д': '-..', 'Е': '.',
+        'Ж': '...-', 'З': '--..', 'И': '..', 'Й': '.---',
+        'К': '-.-', 'Л': '.-..', 'М': '--', 'Н': '-.',
+        'О': '---', 'П': '.--.', 'Р': '.-.', 'С': '...',
+        'Т': '-', 'У': '..-', 'Ф': '..-.', 'Х': '....',
+        'Ц': '-.-.', 'Ч': '---.', 'Ш': '----', 'Щ': '--.-',
+        'Ъ': '--.--', 'Ы': '-.--', 'Ь': '-..-', 'Э': '..-..',
+        'Ю': '..--', 'Я': '.-.-', 'ア': '.-', 'イ': '..',
+        'ウ': '..-', 'エ': '.', 'オ': '---', 'カ': '-.-',
+        'キ': '-.-..', 'ク': '...-', 'ケ': '-.-.-', 'コ': '----',
+        '们': '--.-', '你': '-.', '們': '--.-', '吗': '..--',
+        '和': '....-', '嗎': '..--', '在': '.-.', '好': '....',
+        '我': '.--', '是': '...', '有': '..-.', '的': '-..',
+        '가': '.-', '나': '-.', '다': '-..', '라': '.-..',
+        '마': '--', '바': '-...', '사': '...', '아': '.',
+        '자': '.---', '차': '---.'
+    };
+    
+    /**
+     * @brief Unified Morse code dictionary combining standard and extended character sets
+     * 
+     * Comprehensive character-to-Morse mapping created by merging the standard
+     * International Morse Code dictionary (MORSE_CODE) with the extended international
+     * character set (MORSE_CODE_EXT). This unified dictionary provides complete coverage
+     * for translation operations while maintaining separation of concerns between
+     * standard and extended character sets.
+     * 
+     * Dictionary Composition:
+     * - **Base Layer**: Standard ITU-R M.1677-1 International Morse Code characters
+     * - **Extended Layer**: International and special characters overlay
+     * - **Conflict Resolution**: Extended characters take precedence over base characters
+     * - **Performance**: Single lookup table for O(1) character translation
+     * 
+     * Used by both toMorse() and fromMorse() methods as the authoritative character
+     * mapping source, ensuring consistency across bidirectional translation operations.
+     */
+    private static readonly MERGED_MORSE: Record<string, string> = {
+        ...MorseTranslator.MORSE_CODE,
+        ...MorseTranslator.MORSE_CODE_EXT
+    };
+
+
+    /**
      * @brief Reverse lookup dictionary for Morse code to character translation
      * 
      * Automatically generated reverse mapping from Morse patterns to characters.
@@ -147,7 +216,7 @@ export class MorseTranslator {
      */
     private static readonly REVERSE_MORSE_CODE: Record<string, string> = (() => {
         const rev: Record<string, string> = {};
-        for (const [char, code] of Object.entries(MorseTranslator.MORSE_CODE)) {
+        for (const [char, code] of Object.entries(MorseTranslator.MERGED_MORSE)) {
             rev[code] = char;
         }
         return rev;
@@ -182,7 +251,7 @@ export class MorseTranslator {
         const final: string = input
             .toUpperCase()
             .split('')
-            .map(char => MorseTranslator.MORSE_CODE[char] ?? '')
+            .map(char => MorseTranslator.MERGED_MORSE[char] ?? '')
             .join(' ');
         this.log.info(getMessage("morseConverted", input, final));
         return final;

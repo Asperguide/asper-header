@@ -2,7 +2,7 @@
  * @file lazyFileLoad.ts
  * @brief Advanced lazy loading file system utility with intelligent caching and type safety
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This module implements a sophisticated lazy loading file system utility that serves as
@@ -121,12 +121,13 @@ export class LazyFileLoader<T = any> {
     }
 
     /**
-     * @brief Checks if a file or directory exists at the given path
+     * @brief Checks if a file or directory exists at the specified path
      * @param filePath Path to check for existence
      * @return Promise resolving to true if path exists, false otherwise
      * 
-     * Utility method that uses fs.promises.access() to check path existence
-     * without throwing exceptions. Used for path validation and resolution.
+     * Utility method for validating file existence before performing operations.
+     * Uses Node.js fs.promises.access() which is the recommended approach for
+     * checking file existence without race conditions.
      */
     async pathExists(filePath: string): Promise<boolean> {
         try {
@@ -136,7 +137,7 @@ export class LazyFileLoader<T = any> {
             return false;
         }
     }
-
+    
     /**
      * @brief Resolves a file path to an absolute path
      * @param filePath Relative or absolute file path to resolve

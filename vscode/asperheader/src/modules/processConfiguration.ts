@@ -2,7 +2,7 @@
  * @file processConfiguration.ts
  * @brief Advanced configuration management and settings orchestration for AsperHeader
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This module implements a sophisticated configuration management system that serves as the
@@ -187,6 +187,7 @@ class Configuration {
      * @return Promise that resolves when all configuration values are updated
      * 
      * Synchronizes the local configuration cache with current VS Code workspace settings.
+     * 
      * This method should be called when:
      * - Extension first activates to load user preferences
      * - Configuration changes are detected via VS Code events
@@ -242,35 +243,51 @@ class Configuration {
 
     /**
      * @brief Retrieves a configuration value by key with automatic fallback
-     * @param key Configuration property name to retrieve
-     * @return Configuration value or default constant if not found
+     * @param key Configuration key to retrieve (matches property names)
+     * @return Configuration value with automatic fallback to default constants
      * 
-     * Primary method for accessing configuration values throughout the extension.
-     * Implements a robust fallback mechanism ensuring that configuration access
-     * never fails even if settings are missing or corrupted.
+     * Generic configuration value accessor with automatic fallback chain:
+     * 1. Returns cached runtime value if available (set by refreshVariables)
+     * 2. Falls back to corresponding CONST default value if no runtime override
      * 
-     * Fallback Chain:
-     * 1. **Instance Property**: Value loaded from VS Code workspace settings
-     * 2. **Default Constant**: Fallback to hardcoded default if setting missing
+     * This method provides unified access to all configuration values without
+     * requiring callers to know whether values come from user settings or defaults.
+     * The fallback ensures that configuration queries always return valid values
+     * even if refreshVariables() hasn't been called or user settings are incomplete.
      * 
-     * The method uses TypeScript's nullish coalescing operator (??) to handle
-     * undefined values gracefully. This ensures consistent behavior even when
-     * configuration refresh hasn't been called or settings are incomplete.
-     * 
-     * Usage Examples:
-     * ```typescript
-     * const maxScan = config.get("maxScanLength"); // Returns number
-     * const debug = config.get("enableDebug");    // Returns boolean
-     * const logo = config.get("headerLogo");      // Returns string[]
-     * ```
+     * Type Safety Note:
+     * Returns `any` to accommodate the diverse configuration value types (string,
+     * boolean, number, string[]). Callers should cast to appropriate types or use
+     * specific typed accessor methods when available.
      */
     get(key: string): any {
         // fallback to CONST if no runtime override exists
         return (this as any)[key] ?? (CONST as any)[key];
     }
 
-    setWorkspaceName(workpaceName: string | undefined = undefined) {
+    /**
+     * @brief Sets the workspace name for header generation
+     * @param workpaceName The workspace name to set, or undefined to clear
+     * @return void
+     * 
+     * Updates the stored workspace name used in header generation. This name
+     * is typically derived from the VS Code workspace folder name and used
+     * as the project identifier in generated headers.
+     */
+    setWorkspaceName(workpaceName: string | undefined = undefined): void {
         this.workspaceName = workpaceName;
+    }
+
+    /**
+     * @brief Gets the current workspace name
+     * @return The workspace name string or undefined if not set
+     * 
+     * Retrieves the currently stored workspace name that was set via
+     * setWorkspaceName(). Used for header generation when workspace-specific
+     * project naming is enabled.
+     */
+    getWorkspaceName(): string | undefined {
+        return this.workspaceName;
     }
 }
 

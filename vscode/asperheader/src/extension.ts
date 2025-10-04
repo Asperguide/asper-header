@@ -2,7 +2,7 @@
  * @file extension.ts
  * @brief Main extension entry point for AsperHeader VS Code extension
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This file serves as the primary activation point for the AsperHeader VS Code extension,
@@ -19,12 +19,12 @@
  * - Document save event handling with header refresh
  * 
  * The extension integrates multiple specialized modules:
- * - CommentGenerator: Automated header injection and refresh
- * - RandomLogo: ASCII art logo selection and display
- * - Darling: Easter egg functionality with character display
- * - Watermark: Author watermark management
- * - MorseTranslator: Text-to-Morse code conversion utilities
- * - Logger: Dual-channel logging system for development and user feedback
+ * - {@link CommentGenerator}: Automated header injection and refresh
+ * - {@link RandomLogo}: ASCII art logo selection and display
+ * - {@link Darling}: Easter egg functionality with character display
+ * - {@link Watermark}: Author watermark management
+ * - {@link MorseTranslator}: Text-to-Morse code conversion utilities
+ * - {@link logger}: Dual-channel logging system for development and user feedback
  * 
  * @example Extension activation workflow:
  * ```typescript
@@ -52,6 +52,7 @@ import { CommentGenerator } from './modules/commentGenerator';
 import { CodeConfig, CodeConfigType } from "./modules/processConfiguration";
 import { Watermark } from "./modules/watermark";
 import { RandomLogo } from "./modules/randomLogo";
+import { query } from "./modules/querier";
 
 // ---- SHared variables ----
 
@@ -96,6 +97,7 @@ function getFileInfo(editor: vscode.TextEditor) {
 
 /**
  * @brief Displays a simple greeting message from the extension
+ * @return Void - Operation completes synchronously
  * 
  * Basic command implementation showing informational notification
  * to verify extension functionality and user interaction.
@@ -106,6 +108,7 @@ function helloWorldCommand() {
 
 /**
  * @brief Inserts greeting message with current file information
+ * @return Promise<void> - Resolves when message insertion is complete
  * 
  * Advanced hello command that analyzes the active editor and
  * inserts contextual information including file path, extension,
@@ -130,6 +133,7 @@ async function sayHelloWorldCommand() {
 /**
  * @brief Thread-safe document update handler for save events
  * @param document VS Code text document being saved
+ * @return Promise<void> - Resolves when update operation is complete or skipped
  * 
  * Implements concurrency control to prevent multiple simultaneous
  * header updates during save operations. Uses WeakSet tracking
@@ -155,6 +159,7 @@ async function updateSaveSafe(document: vscode.TextDocument) {
 
 /**
  * @brief Updates cached workspace name from VS Code workspace state
+ * @return Void - Updates configuration cache synchronously
  * 
  * Analyzes current workspace configuration to extract and cache
  * the workspace name for use in header generation. Handles both
@@ -172,6 +177,46 @@ function refreshWorkspaceName() {
 	}
 
 	CodeConfig.setWorkspaceName(workspaceName);
+}
+
+/**
+ * @brief Converts user input to Morse code through interactive GUI dialog
+ * @return Promise<void> - Resolves when conversion and display are complete
+ * 
+ * Presents an input dialog for text entry, converts the input to Morse code
+ * using {@link MorseTranslator}, and displays the result through both console
+ * and GUI notification channels.
+ */
+async function toMorseGui() {
+	const usr_input: string | undefined = await query.input(getMessage("toMorseGetInput"));
+	if (usr_input === undefined) {
+		logger.Gui.info(getMessage("operationCanceled"));
+		return;
+	}
+	const converted_response: string = MorseTranslator.toMorse(usr_input);
+	logger.info(getMessage("convertedContentCli", converted_response));
+	logger.Gui.info(getMessage("convertedContentGui"));
+	logger.Gui.info(`${converted_response}`);
+}
+
+/**
+ * @brief Converts Morse code input to plain text through interactive GUI dialog
+ * @return Promise<void> - Resolves when conversion and display are complete
+ * 
+ * Presents an input dialog for Morse code entry, converts the input to plain text
+ * using {@link MorseTranslator}, and displays the result through both console
+ * and GUI notification channels.
+ */
+async function fromMorseGui() {
+	const usr_input: string | undefined = await query.input(getMessage("fromMorseGetInput"));
+	if (usr_input === undefined) {
+		logger.Gui.info(getMessage("operationCanceled"));
+		return;
+	}
+	const converted_response: string = MorseTranslator.fromMorse(usr_input);
+	logger.info(getMessage("convertedContentCli", converted_response));
+	logger.Gui.info(getMessage("convertedContentGui"));
+	logger.Gui.info(`${converted_response}`);
 }
 
 /**
@@ -235,12 +280,15 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand(`${moduleName}.darling`, DARLING.displayRandomPersonInWindow.bind(DARLING)),
 		vscode.commands.registerCommand(`${moduleName}.author`, WATERMARK.displayRandomAuthorWatermarkInWindow.bind(WATERMARK)),
 		vscode.commands.registerCommand(`${moduleName}.displayRandomLogo`, RANDOM_LOGO.displayRandomLogoInWindow.bind(RANDOM_LOGO)),
+		vscode.commands.registerCommand(`${moduleName}.toMorse`, toMorseGui),
+		vscode.commands.registerCommand(`${moduleName}.fromMorse`, fromMorseGui),
 		vscode.workspace.onDidSaveTextDocument(async (document: vscode.TextDocument) => { await updateSaveSafe(document); })
 	);
 }
 
 /**
  * @brief Extension cleanup and deactivation handler
+ * @return Void - Completes synchronously with no explicit cleanup
  * 
  * Called when extension is deactivated, disabled, or VS Code closes.
  * Currently implements graceful shutdown without explicit cleanup

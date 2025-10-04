@@ -2,7 +2,7 @@
  * @file constants.ts
  * @brief Global constants and configuration values for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This module defines all global constants, configuration values, and default settings
@@ -249,35 +249,6 @@ export const authorLogo: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgA
 // ============================================================================
 // End of Constants Definition
 // ============================================================================
-
-/**
- * @section Usage Guidelines
- * 
- * **Importing Constants:**
- * ```typescript
- * import { extensionName, defaultHeaderLogo } from './constants';
- * ```
- * 
- * **Modifying Behavior:**
- * To change extension behavior, update the appropriate constants in this file.
- * Most behavioral changes require extension restart to take effect.
- * 
- * **Adding New Constants:**
- * - Group related constants in logical sections
- * - Use descriptive names with appropriate prefixes
- * - Include comprehensive JSDoc documentation
- * - Consider type safety and const assertions where appropriate
- * 
- * **ASCII Art Guidelines:**
- * - Use periods (.) for background/empty space
- * - Use hash (#) for foreground/design elements
- * - Maintain consistent line lengths for proper alignment
- * - Test rendering in various monospace fonts
- * 
- * **Configuration Philosophy:**
- * This file serves as the single source of truth for all extension constants.
- * Avoid hardcoding values elsewhere in the codebase - define them here first.
- */
 
 /**
  * @section Usage Guidelines

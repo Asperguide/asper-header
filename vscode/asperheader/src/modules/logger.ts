@@ -2,7 +2,7 @@
  * @file logger.ts
  * @brief Advanced dual-channel logging system for VS Code extension development
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This module implements a sophisticated logging infrastructure designed specifically
@@ -545,6 +545,7 @@ class Log {
     /**
      * @brief Updates installation state for dynamic environment changes with UI adaptation
      * @param context Updated VS Code extension context
+     * @return Void - Updates state and UI synchronously
      * 
      * Allows runtime updates to the installation state detection, useful when
      * the extension context becomes available after initial logger creation
@@ -572,6 +573,7 @@ class Log {
      * @brief Logs informational messages with automatic caller identification
      * @param message Information message describing successful operations or status updates
      * @param searchDepth Optional stack depth override for complex calling scenarios
+     * @return Void - Completes logging operation synchronously
      * 
      * Generates comprehensive informational log entries with full context attribution.
      * Suitable for tracking normal operation flow, successful completions, and
@@ -611,6 +613,7 @@ class Log {
      * @brief Records warning conditions requiring attention but not blocking execution
      * @param message Warning description of potential issues or unusual conditions
      * @param searchDepth Optional stack depth override for complex calling scenarios
+     * @return Void - Completes logging operation synchronously
      * 
      * Generates warning-level log entries for conditions that may require attention
      * but don't prevent continued operation. Includes automatic caller attribution
@@ -652,6 +655,7 @@ class Log {
      * @brief Records critical errors requiring immediate attention or investigation
      * @param message Error description detailing failure conditions and context
      * @param searchDepth Optional stack depth override for complex calling scenarios
+     * @return Void - Completes logging operation synchronously
      * 
      * Generates error-level log entries for critical failures, exceptions, and
      * conditions that prevent normal operation. Uses console.error() for proper
@@ -699,6 +703,7 @@ class Log {
      * @brief Generates detailed debugging information when debug mode is enabled
      * @param message Debug message with detailed development information
      * @param searchDepth Optional stack depth override for complex calling scenarios
+     * @return Void - Completes logging operation synchronously (early return if debug disabled)
      * 
      * Produces verbose debugging output for development and troubleshooting scenarios.
      * All debug output is conditionally generated based on extension configuration,

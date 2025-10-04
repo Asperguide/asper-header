@@ -2,7 +2,7 @@
  * @file commentGenerator.ts
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This module serves as the core engine for generating, injecting, and managing 
@@ -21,9 +21,9 @@
  * Key Dependencies:
  * - {@link LazyFileLoader}: Lazy loading of language configuration files
  * - {@link RandomLogo}: ASCII art logo selection and management
- * - {@link querier}: User interaction and input validation
+ * - {@link Query}: User interaction and input validation
  * - {@link logger}: Comprehensive logging and error reporting
- * - {@link processConfiguration}: Extension configuration and workspace settings
+ * - {@link CodeConfig}: Extension configuration and workspace settings
  * 
  * Supported Features:
  * - Multi-line and single-line comment generation
@@ -99,7 +99,7 @@ interface CommentStyle {
  * 
  * Architectural Features:
  * - **Lazy Loading**: Language configurations loaded on-demand for performance
- * - **Configuration Integration**: Deep coupling with {@link CodeConfig} settings
+ * - **Configuration Integration**: Deep coupling with {@link Configuration} settings
  * - **Error Resilience**: Comprehensive error handling and user feedback
  * - **Workspace Awareness**: Context-sensitive behavior based on workspace state
  * - **Multi-Language Support**: Extensible system supporting diverse programming languages
@@ -888,6 +888,7 @@ export class CommentGenerator {
     /**
      * @brief Updates the random logo generator instance
      * @param randomLogoInstance New RandomLogo instance to use
+     * @return Void - Updates instance reference synchronously
      * 
      * Allows external code to update the logo randomizer, useful for
      * dependency injection or runtime reconfiguration.
