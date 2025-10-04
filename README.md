@@ -184,6 +184,11 @@ The extension currently supports the following languages:
 - Fix the debug check
 - Fix test with the logger
 
+### 1.0.7
+
+- Update the package dependency versions
+- Update the comment choices in the comment dictionnary so that they are as silent as possible
+
 ---
 
 ## Following Extension Guidelines
