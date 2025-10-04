@@ -431,6 +431,12 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         lastModifiedUpdated: (): string => "Last Modified' date has been updated successfully.",
         languageNotFound: (LanguageId: string, fileExtension: string): string => `The file language of this document could not be identified, languageID: ${LanguageId}, fileExtention: ${fileExtension}`,
         jsonContent: (jsonContentString: String) => `The content of the comment json file: ${jsonContentString}`,
+        inFunction: (functionName: string, className: string = "Not specified") => `In function: '${functionName}' from class: '${className}'`,
+        foundLanguageComment: (): string => "Language comment file is present",
+        foundFocusEditor: (): string => "There is an editor in focus",
+        foundLogoInstance: (): string => "There is a logo instance that has been provided.",
+        foundNewLine: (newLineType: string): string => `The new determined line is '${newLineType}'`,
+        foundWorkingDirectory: (): string => "The provided current workign directory exists",
         messageNotFound: (key: string): string => `Message '${key}' not found.`
     },
     "fr": {

@@ -179,6 +179,7 @@ export class MorseTranslator {
      * ```
      */
     public static toMorse(input: string): string {
+        logger.debug(getMessage("inFunction", "toMorse", "MorseTranslator"));
         const final: string = input
             .toUpperCase()
             .split('')
@@ -219,6 +220,7 @@ export class MorseTranslator {
      * ```
      */
     public static fromMorse(morseInput: string): string {
+        logger.debug(getMessage("inFunction", "fromMorse", "MorseTranslator"));
         const decoded = morseInput
             .split(' ')
             .map(symbol => MorseTranslator.REVERSE_MORSE_CODE[symbol] ?? '')

@@ -138,6 +138,7 @@ export class Query {
      * ```
      */
     public static get instance(): Query {
+        logger.debug(getMessage("inFunction", "instance", "Query"));
         if (!this._instance) {
             this._instance = new Query();
         }
@@ -182,6 +183,7 @@ export class Query {
      * ```
      */
     public async input(promptText: string, options?: vscode.InputBoxOptions): Promise<string | undefined> {
+        logger.debug(getMessage("inFunction", "input", "Query"));
         try {
             const result = await vscode.window.showInputBox({
                 prompt: promptText,
@@ -238,6 +240,7 @@ export class Query {
      * ```
      */
     public async quickPick(items: string[], placeholder: string): Promise<string | undefined> {
+        logger.debug(getMessage("inFunction", "quickPick", "Query"));
         try {
             const result = await vscode.window.showQuickPick(items, {
                 placeHolder: placeholder
@@ -296,6 +299,7 @@ export class Query {
      * ```
      */
     public async confirm(promptText: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "confirm", "Query"));
         const yes: string = getMessage("quickPickYes");
         const no: string = getMessage("quickPickNo");
         const selection = await vscode.window.showQuickPick([yes, no], { placeHolder: promptText });

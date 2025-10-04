@@ -177,8 +177,10 @@ export class CommentGenerator {
      * is undefined, appropriate warnings are logged and defaults are used.
      */
     constructor(languageComment: LazyFileLoader | undefined = undefined, editor: vscode.TextEditor | undefined = undefined, randomLogoInstance: RandomLogo | undefined = undefined) {
+        logger.debug(getMessage("inFunction", "constructor", "CommentGenerator"));
         if (languageComment !== undefined) {
             this.languageComment = languageComment;
+            logger.debug(getMessage("foundLanguageComment"));
         } else {
             logger.warning(getMessage("missingLanguageComment"));
         }
@@ -186,11 +188,13 @@ export class CommentGenerator {
             logger.warning(getMessage("noFocusedEditors"));
         } else {
             this.updateFileInfo(editor);
+            logger.debug(getMessage("foundFocusEditor"));
         }
         if (!randomLogoInstance) {
             logger.warning(getMessage("noLogoInstanceProvided"));
         } else {
             this.randomLogo = randomLogoInstance;
+            logger.debug(getMessage("foundLogoInstance"));
         }
     }
 
@@ -203,9 +207,12 @@ export class CommentGenerator {
      * for use in text manipulation operations.
      */
     private determineNewLine(eol: vscode.EndOfLine): string {
+        logger.debug(getMessage("inFunction", "determineNewLine", "CommentGenerator"));
         if (eol === vscode.EndOfLine.LF) {
+            logger.debug(getMessage("foundNewLine", "\\n"));
             return "\n";
         } else {
+            logger.debug(getMessage("foundNewLine", "\\r\\n"));
             return "\r\n";
         }
     }
@@ -221,6 +228,7 @@ export class CommentGenerator {
      * formatting and project name.
      */
     private headerOpener(comment: string, eol: vscode.EndOfLine, projectName: string = this.Config.get("extensionName")): string {
+        logger.debug(getMessage("inFunction", "headerOpener", "CommentGenerator"));
         let final: string = comment + this.Config.get("headerOpenerDecorationOpen");
         final += this.Config.get("telegraphBegin") + " ";
         final += projectName;
@@ -238,6 +246,7 @@ export class CommentGenerator {
      * Supports both language ID matching and file extension fallback.
      */
     private async determineCorrectComment(): Promise<CommentStyle> {
+        logger.debug(getMessage("inFunction", "determineCorrectComment", "CommentGenerator"));
         const primaryKey: string = "langs";
         let commentStructure: CommentStyle = {
             singleLine: [],
@@ -318,6 +327,7 @@ export class CommentGenerator {
      * for the current file. The description will be included in the header.
      */
     private async determineHeaderDescription(): Promise<string[]> {
+        logger.debug(getMessage("inFunction", "determineHeaderDescription", "CommentGenerator"));
         let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderDescription"));
         final.push(usrResponse || "");
@@ -332,6 +342,7 @@ export class CommentGenerator {
      * for categorizing the current file.
      */
     private async determineHeaderTags(): Promise<string[]> {
+        logger.debug(getMessage("inFunction", "determineHeaderTags", "CommentGenerator"));
         let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderTags"));
         final.push(usrResponse || "");
@@ -346,6 +357,7 @@ export class CommentGenerator {
      * purpose or function of the current file.
      */
     private async determineHeaderPurpose(): Promise<string[]> {
+        logger.debug(getMessage("inFunction", "determineHeaderPurpose", "CommentGenerator"));
         let final: string[] = [];
         const usrResponse: string | undefined = await query.input(getMessage("getHeaderPurpose"));
         final.push(usrResponse || "");
@@ -363,6 +375,7 @@ export class CommentGenerator {
      * option if only one exists, or the first option if user cancels selection.
      */
     private async getSingleCommentOption(commentOptions: string[]): Promise<string> {
+        logger.debug(getMessage("inFunction", "getSingleCommentOption", "CommentGenerator"));
         if (commentOptions.length === 0) {
             logger.Gui.error(getMessage("noCommentToShow"));
             throw Error(getMessage("noCommentToShow"));
@@ -383,6 +396,7 @@ export class CommentGenerator {
      * (like "File:", "Date:") and their corresponding values.
      */
     private addKeyDefinitionSeparator(): string {
+        logger.debug(getMessage("inFunction", "addKeyDefinitionSeparator", "CommentGenerator"));
         const userSettingDefinedElement: string = this.Config.get("headerKeyDefinitionSeparator");
         return userSettingDefinedElement || this.Config.get("headerKeyDefinitionSeparator");
     }
@@ -397,6 +411,7 @@ export class CommentGenerator {
      * Uses configured date separators and formatting from the extension settings.
      */
     private addCreationDate(comment: string, eol: vscode.EndOfLine) {
+        logger.debug(getMessage("inFunction", "addCreationDate", "CommentGenerator"));
         const now = new Date();
         const day = String(now.getDate()).padStart(2, "0");
         const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
@@ -421,6 +436,7 @@ export class CommentGenerator {
      * the date using configured separators.
      */
     private addLastModifiedDate(comment: string, eol: vscode.EndOfLine) {
+        logger.debug(getMessage("inFunction", "addLastModifiedDate", "CommentGenerator"));
         const now: Date = new Date();
         const day: string = String(now.getDate()).padStart(2, "0");
         const month: string = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
@@ -454,6 +470,7 @@ export class CommentGenerator {
      * optional blank line based on configuration.
      */
     private addMultilineKey(comment: string, eol: vscode.EndOfLine, tagName: string, tagDefinition: string[]): string {
+        logger.debug(getMessage("inFunction", "addMultilineKey", "CommentGenerator"));
         const eolStr: string = this.determineNewLine(eol);
         let final: string = comment + tagName + this.addKeyDefinitionSeparator() + eolStr;
         for (let i = 0; i < tagDefinition.length; i++) {
@@ -477,6 +494,7 @@ export class CommentGenerator {
      * Creates a single-line key-value pair in the header format.
      */
     private addSingleLineKey(comment: string, eol: vscode.EndOfLine, tagName: string, tagDefinition: string): string {
+        logger.debug(getMessage("inFunction", "addSingleLineKey", "CommentGenerator"));
         let final: string = comment + tagName + this.addKeyDefinitionSeparator();
         final += tagDefinition + this.determineNewLine(eol);
         return final;
@@ -492,6 +510,7 @@ export class CommentGenerator {
      * before the final header closing line.
      */
     private beforeHeaderCloser(comment: string, eol: vscode.EndOfLine): string {
+        logger.debug(getMessage("inFunction", "beforeHeaderCloser", "CommentGenerator"));
         return comment + this.Config.get("telegraphEndOfTransmission") + this.determineNewLine(eol);
     }
 
@@ -506,6 +525,7 @@ export class CommentGenerator {
      * formatting and project name, matching the opener format.
      */
     private headerCloser(comment: string, eol: vscode.EndOfLine, projectName: string = this.Config.get("extensionName")): string {
+        logger.debug(getMessage("inFunction", "headerCloser", "CommentGenerator"));
         let final: string = comment + this.Config.get("headerOpenerDecorationOpen");
         final += this.Config.get("telegraphEnd") + " ";
         final += projectName;
@@ -524,6 +544,7 @@ export class CommentGenerator {
      * and updates configuration-dependent properties.
      */
     private updateFileInfo(editor: vscode.TextEditor, document: vscode.TextDocument | undefined = undefined) {
+        logger.debug(getMessage("inFunction", "updateFileInfo", "CommentGenerator"));
         this.headerInnerEnd = undefined;
         this.headerInnerStart = undefined;
         if (document === undefined) {
@@ -561,6 +582,7 @@ export class CommentGenerator {
      * both multi-line and single-line comment styles with user prompting when needed.
      */
     private async getCorrectCommentPrefix(determinedComment: CommentStyle): Promise<string[]> {
+        logger.debug(getMessage("inFunction", "getCorrectPrefix", "CommentGenerator"));
         let commentOpener: string = "";
         let commentMiddle: string = "";
         let commentCloser: string = "";
@@ -612,6 +634,7 @@ export class CommentGenerator {
      * - Closing comment delimiter
      */
     private async buildTheHeader(comments: string[]): Promise<string[]> {
+        logger.debug(getMessage("inFunction", "buildTheHeader", "CommentGenerator"));
         const eol: vscode.EndOfLine = this.documentEOL || vscode.EndOfLine.LF;
         const unknownTerm: string = getMessage("unknown");
         const commentOpener: string = comments[0] || "";
@@ -675,6 +698,7 @@ export class CommentGenerator {
      * boundaries have been previously determined by locateIfHeaderPresent().
      */
     private async updateEditDate(editor: vscode.TextEditor, comments: string[]) {
+        logger.debug(getMessage("inFunction", "updateEditDate", "CommentGenerator"));
         const commentOpener: string = comments[0] || "";
         const commentMiddle: string = comments[1] || "";
         const commentCloser: string = comments[2] || "";
@@ -735,6 +759,7 @@ export class CommentGenerator {
      * header is found. Detects broken headers (mismatched/missing opener/closer).
      */
     protected locateIfHeaderPresent(comments: string[]): boolean | undefined {
+        logger.debug(getMessage("inFunction", "locateIfHeaderPresent", "CommentGenerator"));
         const commentOpener: string = comments[0] || "";
         const commentMiddle: string = comments[1] || "";
         const commentCloser: string = comments[2] || "";
@@ -790,6 +815,7 @@ export class CommentGenerator {
      * top of the document. Handles shebang line detection and offset calculation.
      */
     private async writeHeaderToFile(editor: vscode.TextEditor, comments: string[]): Promise<number> {
+        logger.debug(getMessage("inFunction", "writeHeaderToFile", "CommentGenerator"));
         let offset: number = 0;
         const headerContent: string[] = await this.buildTheHeader(comments);
         // determine if the first line has a shebang like line on the first line, if true, add a new line, and write from that line.
@@ -809,6 +835,7 @@ export class CommentGenerator {
      * This method is typically called by user command activation.
      */
     async injectHeader() {
+        logger.debug(getMessage("inFunction", "injectHeader", "CommentGenerator"));
         const editor = vscode.window.activeTextEditor;
         if (editor === undefined) {
             logger.error(getMessage("noFocusedEditors"));
@@ -870,6 +897,7 @@ export class CommentGenerator {
      * file name, and full file path against minimatch patterns.
      */
     private async allowedToActivate(): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "allowedToActivate", "CommentGenerator"));
         const ignored: string[] = CodeConfig.get("extensionIgnore") ?? [];
 
         for (const pattern of ignored) {
@@ -894,6 +922,7 @@ export class CommentGenerator {
      * dependency injection or runtime reconfiguration.
      */
     updateLogoInstanceRandomiser(randomLogoInstance: RandomLogo): void {
+        logger.debug(getMessage("inFunction", "updateLogoInstanceRandomiser", "CommentGenerator"));
         this.randomLogo = randomLogoInstance;
     }
 
@@ -908,6 +937,7 @@ export class CommentGenerator {
      * 3. Do nothing (if refresh disabled or file excluded)
      */
     async refreshHeader(document: vscode.TextDocument | undefined) {
+        logger.debug(getMessage("inFunction", "refreshHeader", "CommentGenerator"));
         const refreshOnSave: boolean = CodeConfig.get("refreshOnSave");
         const promptToCreateIfMissing: boolean = CodeConfig.get("promptToCreateIfMissing");
         if (!refreshOnSave) {

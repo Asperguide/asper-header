@@ -84,6 +84,7 @@ const RANDOM_LOGO: RandomLogo = new RandomLogo();
  * operations across different file types and languages.
  */
 function getFileInfo(editor: vscode.TextEditor) {
+	logger.debug(getMessage("inFunction", "getFileInfo"));
 	const document = editor.document;
 	const filePath = document.uri.fsPath;
 	const fileName = document.uri.path.split('/').pop() || "unknown";
@@ -103,6 +104,7 @@ function getFileInfo(editor: vscode.TextEditor) {
  * to verify extension functionality and user interaction.
  */
 function helloWorldCommand() {
+	logger.debug(getMessage("inFunction", "helloWorldCommand"));
 	vscode.window.showInformationMessage(getMessage("helloWorldGreetingsCommand", moduleName));
 }
 
@@ -115,6 +117,7 @@ function helloWorldCommand() {
  * and language type. Demonstrates file analysis capabilities.
  */
 async function sayHelloWorldCommand() {
+	logger.debug(getMessage("inFunction", "sayHelloWorldCommand"));
 	const editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		logger.Gui.error(getMessage("noActiveEditor"));
@@ -140,6 +143,7 @@ async function sayHelloWorldCommand() {
  * to ensure atomic updates and prevent corruption.
  */
 async function updateSaveSafe(document: vscode.TextDocument) {
+	logger.debug(getMessage("inFunction", "updateSaveSafe"));
 	if (updatingDocuments.has(document)) {
 		return;
 	}
@@ -166,6 +170,7 @@ async function updateSaveSafe(document: vscode.TextDocument) {
  * workspace folders and legacy root path configurations.
  */
 function refreshWorkspaceName() {
+	logger.debug(getMessage("inFunction", "refreshWorkspaceName"));
 	let workspaceName: string | undefined;
 
 	if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
@@ -188,6 +193,7 @@ function refreshWorkspaceName() {
  * and GUI notification channels.
  */
 async function toMorseGui() {
+	logger.debug(getMessage("inFunction", "toMorseGui"));
 	const usr_input: string | undefined = await query.input(getMessage("toMorseGetInput"));
 	if (usr_input === undefined) {
 		logger.Gui.info(getMessage("operationCanceled"));
@@ -208,6 +214,7 @@ async function toMorseGui() {
  * and GUI notification channels.
  */
 async function fromMorseGui() {
+	logger.debug(getMessage("inFunction", "fromMorseGui"));
 	const usr_input: string | undefined = await query.input(getMessage("fromMorseGetInput"));
 	if (usr_input === undefined) {
 		logger.Gui.info(getMessage("operationCanceled"));

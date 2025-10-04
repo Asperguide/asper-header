@@ -156,6 +156,7 @@ export class Watermark {
      * relative file paths.
      */
     constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
+        logger.debug(getMessage("inFunction", "constructor", "Watermark"));
         if (filePath) {
             this.fileInstance.updateFilePath(filePath);
         }
@@ -174,6 +175,7 @@ export class Watermark {
      * The method delegates to the LazyFileLoader's updateFilePath method.
      */
     async updateFilePath(filePath: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateFilePath", "Watermark"));
         return await this.fileInstance.updateFilePath(filePath);
     }
 
@@ -187,6 +189,7 @@ export class Watermark {
      * resolution context without affecting existing file references.
      */
     async updateCurrentWorkingDirectory(cwd: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateCurrentWorkingDirectory", "Watermark"));
         return await this.fileInstance.updateCurrentWorkingDirectory(cwd);
     }
 
@@ -200,6 +203,7 @@ export class Watermark {
      * with uniform distribution across the specified range.
      */
     private getRandomNumber(maxValue: number): number {
+        logger.debug(getMessage("inFunction", "getRandomNumber", "Watermark"));
         return Math.floor(Math.random() * maxValue);
     }
 
@@ -230,6 +234,7 @@ export class Watermark {
      * - Uses internationalized error messages
      */
     async getRandomWatermark(): Promise<watermark> {
+        logger.debug(getMessage("inFunction", "getRandomWatermark", "Watermark"));
         const fileContent = await this.fileInstance.get();
         if (!Array.isArray(fileContent) || fileContent.length === 0) {
             const err: string = getMessage("watermarkJsonFileInvalid");
@@ -265,6 +270,7 @@ export class Watermark {
      * VS Code webviews provide the necessary secure context for clipboard access.
      */
     private copyButtonScript(): string {
+        logger.debug(getMessage("inFunction", "copyButtonScript", "Watermark"));
         return `
 <script>
     const vscode = acquireVsCodeApi();
@@ -300,6 +306,7 @@ export class Watermark {
      * - Automatic initialization on script load
      */
     private zoomScript(): string {
+        logger.debug(getMessage("inFunction", "zoomScript", "Watermark"));
         return `
 <script>
     let currentSize = 20;
@@ -349,6 +356,7 @@ export class Watermark {
      * - Responsive layout adapting to content size
      */
     private pageStyle(): string {
+        logger.debug(getMessage("inFunction", "pageStyle", "Watermark"));
         return `
         <style>
     body { font-family: sans-serif; padding: 20px; }
@@ -396,6 +404,7 @@ export class Watermark {
      * - Displays font name for user reference and identification
      */
     async displayRandomAuthorWatermarkInWindow() {
+        logger.debug(getMessage("inFunction", "displayRandomAuthorWatermarkInWindow", "Watermark"));
         const randomwatermark: watermark = await this.getRandomWatermark();
 
         const panel = vscode.window.createWebviewPanel(

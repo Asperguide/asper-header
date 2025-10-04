@@ -112,6 +112,7 @@ export class LazyFileLoader<T = any> {
      * directory. The file is not loaded until the first call to get().
      */
     constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
+        logger.debug(getMessage("inFunction", "constructor", "LazyFileLoader"));
         if (filePath) {
             this.filePath = filePath;
         }
@@ -130,6 +131,7 @@ export class LazyFileLoader<T = any> {
      * checking file existence without race conditions.
      */
     async pathExists(filePath: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "pathExists", "LazyFileLoader"));
         try {
             await fsp.access(filePath);
             return true;
@@ -137,7 +139,7 @@ export class LazyFileLoader<T = any> {
             return false;
         }
     }
-    
+
     /**
      * @brief Resolves a file path to an absolute path
      * @param filePath Relative or absolute file path to resolve
@@ -149,6 +151,7 @@ export class LazyFileLoader<T = any> {
      * Absolute paths are returned unchanged.
      */
     private async resolveAbsolutePath(filePath: string): Promise<string> {
+        logger.debug(getMessage("inFunction", "resolveAbsolutePath", "LazyFileLoader"));
         if (path.isAbsolute(filePath)) {
             return filePath;
         }
@@ -174,6 +177,7 @@ export class LazyFileLoader<T = any> {
      * - Returns undefined if file path not set or parsing fails
      */
     async get(): Promise<T | undefined> {
+        logger.debug(getMessage("inFunction", "get", "LazyFileLoader"));
         if (this.cache) {
             return this.cache; // Already loaded
         }
@@ -208,6 +212,7 @@ export class LazyFileLoader<T = any> {
      * cache needs to be refreshed.
      */
     async reload(): Promise<T | undefined> {
+        logger.debug(getMessage("inFunction", "reload", "LazyFileLoader"));
         this.cache = null;
         logger.info(getMessage("fileRefreshed"));
         return this.get();
@@ -221,6 +226,7 @@ export class LazyFileLoader<T = any> {
      * when the file content is no longer needed.
      */
     unload() {
+        logger.debug(getMessage("inFunction", "unload", "LazyFileLoader"));
         this.cache = null;
         logger.info(getMessage("fileUnloaded", String(this.filePath)));
     }
@@ -235,6 +241,7 @@ export class LazyFileLoader<T = any> {
      * cache consistency. Returns false if the new file cannot be loaded.
      */
     async updateFilePath(filePath: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateFilePath", "LazyFileLoader"));
         const oldFilePath = this.filePath;
         this.filePath = filePath;
         if (this.cache) {
@@ -258,6 +265,7 @@ export class LazyFileLoader<T = any> {
      * invalidate the cache automatically.
      */
     async updateCurrentWorkingDirectory(cwd: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateCurrentWorkingDirectory", "LazyFileLoader"));
         const oldCwd: string = this.cwd;
         if (! await this.pathExists(cwd)) {
             logger.warning(getMessage("cwdDoesNotExist", cwd));
@@ -276,6 +284,7 @@ export class LazyFileLoader<T = any> {
      * for this loader instance. May be relative or absolute.
      */
     getFilePath(): string | undefined {
+        logger.debug(getMessage("inFunction", "getFilePath", "LazyFileLoader"));
         return this.filePath;
     }
 }

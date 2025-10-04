@@ -144,6 +144,7 @@ export class Darling {
      * directory configurations. If not provided, default values are used.
      */
     constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
+        logger.debug(getMessage("inFunction", "constructor", "Darling"));
         if (filePath) {
             this.fileInstance.updateFilePath(filePath);
         }
@@ -161,6 +162,7 @@ export class Darling {
      * character data from a different JSON file location.
      */
     async updateFilePath(filePath: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateFilePath", "Darling"));
         return await this.fileInstance.updateFilePath(filePath);
     }
 
@@ -173,6 +175,7 @@ export class Darling {
      * resolving relative file paths.
      */
     async updateCurrentWorkingDirectory(cwd: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateCurrentWorkingDirectory", "Darling"));
         return await this.fileInstance.updateCurrentWorkingDirectory(cwd);
     }
 
@@ -185,6 +188,7 @@ export class Darling {
      * from the loaded data array.
      */
     private getRandomNumber(maxValue: number): number {
+        logger.debug(getMessage("inFunction", "getRandomNumber", "Darling"));
         return Math.floor(Math.random() * maxValue);
     }
 
@@ -198,6 +202,7 @@ export class Darling {
      * Person interface format, handling property name transformations.
      */
     async getRandomPerson(): Promise<Person> {
+        logger.debug(getMessage("inFunction", "getRandomPerson", "Darling"));
         const fileContent = await this.fileInstance.get();
         if (!Array.isArray(fileContent) || fileContent.length === 0) {
             const err: string = getMessage("darlingJsonFileInvalid");
@@ -232,6 +237,7 @@ export class Darling {
      * Communicates success back to the VS Code extension.
      */
     private copyButtonScript(): string {
+        logger.debug(getMessage("inFunction", "copyButtonScript", "Darling"));
         return `
 <script>
     const vscode = acquireVsCodeApi();
@@ -255,6 +261,7 @@ export class Darling {
      * better readability. Maintains minimum font size constraints.
      */
     private zoomScript(): string {
+        logger.debug(getMessage("inFunction", "zoomScript", "Darling"));
         return `
 <script>
     let currentSize = 6;
@@ -297,6 +304,7 @@ export class Darling {
      * proper display and readability.
      */
     private pageStyle(): string {
+        logger.debug(getMessage("inFunction", "pageStyle", "Darling"));
         return `
         <style>
     body { font-family: sans-serif; padding: 20px; }
@@ -322,6 +330,7 @@ export class Darling {
      * interactive ASCII art with copy and zoom functionality.
      */
     async displayRandomPersonInWindow() {
+        logger.debug(getMessage("inFunction", "displayRandomPersonInWindow", "Darling"));
         const randomPerson: Person = await this.getRandomPerson();
 
         const panel = vscode.window.createWebviewPanel(

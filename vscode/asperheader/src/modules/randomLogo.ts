@@ -147,6 +147,7 @@ export class RandomLogo {
      * the LazyFileLoader instances.
      */
     constructor(rootDir: string | undefined = undefined, cwd: string | undefined = undefined) {
+        logger.debug(getMessage("inFunction", "constructor", "RandomLogo"));
         if (rootDir) {
             this.rootDir = rootDir;
             this.gatherAllLogoFiles(this.rootDir);
@@ -176,6 +177,7 @@ export class RandomLogo {
      * false. The existing logo collection may be partially updated in this case.
      */
     async updateRootDir(basePath: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateRootDir", "RandomLogo"));
         this.rootDir = basePath;
         try {
             await this.gatherAllLogoFiles(this.rootDir);
@@ -196,6 +198,7 @@ export class RandomLogo {
      * configuration for path resolution without affecting existing file loaders.
      */
     updateCurrentWorkingDirectory(cwd: string): boolean {
+        logger.debug(getMessage("inFunction", "updateCurrentWorkingDirectory", "RandomLogo"));
         this.cwd = cwd;
         return true;
     }
@@ -210,6 +213,7 @@ export class RandomLogo {
      * with uniform distribution across the specified range.
      */
     private getRandomNumber(maxValue: number): number {
+        logger.debug(getMessage("inFunction", "getRandomNumber", "RandomLogo"));
         return Math.floor(Math.random() * maxValue);
     }
 
@@ -240,6 +244,7 @@ export class RandomLogo {
      * access errors during discovery are handled by the LazyFileLoader.
      */
     private async gatherAllLogoFiles(rootDir: string | undefined = undefined): Promise<void> {
+        logger.debug(getMessage("inFunction", "gatherAllLogoFiles", "RandomLogo"));
         if (!rootDir && !this.rootDir) {
             throw Error(getMessage("logoNoRootDir"));
         }
@@ -281,6 +286,7 @@ export class RandomLogo {
      * VS Code webviews provide the necessary secure context for clipboard access.
      */
     private copyButtonScript(): string {
+        logger.debug(getMessage("inFunction", "copyButtonScript", "RandomLogo"));
         return `
 <script>
     const vscode = acquireVsCodeApi();
@@ -316,6 +322,7 @@ export class RandomLogo {
      * - Automatic initialization on script load
      */
     private zoomScript(): string {
+        logger.debug(getMessage("inFunction", "zoomScript", "RandomLogo"));
         return `
 <script>
     let currentSize = 20;
@@ -365,6 +372,7 @@ export class RandomLogo {
      * - Responsive layout adapting to content size
      */
     private pageStyle(): string {
+        logger.debug(getMessage("inFunction", "pageStyle", "RandomLogo"));
         return `
         <style>
     body { font-family: sans-serif; padding: 20px; }
@@ -404,6 +412,7 @@ export class RandomLogo {
      * - File system errors during content loading
      */
     async getRandomLogoFromFolder(): Promise<logo> {
+        logger.debug(getMessage("inFunction", "getRandomLogoFromFolder", "RandomLogo"));
         if (this.liveLogoFiles.length === 0) {
             await this.gatherAllLogoFiles();
         }
@@ -461,6 +470,7 @@ export class RandomLogo {
      * - Preserves ASCII art formatting through proper HTML escaping
      */
     async displayRandomLogoInWindow() {
+        logger.debug(getMessage("inFunction", "displayRandomLogoInWindow", "RandomLogo"));
         const randomLogo: logo = await this.getRandomLogoFromFolder();
 
         const panel = vscode.window.createWebviewPanel(
