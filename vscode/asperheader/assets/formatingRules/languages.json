@@ -56,10 +56,10 @@
                 "stylus"
             ],
             "prompt_comment_opening_type": false,
-            "singleline": [
+            "singleLine": [
                 "//"
             ],
-            "multiline": [
+            "multiLine": [
                 "/*",
                 "*",
                 "*/"
@@ -1296,7 +1296,7 @@
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
-                "REM",
+                "@REM",
                 "::"
             ],
             "multiLine": [],
@@ -2062,7 +2062,7 @@
             "prompt_comment_opening_type": false,
             "singleLine": [
                 "'",
-                "REM"
+                "@REM"
             ],
             "multiLine": [],
             "quirks": "VBA uses the same comment syntax as classic Visual Basic (apostrophe or REM). VBA typically lives inside Office documents; exported modules commonly use .bas/.cls/.frm.",
@@ -2094,7 +2094,7 @@
             "prompt_comment_opening_type": false,
             "singleLine": [
                 "'",
-                "REM",
+                "@REM",
                 "//"
             ],
             "multiLine": [
@@ -2170,7 +2170,7 @@
             ],
             "singleLine": [
                 "'",
-                "REM"
+                "@REM"
             ],
             "multiLine": [],
             "fileExtensions": {
