@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.7] - 04/10/2025
+
+### Changed
+
+- Update the package dependency versions
+- Update the comment choices in the comment dictionnary so that they are as silent as possible
+
+---
+
 ## [1.0.6] - 03/10/2025
 
 ### Fixed
