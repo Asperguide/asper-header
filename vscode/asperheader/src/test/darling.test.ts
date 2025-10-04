@@ -2,7 +2,7 @@
  * @file darling.test.ts
  * @brief Comprehensive unit tests for the Darling character showcase system
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This test suite provides extensive coverage for the Darling module, which manages
@@ -71,16 +71,33 @@ class MockWebview {
         this._html = value;
     }
 
+    /**
+     * @brief Registers a message handler for webview communication
+     * @param handler Function to handle incoming messages from webview
+     * @return Disposable object for cleanup
+     */
     onDidReceiveMessage(handler: (message: any) => void) {
         this.messageHandlers.push(handler);
         return { dispose: () => { } };
     }
 
+    /**
+     * @brief Sends a message to all registered message handlers
+     * @param message Message object to broadcast to handlers
+     */
     postMessage(message: any) {
         this.messageHandlers.forEach(handler => handler(message));
     }
 }
 
+/**
+ * @brief Main test suite for comprehensive Darling module functionality validation
+ * 
+ * This suite provides complete coverage of the Darling character showcase system,
+ * testing all aspects from constructor initialization to webview presentation.
+ * Includes setup/teardown lifecycle management and organized test categories
+ * for systematic validation of character data processing and display features.
+ */
 suite('Darling Test Suite', () => {
     let tempDir: string;
     let testFilePath: string;
@@ -91,7 +108,11 @@ suite('Darling Test Suite', () => {
 
     /**
      * @brief Setup test environment before each test
-     * Creates temporary directory and mock character data
+     * @return Promise that resolves when test environment is ready
+     * 
+     * Creates temporary directory and mock character data for isolated testing.
+     * Initializes webview mocking and comprehensive character dataset with
+     * ASCII art, aliases, and complete metadata for thorough validation.
      */
     setup(async () => {
         // Create temporary directory for test files
@@ -190,7 +211,11 @@ suite('Darling Test Suite', () => {
 
     /**
      * @brief Cleanup test environment after each test
-     * Removes temporary files and restores mocks
+     * @return Promise that resolves when cleanup is complete
+     * 
+     * Removes temporary files and restores mocked VS Code APIs to prevent
+     * test interference. Ensures clean state for subsequent test executions
+     * and proper resource cleanup to avoid memory leaks.
      */
     teardown(async () => {
         // Cleanup temporary directory
@@ -209,31 +234,64 @@ suite('Darling Test Suite', () => {
         capturedHtml = '';
     });
 
+    /**
+     * @brief Test suite for Darling constructor and initialization scenarios
+     * 
+     * Validates proper instantiation of Darling instances with various parameter
+     * combinations, including default parameters, file paths, working directories,
+     * and graceful handling of undefined or invalid inputs.
+     */
     suite('Constructor and Initialization', () => {
+        /**
+         * @brief Tests Darling instantiation without parameters
+         * @test Validates that Darling can be created with default constructor values
+         */
         test('should create instance with default parameters', () => {
             const darling = new Darling();
             assert.ok(darling instanceof Darling, 'Should create Darling instance');
         });
 
+        /**
+         * @brief Tests Darling instantiation with file path parameter
+         * @test Validates constructor with single file path argument
+         */
         test('should create instance with file path parameter', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath);
             assert.ok(darling instanceof Darling, 'Should create Darling instance with file path');
         });
 
+        /**
+         * @brief Tests Darling instantiation with complete parameter set
+         * @test Validates constructor with both file path and working directory arguments
+         */
         test('should create instance with both file path and working directory', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
             assert.ok(darling instanceof Darling, 'Should create Darling instance with both parameters');
         });
 
+        /**
+         * @brief Tests graceful handling of undefined constructor parameters
+         * @test Validates that Darling handles null/undefined inputs without errors
+         */
         test('should handle undefined parameters gracefully', () => {
             const darling = new Darling(undefined, undefined);
             assert.ok(darling instanceof Darling, 'Should handle undefined parameters');
         });
     });
 
+    /**
+     * @brief Test suite for file path and directory management functionality
+     * 
+     * Tests the Darling module's ability to handle file path updates, working
+     * directory changes, and relative path resolution for character data files.
+     */
     suite('File Path Management', () => {
+        /**
+         * @brief Tests successful file path update operation
+         * @test Validates that updateFilePath returns true for valid file paths
+         */
         test('should update file path successfully', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling();
@@ -242,6 +300,10 @@ suite('Darling Test Suite', () => {
             assert.strictEqual(success, true, 'Should return true for successful file path update');
         });
 
+        /**
+         * @brief Tests successful working directory update operation
+         * @test Validates that updateCurrentWorkingDirectory returns true for valid directories
+         */
         test('should update working directory successfully', async () => {
             const darling = new Darling();
 
@@ -249,6 +311,10 @@ suite('Darling Test Suite', () => {
             assert.strictEqual(success, true, 'Should return true for successful working directory update');
         });
 
+        /**
+         * @brief Tests relative path resolution with working directory context
+         * @test Validates proper handling of relative paths when working directory is set
+         */
         test('should handle relative paths with working directory', async () => {
             const relativePath = 'characters.json';
             const fullPath = path.join(tempDir, relativePath);
@@ -262,7 +328,17 @@ suite('Darling Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for character data loading, parsing, and validation
+     * 
+     * Comprehensive tests for JSON data loading, character object mapping,
+     * property validation, and data structure integrity verification.
+     */
     suite('Character Data Loading and Validation', () => {
+        /**
+         * @brief Tests complete character data loading and parsing workflow
+         * @test Validates JSON parsing, object structure, and property type validation
+         */
         test('should load and parse character data correctly', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -283,6 +359,10 @@ suite('Darling Test Suite', () => {
             assert.ok(typeof person.type === 'string', 'Person should have string type');
         });
 
+        /**
+         * @brief Tests proper mapping of image_link array to imageContent property
+         * @test Validates ASCII art data transformation and array structure preservation
+         */
         test('should correctly map image_link to imageContent', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -294,6 +374,10 @@ suite('Darling Test Suite', () => {
             assert.ok(person.imageContent.every(line => typeof line === 'string'), 'All imageContent lines should be strings');
         });
 
+        /**
+         * @brief Tests proper handling of characters with null alias values
+         * @test Validates graceful processing of optional alias property when null
+         */
         test('should handle null alias correctly', async () => {
             const charactersWithNullAlias = mockCharacters.map(char => ({ ...char, alias: null }));
             await fs.writeFile(testFilePath, JSON.stringify(charactersWithNullAlias));
@@ -304,6 +388,10 @@ suite('Darling Test Suite', () => {
             assert.strictEqual(person.alias, null, 'Should handle null alias correctly');
         });
 
+        /**
+         * @brief Tests handling of characters with empty image_link arrays
+         * @test Validates proper processing when no ASCII art data is provided
+         */
         test('should handle empty image_link array', async () => {
             const charactersWithEmptyImage = mockCharacters.map(char => ({ ...char, image_link: [] }));
             await fs.writeFile(testFilePath, JSON.stringify(charactersWithEmptyImage));
@@ -316,7 +404,17 @@ suite('Darling Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for random character selection algorithms and distribution
+     * 
+     * Tests randomization logic, character selection validity, dataset handling,
+     * and statistical distribution of character selection over multiple iterations.
+     */
     suite('Random Selection Algorithm', () => {
+        /**
+         * @brief Tests randomization effectiveness across multiple character selections
+         * @test Validates that random selection produces variety over multiple iterations
+         */
         test('should select different characters on multiple calls', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -337,6 +435,10 @@ suite('Darling Test Suite', () => {
             assert.ok(selectedIds.size >= 1, 'Should select at least one character');
         });
 
+        /**
+         * @brief Tests validation that only valid dataset characters are returned
+         * @test Validates that random selection never returns invalid or corrupted data
+         */
         test('should always return valid character from dataset', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -353,6 +455,10 @@ suite('Darling Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests behavior with datasets containing only one character
+         * @test Validates consistent return of single character when no alternatives exist
+         */
         test('should handle single character dataset', async () => {
             const singleCharacter = [mockCharacters[0]];
             await fs.writeFile(testFilePath, JSON.stringify(singleCharacter));
@@ -366,7 +472,17 @@ suite('Darling Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for error handling and edge case scenarios
+     * 
+     * Comprehensive testing of error conditions, invalid data handling,
+     * malformed JSON processing, and graceful failure mechanisms.
+     */
     suite('Error Handling and Edge Cases', () => {
+        /**
+         * @brief Tests error handling for empty character arrays in JSON files
+         * @test Validates proper exception throwing when no character data is available
+         */
         test('should throw error for empty JSON file', async () => {
             await fs.writeFile(testFilePath, '[]');
             const darling = new Darling(testFilePath, tempDir);
@@ -380,6 +496,10 @@ suite('Darling Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests error handling for malformed JSON syntax
+         * @test Validates proper exception handling when JSON parsing fails
+         */
         test('should throw error for invalid JSON format', async () => {
             await fs.writeFile(testFilePath, '{ invalid json }');
             const darling = new Darling(testFilePath, tempDir);
@@ -392,6 +512,10 @@ suite('Darling Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests error handling for JSON files containing non-array data
+         * @test Validates rejection of JSON objects that are not character arrays
+         */
         test('should throw error for non-array JSON content', async () => {
             await fs.writeFile(testFilePath, '{"not": "an array"}');
             const darling = new Darling(testFilePath, tempDir);
@@ -404,6 +528,10 @@ suite('Darling Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests graceful handling of characters with missing optional properties
+         * @test Validates proper defaults and fallbacks for incomplete character data
+         */
         test('should handle missing optional properties', async () => {
             const minimalCharacter = [{
                 id: 999,
@@ -431,7 +559,17 @@ suite('Darling Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for HTML content generation and webview presentation
+     * 
+     * Tests HTML template generation, character data integration, styling,
+     * and proper webview content structure for character display.
+     */
     suite('HTML Content Generation', () => {
+        /**
+         * @brief Tests generation of valid HTML5 document structure for webview
+         * @test Validates proper DOCTYPE, HTML tags, and document structure compliance
+         */
         test('should generate valid HTML content for webview', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -460,6 +598,10 @@ suite('Darling Test Suite', () => {
             assert.ok(capturedHtml.includes('<meta charset="UTF-8">'), 'Should include charset meta tag');
         });
 
+        /**
+         * @brief Tests inclusion of character data within generated HTML content
+         * @test Validates that character properties are properly embedded in HTML output
+         */
         test('should include character information in HTML', async () => {
             await fs.writeFile(testFilePath, JSON.stringify([mockCharacters[0]])); // Use first character for predictable test
             const darling = new Darling(testFilePath, tempDir);
@@ -473,6 +615,10 @@ suite('Darling Test Suite', () => {
             assert.ok(capturedHtml.includes('I want to become human'), 'Should include character quote');
         });
 
+        /**
+         * @brief Tests presence of interactive UI elements in generated HTML
+         * @test Validates inclusion of copy, zoom, and control buttons with proper IDs
+         */
         test('should include interactive buttons in HTML', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -486,6 +632,10 @@ suite('Darling Test Suite', () => {
             assert.ok(capturedHtml.includes('id="ascii"'), 'Should include ASCII art container');
         });
 
+        /**
+         * @brief Tests inclusion and validity of CSS styling in HTML output
+         * @test Validates proper styling elements and ASCII art formatting rules
+         */
         test('should include CSS styling', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -498,6 +648,10 @@ suite('Darling Test Suite', () => {
             assert.ok(capturedHtml.includes('white-space: pre'), 'Should include pre formatting for ASCII art');
         });
 
+        /**
+         * @brief Tests HTML generation for characters with null alias values
+         * @test Validates proper display of fallback text when alias is null
+         */
         test('should handle characters with null alias', async () => {
             const characterWithNullAlias = [{ ...mockCharacters[0], alias: null }];
             await fs.writeFile(testFilePath, JSON.stringify(characterWithNullAlias));
@@ -509,7 +663,17 @@ suite('Darling Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for JavaScript functionality and interactive features
+     * 
+     * Tests client-side script generation, event handlers, VS Code API integration,
+     * and interactive features like copy/zoom functionality within the webview.
+     */
     suite('JavaScript Functionality', () => {
+        /**
+         * @brief Tests inclusion of copy button JavaScript functionality
+         * @test Validates clipboard API integration and copy event handling scripts
+         */
         test('should include copy button script', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -522,6 +686,10 @@ suite('Darling Test Suite', () => {
             assert.ok(capturedHtml.includes("getElementById('ascii')"), 'Should reference ASCII art element');
         });
 
+        /**
+         * @brief Tests inclusion of zoom control JavaScript functionality
+         * @test Validates zoom in/out buttons and font size adjustment scripts
+         */
         test('should include zoom functionality script', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -535,6 +703,10 @@ suite('Darling Test Suite', () => {
             assert.ok(capturedHtml.includes('currentSize'), 'Should include current size variable');
         });
 
+        /**
+         * @brief Tests integration with VS Code webview API in generated scripts
+         * @test Validates VS Code API acquisition and message communication setup
+         */
         test('should include VS Code API integration', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -547,7 +719,17 @@ suite('Darling Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for webview integration and message handling systems
+     * 
+     * Tests bidirectional communication between webview and extension,
+     * message handler setup, and proper webview panel configuration.
+     */
     suite('Integration and Message Handling', () => {
+        /**
+         * @brief Tests message handler setup for webview copy event communication
+         * @test Validates message handler registration and copy event processing
+         */
         test('should setup message handler for copy events', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -576,6 +758,10 @@ suite('Darling Test Suite', () => {
             assert.ok(messageHandlerCalled, 'Should setup message handler');
         });
 
+        /**
+         * @brief Tests webview panel creation with proper configuration parameters
+         * @test Validates panel title, options, and script enablement settings
+         */
         test('should create webview with correct parameters', async () => {
             await fs.writeFile(testFilePath, JSON.stringify([mockCharacters[0]])); // Use specific character for predictable test
             const darling = new Darling(testFilePath, tempDir);
@@ -598,7 +784,17 @@ suite('Darling Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for performance optimization and memory management
+     * 
+     * Tests system performance under various loads, memory efficiency,
+     * caching behavior, and scalability with large character datasets.
+     */
     suite('Performance and Memory Management', () => {
+        /**
+         * @brief Tests performance under rapid successive character selection requests
+         * @test Validates system responsiveness and timing under high-frequency operations
+         */
         test('should handle multiple rapid character selections', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -618,6 +814,10 @@ suite('Darling Test Suite', () => {
             assert.ok(duration < 5000, `Should complete ${iterations} selections in reasonable time (took ${duration}ms)`);
         });
 
+        /**
+         * @brief Tests efficient reuse of file loader instances and caching behavior
+         * @test Validates that multiple calls leverage cached data without reloading
+         */
         test('should reuse file loader instance efficiently', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockCharacters));
             const darling = new Darling(testFilePath, tempDir);
@@ -633,6 +833,10 @@ suite('Darling Test Suite', () => {
             assert.ok(person3.id, 'Third person should be valid');
         });
 
+        /**
+         * @brief Tests scalability and performance with large character datasets
+         * @test Validates efficient handling of datasets with 1000+ character entries
+         */
         test('should handle large character datasets', async () => {
             // Create a larger dataset for performance testing
             const largeDataset: MockCharacterData[] = [];

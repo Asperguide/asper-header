@@ -2,7 +2,7 @@
  * @file randomLogo.test.ts
  * @brief Comprehensive unit tests for the RandomLogo ASCII art management system
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This test suite provides extensive coverage for the RandomLogo module, which manages
@@ -43,19 +43,36 @@ class MockWebview {
     private _html: string = '';
     private messageHandlers: Array<(message: any) => void> = [];
 
+    /**
+     * @brief Gets the current HTML content of the webview
+     * @return The HTML content string
+     */
     get html(): string {
         return this._html;
     }
 
+    /**
+     * @brief Sets the HTML content of the webview
+     * @param value The HTML content to set
+     */
     set html(value: string) {
         this._html = value;
     }
 
+    /**
+     * @brief Registers a message handler for webview communication
+     * @param handler Function to handle received messages
+     * @return Disposable object for cleanup
+     */
     onDidReceiveMessage(handler: (message: any) => void) {
         this.messageHandlers.push(handler);
         return { dispose: () => { } };
     }
 
+    /**
+     * @brief Posts a message to all registered handlers
+     * @param message The message object to send
+     */
     postMessage(message: any) {
         this.messageHandlers.forEach(handler => handler(message));
     }
@@ -64,10 +81,23 @@ class MockWebview {
 /**
  * @class MockWebviewPanel
  * @brief Mock implementation of VS Code webview panel for testing
+ * 
+ * @property {MockWebview} webview - The associated webview instance
+ * @property {string} viewType - The type identifier for the webview
+ * @property {string} title - The display title of the panel
+ * @property {vscode.ViewColumn} showOptions - Column positioning options
+ * @property {vscode.WebviewPanelOptions & vscode.WebviewOptions} options - Panel configuration options
  */
 class MockWebviewPanel {
     public webview: MockWebview;
 
+    /**
+     * @brief Constructs a new mock webview panel with specified configuration
+     * @param viewType The type identifier for the webview panel
+     * @param title The display title of the webview panel
+     * @param showOptions The column where the panel should be shown
+     * @param options Configuration options for the webview panel
+     */
     constructor(
         public viewType: string,
         public title: string,
@@ -78,6 +108,10 @@ class MockWebviewPanel {
     }
 }
 
+/**
+ * @brief Main test suite for RandomLogo ASCII art management system
+ * @test Comprehensive testing of logo discovery, selection, HTML generation, and webview integration
+ */
 suite('RandomLogo Test Suite', () => {
     let tempDir: string;
     let logoDir: string;
@@ -89,7 +123,7 @@ suite('RandomLogo Test Suite', () => {
 
     /**
      * @brief Setup test environment before each test
-     * Creates temporary directory structure and mock logo files
+     * @test Creates temporary directory structure, mock logo files, and VS Code API mocks
      */
     setup(async () => {
         // Create temporary directory structure for test files
@@ -165,6 +199,7 @@ suite('RandomLogo Test Suite', () => {
 
     /**
      * @brief Cleanup test environment after each test
+     * @test Restores VS Code APIs and removes temporary files and directories
      */
     teardown(async () => {
         // Restore original VS Code API
@@ -180,12 +215,24 @@ suite('RandomLogo Test Suite', () => {
         }
     });
 
+    /**
+     * @brief Test suite for constructor and initialization functionality
+     * @test Validates RandomLogo instance creation with various parameter combinations
+     */
     suite('Constructor and Initialization', () => {
+        /**
+         * @brief Tests RandomLogo creation with default parameters
+         * @test Validates that instance can be created without any parameters
+         */
         test('should create instance with default parameters', () => {
             const randomLogo = new RandomLogo();
             assert.ok(randomLogo instanceof RandomLogo);
         });
 
+        /**
+         * @brief Tests RandomLogo creation with root directory parameter
+         * @test Validates that instance can be created with specified root directory
+         */
         test('should create instance with root directory parameter', async () => {
             const randomLogo = new RandomLogo(logoDir);
             assert.ok(randomLogo instanceof RandomLogo);
@@ -194,6 +241,10 @@ suite('RandomLogo Test Suite', () => {
             await new Promise(resolve => setTimeout(resolve, 50));
         });
 
+        /**
+         * @brief Tests RandomLogo creation with both root and working directories
+         * @test Validates that instance can be created with both directory parameters
+         */
         test('should create instance with both root directory and working directory', async () => {
             const randomLogo = new RandomLogo(logoDir, tempDir);
             assert.ok(randomLogo instanceof RandomLogo);
@@ -202,19 +253,35 @@ suite('RandomLogo Test Suite', () => {
             await new Promise(resolve => setTimeout(resolve, 50));
         });
 
+        /**
+         * @brief Tests graceful handling of undefined parameters
+         * @test Validates that undefined parameters don't cause initialization errors
+         */
         test('should handle undefined parameters gracefully', () => {
             const randomLogo = new RandomLogo(undefined, undefined);
             assert.ok(randomLogo instanceof RandomLogo);
         });
     });
 
+    /**
+     * @brief Test suite for directory and path management functionality
+     * @test Validates directory updates, path resolution, and working directory handling
+     */
     suite('Directory and Path Management', () => {
+        /**
+         * @brief Tests successful root directory updates
+         * @test Validates that valid directories can be set as root directory
+         */
         test('should update root directory successfully', async () => {
             const randomLogo = new RandomLogo();
             const result = await randomLogo.updateRootDir(logoDir);
             assert.strictEqual(result, true);
         });
 
+        /**
+         * @brief Tests graceful handling of invalid root directories
+         * @test Validates that non-existent directories return false without crashing
+         */
         test('should handle invalid root directory gracefully', async () => {
             const randomLogo = new RandomLogo();
             const invalidPath = path.join(tempDir, 'nonexistent');
@@ -222,12 +289,20 @@ suite('RandomLogo Test Suite', () => {
             assert.strictEqual(result, false);
         });
 
+        /**
+         * @brief Tests successful working directory updates
+         * @test Validates that current working directory can be updated successfully
+         */
         test('should update current working directory successfully', () => {
             const randomLogo = new RandomLogo();
             const result = randomLogo.updateCurrentWorkingDirectory(tempDir);
             assert.strictEqual(result, true);
         });
 
+        /**
+         * @brief Tests handling of relative paths with working directory context
+         * @test Validates that relative paths are resolved correctly against working directory
+         */
         test('should handle relative paths with working directory', () => {
             const randomLogo = new RandomLogo();
             randomLogo.updateCurrentWorkingDirectory(tempDir);
@@ -235,7 +310,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for logo file discovery and management functionality
+     * @test Validates file discovery, filtering, recursive search, and directory handling
+     */
     suite('Logo File Discovery and Management', () => {
+        /**
+         * @brief Tests discovery of logo files in the root directory
+         * @test Validates that .txt logo files are properly discovered and accessible
+         */
         test('should discover logo files in root directory', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -253,6 +336,10 @@ suite('RandomLogo Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests recursive discovery of logo files in subdirectories
+         * @test Validates that logo files are found in nested directory structures
+         */
         test('should discover logo files recursively in subdirectories', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -275,6 +362,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(logoFileNames.some(name => name.endsWith('.txt')), 'Should have .txt files');
         });
 
+        /**
+         * @brief Tests correct filtering of non-txt files
+         * @test Validates that only .txt files are included in logo selection
+         */
         test('should filter non-txt files correctly', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -292,6 +383,10 @@ suite('RandomLogo Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests graceful handling of empty directories
+         * @test Validates that empty directories are handled without crashing
+         */
         test('should handle empty directories gracefully', async () => {
             const emptyDir = path.join(tempDir, 'empty');
             await fs.mkdir(emptyDir, { recursive: true });
@@ -310,7 +405,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for random selection algorithm functionality
+     * @test Validates randomness, selection variety, and content processing
+     */
     suite('Random Selection Algorithm', () => {
+        /**
+         * @brief Tests selection variety across multiple calls
+         * @test Validates that multiple selections can produce different logos
+         */
         test('should select different logos on multiple calls', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -333,6 +436,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(selectedLogos.size > 0, 'Should select at least one logo');
         });
 
+        /**
+         * @brief Tests that selections always return valid logo objects
+         * @test Validates that selected logos have proper structure and content
+         */
         test('should always return valid logo from dataset', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -353,6 +460,10 @@ suite('RandomLogo Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests correct handling of directories with single logo file
+         * @test Validates that single-file directories work correctly
+         */
         test('should handle single logo file correctly', async () => {
             // Create directory with single logo file
             const singleLogoDir = path.join(tempDir, 'single');
@@ -370,6 +481,10 @@ suite('RandomLogo Test Suite', () => {
             assert.deepStrictEqual(logo.logoContent, ['Single', 'Logo', 'Content']);
         });
 
+        /**
+         * @brief Tests proper line splitting of logo content
+         * @test Validates that logo content is correctly split into line arrays
+         */
         test('should properly split logo content by lines', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -386,7 +501,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for error handling and edge case scenarios
+     * @test Validates graceful handling of errors, corrupted files, and unusual conditions
+     */
     suite('Error Handling and Edge Cases', () => {
+        /**
+         * @brief Tests error handling when no root directory is configured
+         * @test Validates that appropriate errors are thrown for missing configuration
+         */
         test('should throw error when no root directory is set', async () => {
             const randomLogo = new RandomLogo();
 
@@ -398,6 +521,10 @@ suite('RandomLogo Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests graceful handling of corrupted or empty logo files
+         * @test Validates that empty or corrupted files don't crash the system
+         */
         test('should handle corrupted or empty logo files gracefully', async () => {
             // Create directory with empty file
             const emptyLogoDir = path.join(tempDir, 'empty-files');
@@ -418,6 +545,10 @@ suite('RandomLogo Test Suite', () => {
             assert.strictEqual(logo.logoContent[0], '');
         });
 
+        /**
+         * @brief Tests handling of permission errors during file discovery
+         * @test Validates that permission-related errors are handled gracefully
+         */
         test('should handle permission errors during file discovery', async () => {
             const randomLogo = new RandomLogo();
 
@@ -426,6 +557,10 @@ suite('RandomLogo Test Suite', () => {
             assert.strictEqual(result, false);
         });
 
+        /**
+         * @brief Tests handling of various line ending formats
+         * @test Validates that different line ending styles are processed correctly
+         */
         test('should handle various line ending formats', async () => {
             // Create files with different line endings
             const lineEndingDir = path.join(tempDir, 'line-endings');
@@ -451,7 +586,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for HTML content generation functionality
+     * @test Validates HTML structure, content inclusion, styling, and interactive elements
+     */
     suite('HTML Content Generation', () => {
+        /**
+         * @brief Tests generation of valid HTML content for webview display
+         * @test Validates that generated HTML has proper structure and DOCTYPE
+         */
         test('should generate valid HTML content for webview', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -466,6 +609,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(capturedHtml.includes('<body>'), 'Should have body tag');
         });
 
+        /**
+         * @brief Tests inclusion of logo content in generated HTML
+         * @test Validates that ASCII art content is properly embedded in HTML structure
+         */
         test('should include logo content in HTML', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -481,6 +628,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(preMatch[1].length > 0, 'ASCII art content should not be empty');
         });
 
+        /**
+         * @brief Tests inclusion of interactive buttons in HTML
+         * @test Validates that copy and zoom buttons are present in generated HTML
+         */
         test('should include interactive buttons in HTML', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -494,6 +645,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(capturedHtml.includes('id="zoomOutBtn"'), 'Should include zoom out button');
         });
 
+        /**
+         * @brief Tests inclusion of CSS styling in HTML
+         * @test Validates that proper CSS styles are included for formatting
+         */
         test('should include CSS styling', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -507,6 +662,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(capturedHtml.includes('pre {'), 'Should have pre tag styling for ASCII art');
         });
 
+        /**
+         * @brief Tests display of logo filename in HTML or panel title
+         * @test Validates that the source filename is visible to the user
+         */
         test('should include logo filename in display', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -523,6 +682,10 @@ suite('RandomLogo Test Suite', () => {
             );
         });
 
+        /**
+         * @brief Tests graceful handling of empty or undefined logo content
+         * @test Validates that empty content doesn't break HTML generation
+         */
         test('should handle empty or undefined logo content gracefully', async () => {
             // Create directory with file that might cause issues
             const problematicDir = path.join(tempDir, 'problematic');
@@ -542,7 +705,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for JavaScript functionality in webview
+     * @test Validates interactive features like copy, zoom, and VS Code integration
+     */
     suite('JavaScript Functionality', () => {
+        /**
+         * @brief Tests inclusion of copy button functionality
+         * @test Validates that copy button script and clipboard integration are present
+         */
         test('should include copy button script', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -556,6 +727,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(capturedHtml.includes("vscode.postMessage({ type: 'copied' })"), 'Should post message to VS Code');
         });
 
+        /**
+         * @brief Tests inclusion of zoom functionality script
+         * @test Validates that font size adjustment controls are properly implemented
+         */
         test('should include zoom functionality script', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -570,6 +745,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(capturedHtml.includes('currentSize'), 'Should track current font size');
         });
 
+        /**
+         * @brief Tests VS Code API integration in JavaScript
+         * @test Validates that webview communicates properly with VS Code extension
+         */
         test('should include VS Code API integration', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -582,6 +761,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(capturedHtml.includes('vscode.postMessage'), 'Should use VS Code message posting');
         });
 
+        /**
+         * @brief Tests implementation of font size constraints in zoom functionality
+         * @test Validates that zoom has proper minimum/maximum limits and initialization
+         */
         test('should implement font size constraints in zoom', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -597,7 +780,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for integration and message handling functionality
+     * @test Validates webview creation, message communication, and VS Code integration
+     */
     suite('Integration and Message Handling', () => {
+        /**
+         * @brief Tests setup of message handler for copy events
+         * @test Validates that message handling infrastructure is properly established
+         */
         test('should setup message handler for copy events', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -626,6 +817,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(lastCreatedWebview, 'Should create webview');
         });
 
+        /**
+         * @brief Tests webview creation with correct configuration parameters
+         * @test Validates that webview panel is created with proper settings and options
+         */
         test('should create webview with correct parameters', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -640,6 +835,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(lastCreatedPanel.title.endsWith('.txt'), 'Title should be the filename');
         });
 
+        /**
+         * @brief Tests proper handling of message communication
+         * @test Validates that message passing between webview and extension works correctly
+         */
         test('should handle message communication properly', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -658,7 +857,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for performance and memory management
+     * @test Validates efficiency, resource usage, and scalability under various loads
+     */
     suite('Performance and Memory Management', () => {
+        /**
+         * @brief Tests handling of multiple rapid logo selections
+         * @test Validates that rapid successive selections complete within reasonable time
+         */
         test('should handle multiple rapid logo selections', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -683,6 +890,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(duration < 5000, 'Multiple selections should be reasonably fast');
         });
 
+        /**
+         * @brief Tests efficient reuse of file loader instances
+         * @test Validates that file discovery infrastructure is reused for performance
+         */
         test('should reuse file loader instances efficiently', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -701,6 +912,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(Array.isArray(logo2.logoContent));
         });
 
+        /**
+         * @brief Tests handling of large numbers of logo files
+         * @test Validates that performance remains acceptable with many logo files
+         */
         test('should handle large numbers of logo files', async () => {
             // Create directory with many logo files
             const manyLogosDir = path.join(tempDir, 'many-logos');
@@ -723,6 +938,10 @@ suite('RandomLogo Test Suite', () => {
             assert.ok(logo.fileName.endsWith('.txt'));
         });
 
+        /**
+         * @brief Tests directory updates without memory leaks
+         * @test Validates that multiple directory changes don't cause resource leaks
+         */
         test('should handle directory updates without memory leaks', async () => {
             const randomLogo = new RandomLogo(logoDir);
 
@@ -741,7 +960,15 @@ suite('RandomLogo Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for file system integration functionality
+     * @test Validates interaction with various file system features and permissions
+     */
     suite('File System Integration', () => {
+        /**
+         * @brief Tests appropriate handling of symbolic links
+         * @test Validates that symbolic links to logo files are processed correctly
+         */
         test('should handle symbolic links appropriately', async () => {
             // This test may not work on all systems, so we'll skip if symlink creation fails
             try {
@@ -768,6 +995,10 @@ suite('RandomLogo Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests respect for file system permissions
+         * @test Validates that permission restrictions are handled gracefully
+         */
         test('should respect file system permissions', async () => {
             const randomLogo = new RandomLogo();
 

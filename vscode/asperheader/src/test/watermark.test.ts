@@ -2,7 +2,7 @@
  * @file watermark.test.ts
  * @brief Comprehensive unit tests for the Watermark ASCII art signature system
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This test suite provides extensive coverage for the Watermark module, which manages
@@ -47,24 +47,44 @@ interface MockWatermarkData {
 /**
  * @class MockWebview
  * @brief Mock implementation of VS Code webview for testing
+ * 
+ * @property {string} _html - Internal HTML content storage
+ * @property {Array<Function>} messageHandlers - Collection of message event handlers
  */
 class MockWebview {
     private _html: string = '';
     private messageHandlers: Array<(message: any) => void> = [];
 
+    /**
+     * @brief Gets the current HTML content of the webview
+     * @return The HTML content string
+     */
     get html(): string {
         return this._html;
     }
 
+    /**
+     * @brief Sets the HTML content of the webview
+     * @param value The HTML content to set
+     */
     set html(value: string) {
         this._html = value;
     }
 
+    /**
+     * @brief Registers a message handler for webview communication
+     * @param handler Function to handle received messages
+     * @return Disposable object for cleanup
+     */
     onDidReceiveMessage(handler: (message: any) => void) {
         this.messageHandlers.push(handler);
         return { dispose: () => { } };
     }
 
+    /**
+     * @brief Posts a message to all registered handlers
+     * @param message The message object to send
+     */
     postMessage(message: any) {
         this.messageHandlers.forEach(handler => handler(message));
     }
@@ -73,10 +93,23 @@ class MockWebview {
 /**
  * @class MockWebviewPanel
  * @brief Mock implementation of VS Code webview panel for testing
+ * 
+ * @property {MockWebview} webview - The associated webview instance
+ * @property {string} viewType - The type identifier for the webview
+ * @property {string} title - The display title of the panel
+ * @property {vscode.ViewColumn} showOptions - Column positioning options
+ * @property {vscode.WebviewPanelOptions & vscode.WebviewOptions} options - Panel configuration options
  */
 class MockWebviewPanel {
     public webview: MockWebview;
 
+    /**
+     * @brief Constructs a new mock webview panel with specified configuration
+     * @param viewType The type identifier for the webview panel
+     * @param title The display title of the webview panel
+     * @param showOptions The column where the panel should be shown
+     * @param options Configuration options for the webview panel
+     */
     constructor(
         public viewType: string,
         public title: string,
@@ -87,6 +120,10 @@ class MockWebviewPanel {
     }
 }
 
+/**
+ * @brief Main test suite for Watermark ASCII art signature system
+ * @test Comprehensive testing of watermark loading, selection, HTML generation, and webview integration
+ */
 suite('Watermark Test Suite', () => {
     let tempDir: string;
     let testFilePath: string;
@@ -98,7 +135,7 @@ suite('Watermark Test Suite', () => {
 
     /**
      * @brief Setup test environment before each test
-     * Creates temporary directory and mock watermark data
+     * @test Creates temporary directory, mock watermark data, and VS Code API mocks
      */
     setup(async () => {
         // Create temporary directory for test files
@@ -188,7 +225,7 @@ suite('Watermark Test Suite', () => {
 
     /**
      * @brief Cleanup test environment after each test
-     * Removes temporary files and restores mocks
+     * @test Removes temporary files and restores VS Code API mocks
      */
     teardown(async () => {
         // Cleanup temporary directory
@@ -207,31 +244,59 @@ suite('Watermark Test Suite', () => {
         capturedHtml = '';
     });
 
+    /**
+     * @brief Test suite for constructor and initialization functionality
+     * @test Validates Watermark instance creation with various parameter combinations
+     */
     suite('Constructor and Initialization', () => {
+        /**
+         * @brief Tests Watermark creation with default parameters
+         * @test Validates that instance can be created without any parameters
+         */
         test('should create instance with default parameters', () => {
             const watermark = new Watermark();
             assert.ok(watermark instanceof Watermark, 'Should create Watermark instance');
         });
 
+        /**
+         * @brief Tests Watermark creation with file path parameter
+         * @test Validates that instance can be created with specified file path
+         */
         test('should create instance with file path parameter', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath);
             assert.ok(watermark instanceof Watermark, 'Should create Watermark instance with file path');
         });
 
+        /**
+         * @brief Tests Watermark creation with both file path and working directory
+         * @test Validates that instance can be created with both parameters
+         */
         test('should create instance with both file path and working directory', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
             assert.ok(watermark instanceof Watermark, 'Should create Watermark instance with both parameters');
         });
 
+        /**
+         * @brief Tests graceful handling of undefined parameters
+         * @test Validates that undefined parameters don't cause initialization errors
+         */
         test('should handle undefined parameters gracefully', () => {
             const watermark = new Watermark(undefined, undefined);
             assert.ok(watermark instanceof Watermark, 'Should handle undefined parameters');
         });
     });
 
+    /**
+     * @brief Test suite for file path management functionality
+     * @test Validates file path updates, working directory handling, and path resolution
+     */
     suite('File Path Management', () => {
+        /**
+         * @brief Tests successful file path updates
+         * @test Validates that valid file paths can be set and return success status
+         */
         test('should update file path successfully', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark();
@@ -240,6 +305,10 @@ suite('Watermark Test Suite', () => {
             assert.strictEqual(success, true, 'Should return true for successful file path update');
         });
 
+        /**
+         * @brief Tests successful working directory updates
+         * @test Validates that working directory can be updated and return success status
+         */
         test('should update working directory successfully', async () => {
             const watermark = new Watermark();
 
@@ -247,6 +316,10 @@ suite('Watermark Test Suite', () => {
             assert.strictEqual(success, true, 'Should return true for successful working directory update');
         });
 
+        /**
+         * @brief Tests handling of relative paths with working directory context
+         * @test Validates that relative paths are resolved correctly against working directory
+         */
         test('should handle relative paths with working directory', async () => {
             const relativePath = 'watermarks.json';
             const fullPath = path.join(tempDir, relativePath);
@@ -260,7 +333,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for watermark data loading and validation functionality
+     * @test Validates JSON parsing, data structure validation, and property mapping
+     */
     suite('Watermark Data Loading and Validation', () => {
+        /**
+         * @brief Tests correct loading and parsing of watermark data from JSON
+         * @test Validates that JSON watermark data is loaded with proper structure and types
+         */
         test('should load and parse watermark data correctly', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -274,6 +355,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(result.watermark.every(line => typeof line === 'string'), 'All watermark lines should be strings');
         });
 
+        /**
+         * @brief Tests correct mapping of Logo property to watermark property
+         * @test Validates that JSON Logo arrays are properly mapped to watermark arrays
+         */
         test('should correctly map Logo to watermark property', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -285,6 +370,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(result.watermark.every(line => typeof line === 'string'), 'All watermark content lines should be strings');
         });
 
+        /**
+         * @brief Tests handling of various font name formats
+         * @test Validates that different font name styles are processed correctly
+         */
         test('should handle various font name formats', async () => {
             const diverseFonts = [
                 { Logo: ["Simple", "Font"], fontName: "SimpleName" },
@@ -302,6 +391,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests graceful handling of empty logo arrays
+         * @test Validates that watermarks with empty Logo arrays don't crash the system
+         */
         test('should handle empty logo arrays gracefully', async () => {
             const emptyLogoWatermarks = [
                 { Logo: [], fontName: "EmptyLogo" },
@@ -317,7 +410,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for random selection algorithm functionality
+     * @test Validates randomness, selection variety, content processing, and single-item handling
+     */
     suite('Random Selection Algorithm', () => {
+        /**
+         * @brief Tests selection variety across multiple calls
+         * @test Validates that multiple selections can produce different watermarks
+         */
         test('should select different watermarks on multiple calls', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -334,6 +435,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(selectedFonts.size >= 2, 'Should select multiple different fonts');
         });
 
+        /**
+         * @brief Tests that selections always return valid watermarks from dataset
+         * @test Validates that selected watermarks have proper structure and are from the loaded data
+         */
         test('should always return valid watermark from dataset', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -350,6 +455,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests correct handling of files with single watermark
+         * @test Validates that single-watermark files work correctly and consistently
+         */
         test('should handle single watermark file correctly', async () => {
             const singleWatermark = [mockWatermarks[0]];
             await fs.writeFile(testFilePath, JSON.stringify(singleWatermark));
@@ -363,6 +472,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests proper handling of watermark content arrays
+         * @test Validates that watermark content arrays are processed correctly with proper types
+         */
         test('should properly handle watermark content arrays', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -378,7 +491,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for error handling and edge case scenarios
+     * @test Validates graceful handling of errors, malformed data, and file system issues
+     */
     suite('Error Handling and Edge Cases', () => {
+        /**
+         * @brief Tests error handling for empty JSON files
+         * @test Validates that empty watermark arrays throw appropriate errors
+         */
         test('should throw error for empty JSON file', async () => {
             await fs.writeFile(testFilePath, JSON.stringify([]));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -391,6 +512,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests error handling for invalid JSON format
+         * @test Validates that malformed JSON files throw parse errors
+         */
         test('should throw error for invalid JSON format', async () => {
             await fs.writeFile(testFilePath, '{ invalid json');
             const watermark = new Watermark(testFilePath, tempDir);
@@ -403,6 +528,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests error handling for non-array JSON content
+         * @test Validates that JSON objects instead of arrays throw appropriate errors
+         */
         test('should throw error for non-array JSON content', async () => {
             await fs.writeFile(testFilePath, JSON.stringify({ not: "an array" }));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -415,6 +544,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests graceful handling of missing Logo property
+         * @test Validates that watermarks without Logo property are handled appropriately
+         */
         test('should handle missing Logo property gracefully', async () => {
             const malformedWatermarks = [
                 { fontName: "MissingLogo" }, // Missing Logo property
@@ -434,6 +567,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests graceful handling of missing fontName property
+         * @test Validates that watermarks without fontName property are handled appropriately
+         */
         test('should handle missing fontName property gracefully', async () => {
             const malformedWatermarks = [
                 { Logo: ["Missing", "Font", "Name"] }, // Missing fontName property
@@ -453,6 +590,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests handling of file not found errors
+         * @test Validates that non-existent files are handled gracefully
+         */
         test('should handle file not found error', async () => {
             const watermark = new Watermark();
 
@@ -470,7 +611,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for HTML content generation functionality
+     * @test Validates HTML structure, content inclusion, styling, and interactive elements
+     */
     suite('HTML Content Generation', () => {
+        /**
+         * @brief Tests generation of valid HTML content for webview display
+         * @test Validates that generated HTML has proper structure and DOCTYPE
+         */
         test('should generate valid HTML content for webview', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -483,6 +632,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes('<body>'), 'Should have body tag');
         });
 
+        /**
+         * @brief Tests inclusion of watermark content in generated HTML
+         * @test Validates that ASCII art watermark content is properly embedded in HTML structure
+         */
         test('should include watermark content in HTML', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -496,6 +649,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(preMatch[1].length > 0, 'ASCII art content should not be empty');
         });
 
+        /**
+         * @brief Tests inclusion of interactive buttons in HTML
+         * @test Validates that copy and zoom buttons are present in generated HTML
+         */
         test('should include interactive buttons in HTML', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -507,6 +664,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes('id="zoomOutBtn"'), 'Should include zoom out button');
         });
 
+        /**
+         * @brief Tests inclusion of CSS styling in HTML
+         * @test Validates that proper CSS styles are included for formatting
+         */
         test('should include CSS styling', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -518,6 +679,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes('pre {'), 'Should have pre tag styling for ASCII art');
         });
 
+        /**
+         * @brief Tests display of font name in HTML or panel title
+         * @test Validates that the watermark font name is visible to the user
+         */
         test('should include font name in display', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -531,6 +696,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(includesFontName, 'Should display font name');
         });
 
+        /**
+         * @brief Tests inclusion of author information in display
+         * @test Validates that author name is included in the generated content
+         */
         test('should include author information', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -540,6 +709,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes('Henry Letellier'), 'Should include author name');
         });
 
+        /**
+         * @brief Tests graceful handling of empty watermark content
+         * @test Validates that empty content doesn't break HTML generation
+         */
         test('should handle empty watermark content gracefully', async () => {
             const emptyWatermarks = [{ Logo: [], fontName: "Empty" }];
             await fs.writeFile(testFilePath, JSON.stringify(emptyWatermarks));
@@ -553,7 +726,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for JavaScript functionality in webview
+     * @test Validates interactive features like copy, zoom, VS Code integration, and debugging
+     */
     suite('JavaScript Functionality', () => {
+        /**
+         * @brief Tests inclusion of copy button functionality
+         * @test Validates that copy button script and clipboard integration are present
+         */
         test('should include copy button script', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -565,6 +746,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes("vscode.postMessage({ type: 'copied' })"), 'Should post message to VS Code');
         });
 
+        /**
+         * @brief Tests inclusion of zoom functionality script
+         * @test Validates that font size adjustment controls are properly implemented
+         */
         test('should include zoom functionality script', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -577,6 +762,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes('currentSize'), 'Should track current font size');
         });
 
+        /**
+         * @brief Tests VS Code API integration in JavaScript
+         * @test Validates that webview communicates properly with VS Code extension
+         */
         test('should include VS Code API integration', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -587,6 +776,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes('vscode.postMessage'), 'Should use VS Code message posting');
         });
 
+        /**
+         * @brief Tests implementation of font size constraints in zoom functionality
+         * @test Validates that zoom has proper minimum/maximum limits and initialization
+         */
         test('should implement font size constraints in zoom', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -599,6 +792,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(capturedHtml.includes('currentSize = 20'), 'Should initialize font size');
         });
 
+        /**
+         * @brief Tests inclusion of debug logging for zoom functionality
+         * @test Validates that debug console logging is present for troubleshooting
+         */
         test('should include debug logging for zoom functionality', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -611,7 +808,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for integration and message handling functionality
+     * @test Validates webview creation, message communication, and VS Code integration
+     */
     suite('Integration and Message Handling', () => {
+        /**
+         * @brief Tests setup of message handler for copy events
+         * @test Validates that message handling infrastructure is properly established
+         */
         test('should setup message handler for copy events', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -631,6 +836,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(true, 'Message handling should not throw errors');
         });
 
+        /**
+         * @brief Tests webview creation with correct configuration parameters
+         * @test Validates that webview panel is created with proper settings and title
+         */
         test('should create webview with correct parameters', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -646,6 +855,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(expectedFontNames.includes(lastCreatedPanel.title), 'Title should be a font name');
         });
 
+        /**
+         * @brief Tests proper handling of message communication
+         * @test Validates that various message types are handled without errors
+         */
         test('should handle message communication properly', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -673,7 +886,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for performance and memory management
+     * @test Validates efficiency, resource usage, and scalability under various loads
+     */
     suite('Performance and Memory Management', () => {
+        /**
+         * @brief Tests handling of multiple rapid watermark selections
+         * @test Validates that rapid successive selections complete within reasonable time
+         */
         test('should handle multiple rapid watermark selections', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -692,6 +913,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(duration < 5000, 'Multiple selections should be reasonably fast');
         });
 
+        /**
+         * @brief Tests efficient reuse of file loader instances
+         * @test Validates that data loading infrastructure is reused for performance
+         */
         test('should reuse file loader instances efficiently', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -708,6 +933,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(Array.isArray(watermark2.watermark));
         });
 
+        /**
+         * @brief Tests handling of large watermark collections
+         * @test Validates that performance remains acceptable with many watermarks
+         */
         test('should handle large watermark collections', async () => {
             // Create large collection of watermarks
             const largeCollection: MockWatermarkData[] = [];
@@ -728,6 +957,10 @@ suite('Watermark Test Suite', () => {
             assert.strictEqual(result.watermark.length, 3);
         });
 
+        /**
+         * @brief Tests file path updates without memory leaks
+         * @test Validates that multiple file changes don't cause resource leaks
+         */
         test('should handle file path updates without memory leaks', async () => {
             const watermark = new Watermark();
 
@@ -755,7 +988,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for edge cases and robustness functionality
+     * @test Validates handling of Unicode, long content, special characters, and extended data
+     */
     suite('Edge Cases and Robustness', () => {
+        /**
+         * @brief Tests handling of Unicode characters in watermarks
+         * @test Validates that Unicode symbols and characters are preserved correctly
+         */
         test('should handle Unicode characters in watermarks', async () => {
             const unicodeWatermarks = [
                 {
@@ -779,6 +1020,10 @@ suite('Watermark Test Suite', () => {
             assert.ok(result.watermark.some(line => line.includes('♦')), 'Should preserve Unicode characters');
         });
 
+        /**
+         * @brief Tests handling of very long watermark lines
+         * @test Validates that extremely long lines are processed without truncation
+         */
         test('should handle very long watermark lines', async () => {
             const longLineWatermark = [
                 {
@@ -801,6 +1046,10 @@ suite('Watermark Test Suite', () => {
             assert.strictEqual(result.watermark[2].length, 500);
         });
 
+        /**
+         * @brief Tests handling of watermarks with many lines
+         * @test Validates that watermarks with large numbers of lines are processed correctly
+         */
         test('should handle watermarks with many lines', async () => {
             const manyLinesWatermark = [
                 {
@@ -820,6 +1069,10 @@ suite('Watermark Test Suite', () => {
             assert.strictEqual(result.watermark[99], "Line 100");
         });
 
+        /**
+         * @brief Tests handling of special characters in font names
+         * @test Validates that font names with special symbols are processed correctly
+         */
         test('should handle special characters in font names', async () => {
             const specialNameWatermarks = [
                 { Logo: ["Test"], fontName: "Font/With\\Special:Characters" },
@@ -837,6 +1090,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests handling of JSON with extra properties
+         * @test Validates that additional properties in JSON data are ignored gracefully
+         */
         test('should handle JSON with extra properties', async () => {
             const extendedWatermarks = [
                 {
@@ -859,7 +1116,15 @@ suite('Watermark Test Suite', () => {
         });
     });
 
+    /**
+     * @brief Test suite for type safety and data integrity functionality
+     * @test Validates type consistency, interface compliance, and data structure integrity
+     */
     suite('Type Safety and Data Integrity', () => {
+        /**
+         * @brief Tests maintenance of correct types throughout selection process
+         * @test Validates that all returned data maintains proper TypeScript types
+         */
         test('should maintain correct types throughout selection process', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);
@@ -879,6 +1144,10 @@ suite('Watermark Test Suite', () => {
             }
         });
 
+        /**
+         * @brief Tests validation of watermark interface compliance
+         * @test Validates that returned objects satisfy the watermark interface contract
+         */
         test('should validate watermark interface compliance', async () => {
             await fs.writeFile(testFilePath, JSON.stringify(mockWatermarks));
             const watermark = new Watermark(testFilePath, tempDir);

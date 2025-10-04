@@ -2,7 +2,7 @@
  * @file messageProvider.test.ts
  * @brief Comprehensive test suite for MessageProvider with message template validation
  * @author Henry Letellier
- * @version 1.0.5
+ * @version 1.0.8
  * @date 2025
  * 
  * This module provides extensive testing coverage for the MessageProvider module,
@@ -21,9 +21,21 @@ import * as assert from 'assert';
 import { getMessage } from '../modules/messageProvider';
 import { messages } from '../modules/messageReference';
 
+/**
+ * @brief Main test suite for MessageProvider functionality
+ * @test Comprehensive testing of message template validation, parameter substitution, and integration
+ */
 suite('MessageProvider Test Suite', function () {
 
+    /**
+     * @brief Test suite for basic message retrieval functionality
+     * @test Validates core message retrieval with and without parameters
+     */
     suite('Basic Message Retrieval', () => {
+        /**
+         * @brief Tests retrieval of simple messages that don't require parameters
+         * @test Validates that parameterless messages return correct string content
+         */
         test('should retrieve simple messages without parameters', () => {
             // Test messages that don't require parameters
             const refreshMessage = getMessage("fileRefreshed");
@@ -36,6 +48,10 @@ suite('MessageProvider Test Suite', function () {
             assert.strictEqual(saveFailed, "Failed to save the file, please try saving it again.");
         });
 
+        /**
+         * @brief Tests handling of messages that require a single parameter
+         * @test Validates parameter substitution in single-parameter message templates
+         */
         test('should handle messages with single parameters', () => {
             const testPath = '/test/path/file.json';
             const fileLoaded = getMessage("fileLoaded", testPath);
@@ -45,6 +61,10 @@ suite('MessageProvider Test Suite', function () {
             assert.strictEqual(fileLoaded, `File ${testPath} loaded!`);
         });
 
+        /**
+         * @brief Tests handling of messages that require multiple parameters
+         * @test Validates correct substitution of multiple parameters in message templates
+         */
         test('should handle messages with multiple parameters', () => {
             const oldPath = '/old/path';
             const newPath = '/new/path';
@@ -57,7 +77,15 @@ suite('MessageProvider Test Suite', function () {
         });
     });
 
+    /**
+     * @brief Test suite for parameter substitution functionality
+     * @test Validates handling of different data types and edge cases in parameter substitution
+     */
     suite('Parameter Substitution', () => {
+        /**
+         * @brief Tests parameter substitution with various data types
+         * @test Validates that strings, numbers, and booleans are properly converted and substituted
+         */
         test('should handle various data types as parameters', () => {
             // String parameters
             const stringParam = getMessage("fileUnloaded", "test.json");
@@ -72,6 +100,10 @@ suite('MessageProvider Test Suite', function () {
             assert.ok(booleanParam.includes("true"));
         });
 
+        /**
+         * @brief Tests graceful handling of undefined and null parameter values
+         * @test Validates that undefined and null parameters are converted to appropriate string representations
+         */
         test('should handle undefined and null parameters gracefully', () => {
             const undefinedParam = getMessage("fileLoaded", undefined);
             assert.ok(typeof undefinedParam === 'string');
@@ -82,12 +114,20 @@ suite('MessageProvider Test Suite', function () {
             assert.ok(nullParam.includes("null"));
         });
 
+        /**
+         * @brief Tests handling of empty string parameters
+         * @test Validates that empty strings are properly handled in message substitution
+         */
         test('should handle empty string parameters', () => {
             const emptyParam = getMessage("fileLoaded", "");
             assert.ok(typeof emptyParam === 'string');
             assert.strictEqual(emptyParam, "File  loaded!");
         });
 
+        /**
+         * @brief Tests handling of special characters and symbols in parameters
+         * @test Validates that special characters are preserved correctly in message substitution
+         */
         test('should handle special characters in parameters', () => {
             const specialChars = '/path/with spaces & symbols!@#$%.json';
             const result = getMessage("fileLoaded", specialChars);
@@ -96,7 +136,15 @@ suite('MessageProvider Test Suite', function () {
         });
     });
 
+    /**
+     * @brief Test suite for message reference validation and completeness
+     * @test Validates message reference integrity, key existence, and function signatures
+     */
     suite('Message Reference Validation', () => {
+        /**
+         * @brief Tests that all expected message keys exist in the message reference
+         * @test Validates completeness of message definitions and their function types
+         */
         test('should contain all expected message keys', () => {
             const expectedKeys = [
                 'fileLoaded',
@@ -117,6 +165,10 @@ suite('MessageProvider Test Suite', function () {
             });
         });
 
+        /**
+         * @brief Tests that message functions return proper string values
+         * @test Validates that all message functions produce string output when called
+         */
         test('should have functions that return strings', () => {
             // Test function-based messages
             const englishMessages = messages.en;
@@ -130,6 +182,10 @@ suite('MessageProvider Test Suite', function () {
             assert.strictEqual(typeof cwdUpdated, 'string');
         });
 
+        /**
+         * @brief Tests that message function signatures match expected parameter counts
+         * @test Validates that each message function accepts the correct number of parameters
+         */
         test('should validate message function signatures', () => {
             const englishMessages = messages.en;
             // Single parameter functions
@@ -149,7 +205,15 @@ suite('MessageProvider Test Suite', function () {
         });
     });
 
+    /**
+     * @brief Test suite for error handling and edge case scenarios
+     * @test Validates graceful handling of invalid inputs and parameter mismatches
+     */
     suite('Error Handling', () => {
+        /**
+         * @brief Tests graceful handling of invalid or non-existent message keys
+         * @test Validates that invalid message keys don't crash the system
+         */
         test('should handle invalid message keys gracefully', () => {
             // The implementation might throw an error or return a default message
             // This test verifies the behavior is consistent
@@ -163,6 +227,10 @@ suite('MessageProvider Test Suite', function () {
             }
         });
 
+        /**
+         * @brief Tests handling of excess parameters beyond what's expected
+         * @test Validates that extra parameters are ignored without causing errors
+         */
         test('should handle too many parameters gracefully', () => {
             // Providing more parameters than expected should not break
             const result = getMessage("fileRefreshed", "extra", "parameters", "should", "be", "ignored");
@@ -170,6 +238,10 @@ suite('MessageProvider Test Suite', function () {
             assert.strictEqual(result, "Refreshing file content.");
         });
 
+        /**
+         * @brief Tests handling of insufficient parameters for message templates
+         * @test Validates that missing parameters don't crash the message generation
+         */
         test('should handle too few parameters gracefully', () => {
             // This might result in undefined substitution, but should not crash
             const result = getMessage("filePathUpdated", "/only/one/param");
@@ -178,7 +250,15 @@ suite('MessageProvider Test Suite', function () {
         });
     });
 
+    /**
+     * @brief Test suite for message content validation and quality
+     * @test Validates that generated messages contain appropriate content and formatting
+     */
     suite('Message Content Validation', () => {
+        /**
+         * @brief Tests that error messages contain meaningful and helpful information
+         * @test Validates that error messages include relevant details like file paths and error descriptions
+         */
         test('should have meaningful error messages', () => {
             const filePath = '/test/file.json';
             const error = 'Syntax error at line 5';
@@ -189,6 +269,10 @@ suite('MessageProvider Test Suite', function () {
             assert.ok(parseError.toLowerCase().includes('error'), 'Parse error should mention error');
         });
 
+        /**
+         * @brief Tests that status messages provide clear and informative content
+         * @test Validates that status messages include relevant context and clear language
+         */
         test('should have informative status messages', () => {
             const absolutePath = '/absolute/path/to/file.json';
             const loadedMsg = getMessage("fileLoaded", absolutePath);
@@ -200,6 +284,10 @@ suite('MessageProvider Test Suite', function () {
             assert.ok(refreshMsg.toLowerCase().includes('refresh'), 'Refresh message should mention refresh');
         });
 
+        /**
+         * @brief Tests that directory change messages are clear and include relevant paths
+         * @test Validates that directory update and error messages contain appropriate path information
+         */
         test('should have clear directory change messages', () => {
             const oldCwd = '/old/directory';
             const newCwd = '/new/directory';
@@ -215,7 +303,15 @@ suite('MessageProvider Test Suite', function () {
         });
     });
 
+    /**
+     * @brief Test suite for integration testing and message consistency
+     * @test Validates consistent formatting, concurrent access, and caching behavior
+     */
     suite('Integration and Consistency', () => {
+        /**
+         * @brief Tests that similar messages follow consistent formatting patterns
+         * @test Validates that related messages use similar punctuation and structure
+         */
         test('should maintain consistent message formatting', () => {
             // Test that similar messages follow consistent patterns
             const loadedMsg = getMessage("fileLoaded", "/test/file");
@@ -227,6 +323,10 @@ suite('MessageProvider Test Suite', function () {
             assert.ok(typeof unloadedMsg === 'string' && unloadedMsg.length > 0, 'Unloaded message should be a valid string');
         });
 
+        /**
+         * @brief Tests concurrent message generation for thread safety
+         * @test Validates that simultaneous getMessage calls work correctly without interference
+         */
         test('should handle concurrent message generation', () => {
             // Test that multiple simultaneous getMessage calls work correctly
             const promises = Array.from({ length: 100 }, (_, i) => {
@@ -244,6 +344,10 @@ suite('MessageProvider Test Suite', function () {
             });
         });
 
+        /**
+         * @brief Tests message caching functionality and consistency
+         * @test Validates that repeated calls to the same message return identical results
+         */
         test('should support message caching if implemented', () => {
             // Test repeated calls to the same message
             const message1 = getMessage("fileRefreshed");
@@ -259,7 +363,15 @@ suite('MessageProvider Test Suite', function () {
         });
     });
 
+    /**
+     * @brief Test suite for performance characteristics and memory management
+     * @test Validates efficiency with large parameters and rapid successive calls
+     */
     suite('Performance and Memory', () => {
+        /**
+         * @brief Tests performance with large parameter strings
+         * @test Validates that message generation remains efficient even with very long parameters
+         */
         test('should handle large parameter strings efficiently', () => {
             const largePath = '/very/long/path/with/many/segments/'.repeat(100) + 'file.json';
             const startTime = Date.now();
@@ -271,6 +383,10 @@ suite('MessageProvider Test Suite', function () {
             assert.ok(result.includes(largePath));
         });
 
+        /**
+         * @brief Tests performance under rapid successive message generation calls
+         * @test Validates that high-frequency message generation completes within reasonable time
+         */
         test('should handle rapid successive calls efficiently', () => {
             const startTime = Date.now();
 
