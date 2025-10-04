@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.8] - 04/10/2025
+
+### Added
+
+- A text to morse and morse to text translator.
+
+### Changed
+
+- Update the doxygen documentation
+
+---
+
 ## [1.0.7] - 04/10/2025
 
 ### Changed
