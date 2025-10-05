@@ -38,7 +38,7 @@
       },
       {
         "command": "asperheader.sayHelloWorld",
-        "title": "AsperHeader: World with File Info"
+        "title": "AsperHeader: Hello World with File Info"
       },
       {
         "command": "asperheader.toMorse",
