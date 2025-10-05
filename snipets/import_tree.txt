@@ -1,0 +1,77 @@
+I will be reading from the extension.ts file, in order to reduce the message size, modules that are imported and have already had their internal imports listed won't be listed again.
+The paths here are symbolic to allow you to know where the file is located within the project, this does not reflect the real path used in the import, remember the project compiles, thus the filepaths are correct.
+
+
+So, we start with extension.ts.
+extension.ts imports:
+- * from path (system library, no need to analyse)
+- * from vscode (system library, no need to analyse)
+- moduleName from constants.ts
+.- constants.ts has no imports
+- logger from modules/logger.ts
+.- modules/logger.ts imports:
+..- * from vscode (system library)
+..- CodeConfig from modules/processConfiguration.ts
+...- modules/processConfiguration.ts imports:
+....- * from vscode (system library)
+....- * from constants.ts
+- Darling from modules/darling.ts
+.- modules/darling.ts imports:
+..- * from vscode (system library)
+..- logger from modules/logger.ts (see higher up for analisys)
+..- getMessage from modules/messageProvider.ts
+...- modules/messageProvider.ts imports:
+....- * from vscode
+....- messages from modules/messageReference.ts
+.....- modules/messageReference.ts does not import anything
+....- LazyFileLoader from modules/lazyFileLoad.ts
+.....- modules/lazyFileLoad.ts imports:
+......- * from fs/promisses (system library)
+......- * from path (system library)
+......- logger from modules/logger (see higher up for analisys)
+......- getMessage from modules/messageProvider (see higher up for analisys)
+......- parse from jsonc-parser (npm installed library, system, no analisys needed)
+- MorseTranslator from modules/morseCode.ts
+.- modules/morseCode.ts imports:
+..- logger and LogType (for typing help) from modules/logger.ts (see above for breakdown)
+..- getMessage from modules/messageProvider.ts (see above for breakdown)
+- getMessage from modules/messageProvider.ts (see above for breakdown)
+- LazyFileLoader from modules/lazyFileLoad.ts (see above for breakdown)
+- CommentGenerator from modules/CommentGenerator.ts
+.- modules/CommentGenerator.ts imports:
+..- * from vscode (system library)
+..- minimatch from minimatch (system library)
+..- CodeConfig and CodeConfigType (for typing) from modules/processCofiguration.ts (see above for analisys)
+..- query from modules/querier.ts
+...- modules/querier.ts imports:
+....- * from vscode (system library)
+....- logger from modules/logger (see above for analisys)
+....- getMessage from modules/messageProvider.ts (see above for analisys)
+..- logger from modules/logger (see above for analisys)
+..- getMessage from modules/messageProvider.ts (see above for analisys)
+..- LazyFileLoader from modules/lazyFileLoad.ts (see above for analisys)
+..- RandomLogo and Logo from modules/randomLogo.ts
+...- modules/randomLogo.ts imports:
+....- * from fs/promises (system library)
+....- * from path (system library)
+....- * from vscode (system library)
+....- logger from modules/logger.ts (see above for analisys)
+....- getMessage from modules/messageProvider.ts (see above for analisys)
+....- LazyFileLoader from modules/lazyFileLoad.ts (see above for analisys)
+- CodeConfig and CodeConfigType from modules/processConfiguration.ts (see above for analisys)
+- Watermark from modules/watermark.ts
+.- modules/watermark.ts imports:
+..- * from vscode (system library)
+..- logger from modules/logger.ts (see above for analisys)
+..- getMessage from modules/messageProvider (see above for analisys)
+..- LazyFileLoader from modules/lazyFileLoad.ts (see above for analisys)
+..- authorLogo from constants.ts (see above for analisys)
+- RandomLogo from modules/randomLogo.ts
+.- modules/randomLogo.ts imports:
+..- * from fs/promises (system library)
+..- * from path (system library)
+..- * from vscode (system library)
+..- logger from modules/logger.ts (see above for analisys)
+..- getMessage from modules/messageProvider.ts (see above for analisys)
+..- LazyFileLoader from modules/lazyFileLoad.ts (see above for analisys)
+..- query from modules/querier.ts (see above for analisys)
