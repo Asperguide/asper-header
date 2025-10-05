@@ -72,11 +72,11 @@
  * ```
  */
 
-import * as fs from 'fs';
 import * as fsp from "fs/promises";
 import * as path from 'path';
 import { logger } from './logger';
 import { getMessage } from './messageProvider';
+import { parse as parseJsonc } from 'jsonc-parser';
 
 /**
  * @class LazyFileLoader
@@ -98,10 +98,13 @@ import { getMessage } from './messageProvider';
 export class LazyFileLoader<T = any> {
     /** @brief Path to the file to be loaded (relative or absolute) */
     private filePath: string | undefined = undefined;
+    private alternateFilePath: string | undefined = undefined;
     /** @brief Cached file content to avoid repeated file system access */
-    private cache: T | null = null;
+    private cache: T | undefined = undefined;
     /** @brief Current working directory for resolving relative paths */
     private cwd: string = "";
+    private timeoutCheckMs: number = 5000;
+    private timeoutReadMs: number = 10000;
 
     /**
      * @brief Constructor for LazyFileLoader
@@ -111,14 +114,33 @@ export class LazyFileLoader<T = any> {
      * Initializes the lazy file loader with optional file path and working
      * directory. The file is not loaded until the first call to get().
      */
-    constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
+    constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined, alternateFilePath: string | undefined = undefined) {
         logger.debug(getMessage("inFunction", "constructor", "LazyFileLoader"));
         if (filePath) {
             this.filePath = filePath;
+            logger.debug(getMessage("foundFilePathToLoad", filePath));
+        }
+        if (alternateFilePath) {
+            this.alternateFilePath = alternateFilePath;
+            logger.debug(getMessage("foundAlternateFilePathToLoad", alternateFilePath));
         }
         if (cwd) {
             this.cwd = cwd;
+            logger.debug(getMessage("foundCurrentWorkingDirectory", cwd));
         }
+    }
+
+    /**
+     * Executes a promise with a timeout.
+     * Rejects with an Error if it takes longer than timeoutMs.
+     */
+    private async withTimeout<T>(promise: Promise<T>, timeoutMs: number, label?: string): Promise<T> {
+        return Promise.race([
+            promise,
+            new Promise<T>((_, reject) =>
+                setTimeout(() => reject(new Error(`${label}`)), timeoutMs)
+            ),
+        ]);
     }
 
     /**
@@ -130,12 +152,14 @@ export class LazyFileLoader<T = any> {
      * Uses Node.js fs.promises.access() which is the recommended approach for
      * checking file existence without race conditions.
      */
-    async pathExists(filePath: string): Promise<boolean> {
+    async pathExists(filePath: string, timeoutMs: number = 5000): Promise<boolean> {
         logger.debug(getMessage("inFunction", "pathExists", "LazyFileLoader"));
         try {
-            await fsp.access(filePath);
+            await this.withTimeout(fsp.access(filePath, fsp.constants.F_OK), timeoutMs, `pathExists:'${filePath}'>${timeoutMs}ms`);
+            logger.debug(getMessage("foundFilePath", filePath));
             return true;
-        } catch {
+        } catch (e) {
+            logger.debug(getMessage("notFoundFilePath", String(e)));
             return false;
         }
     }
@@ -154,10 +178,6 @@ export class LazyFileLoader<T = any> {
         logger.debug(getMessage("inFunction", "resolveAbsolutePath", "LazyFileLoader"));
         if (path.isAbsolute(filePath)) {
             return filePath;
-        }
-        const path1: string = path.join(this.cwd, "..", filePath);
-        if (await this.pathExists(path1)) {
-            return path1;
         }
         return path.join(this.cwd, filePath);
     }
@@ -179,28 +199,53 @@ export class LazyFileLoader<T = any> {
     async get(): Promise<T | undefined> {
         logger.debug(getMessage("inFunction", "get", "LazyFileLoader"));
         if (this.cache) {
-            return this.cache; // Already loaded
+            logger.info(getMessage("cacheAlreadyLoaded"));
+            return this.cache ?? undefined;
         }
-        if (this.filePath === undefined) {
-            return undefined;
+        const tryPaths: string[] = [this.filePath, this.alternateFilePath].filter(Boolean) as string[];
+        if (tryPaths.length === 0) {
+            logger.warning(getMessage("noFilesAvailableForLoading"));
+            return this.cache ?? undefined;
         }
-        const absolutePath = await this.resolveAbsolutePath(this.filePath);
-        const content = await fs.promises.readFile(absolutePath, 'utf-8');
-        const fileExtension: string = path.extname(this.filePath).toLowerCase();
-        try {
-            if (fileExtension === ".json" || fileExtension === ".jsonc") {
-                this.cache = JSON.parse(content) as T;
-            } else {
-                this.cache = content as T;
+        for (const candidate of tryPaths) {
+            logger.debug(getMessage("filePathProcessing", candidate));
+            try {
+                const absolutePath = await this.resolveAbsolutePath(candidate);
+                logger.debug(getMessage("filepathPresenceCheck", absolutePath));
+                const exists = await this.pathExists(absolutePath, this.timeoutCheckMs);
+                if (!exists) {
+                    logger.warning(getMessage("fileNotFound", absolutePath));
+                    continue;
+                }
+                const content = await this.withTimeout(fsp.readFile(absolutePath, "utf-8"), this.timeoutReadMs, getMessage("readTimeout", this.timeoutReadMs, absolutePath));
+                logger.debug(getMessage("fileLength", absolutePath, content.length));
+                const fileExtension: string = path.extname(candidate).toLowerCase();
+                try {
+                    if (fileExtension === ".json") {
+                        this.cache = JSON.parse(content) as T;
+                    } else if (fileExtension === ".jsonc") {
+                        this.cache = parseJsonc(content) as T;
+                    } else {
+                        this.cache = content as T;
+                    }
+                    logger.info(getMessage("fileLoaded", absolutePath));
+                    return this.cache ?? undefined;
+                } catch (err) {
+                    const errorMsg: string = getMessage("fileParseError", absolutePath, String(err));
+                    logger.error(errorMsg);
+                    logger.Gui.error(errorMsg);
+                    this.cache = content as T;
+                    logger.info(getMessage("fileLoaded", absolutePath));
+                    return this.cache ?? undefined;
+                }
+            } catch (e) {
+                const errMsg: string = getMessage("fileLoadError", candidate, String(e));
+                logger.Gui.error(errMsg);
+                logger.error(errMsg);
+                this.cache = undefined;
             }
-        } catch (err) {
-            const errorMsg: string = getMessage("fileParseError", this.filePath, String(err));
-            logger.error(errorMsg);
-            logger.Gui.error(errorMsg);
-            return undefined;
         }
-        logger.info(getMessage("fileLoaded", absolutePath));
-        return this.cache;
+        return this.cache ?? undefined;
     }
 
     /**
@@ -213,9 +258,9 @@ export class LazyFileLoader<T = any> {
      */
     async reload(): Promise<T | undefined> {
         logger.debug(getMessage("inFunction", "reload", "LazyFileLoader"));
-        this.cache = null;
+        this.unload();
         logger.info(getMessage("fileRefreshed"));
-        return this.get();
+        return await this.get();
     }
 
     /**
@@ -227,7 +272,7 @@ export class LazyFileLoader<T = any> {
      */
     unload() {
         logger.debug(getMessage("inFunction", "unload", "LazyFileLoader"));
-        this.cache = null;
+        this.cache = undefined;
         logger.info(getMessage("fileUnloaded", String(this.filePath)));
     }
 
@@ -240,17 +285,40 @@ export class LazyFileLoader<T = any> {
      * currently cached, automatically reloads from the new path to ensure
      * cache consistency. Returns false if the new file cannot be loaded.
      */
-    async updateFilePath(filePath: string): Promise<boolean> {
+    async updateFilePath(filePath: string, reload: boolean = false): Promise<boolean> {
         logger.debug(getMessage("inFunction", "updateFilePath", "LazyFileLoader"));
         const oldFilePath = this.filePath;
         this.filePath = filePath;
-        if (this.cache) {
+        if (this.cache && reload) {
             const status: T | undefined = await this.reload();
             if (status === undefined) {
                 return false;
             }
         }
         logger.info(getMessage("filePathUpdated", String(oldFilePath), String(filePath)));
+        return true;
+    }
+
+    /**
+     * @brief Updates the file path and optionally reloads cached content
+     * @param filePath New file path to use for loading
+     * @return Promise resolving to true if update successful, false on reload failure
+     * 
+     * Changes the target file path for this loader instance. If content is
+     * currently cached, automatically reloads from the new path to ensure
+     * cache consistency. Returns false if the new file cannot be loaded.
+     */
+    async updateAlternateFilePath(filePath: string, reload: boolean = false): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateAlternateFilePath", "LazyFileLoader"));
+        const oldFilePath = this.alternateFilePath;
+        this.alternateFilePath = filePath;
+        if (this.cache && reload) {
+            const status: T | undefined = await this.reload();
+            if (status === undefined) {
+                return false;
+            }
+        }
+        logger.info(getMessage("alternateFilePathUpdated", String(oldFilePath), String(this.alternateFilePath)));
         return true;
     }
 
@@ -267,13 +335,19 @@ export class LazyFileLoader<T = any> {
     async updateCurrentWorkingDirectory(cwd: string): Promise<boolean> {
         logger.debug(getMessage("inFunction", "updateCurrentWorkingDirectory", "LazyFileLoader"));
         const oldCwd: string = this.cwd;
-        if (! await this.pathExists(cwd)) {
+        try {
+            const stats = await fsp.stat(cwd);
+            if (!stats.isDirectory()) {
+                logger.warning(getMessage("cwdDoesNotExist", cwd));
+                return false;
+            }
+            this.cwd = cwd;
+            logger.info(getMessage("cwdUpdated", String(oldCwd), String(this.cwd)));
+            return true;
+        } catch {
             logger.warning(getMessage("cwdDoesNotExist", cwd));
             return false;
         }
-        this.cwd = cwd;
-        logger.info(getMessage("cwdUpdated", String(oldCwd), String(this.cwd)));
-        return true;
     }
 
     /**
@@ -286,5 +360,21 @@ export class LazyFileLoader<T = any> {
     getFilePath(): string | undefined {
         logger.debug(getMessage("inFunction", "getFilePath", "LazyFileLoader"));
         return this.filePath;
+    }
+    getAlternateFilePath(): string | undefined {
+        logger.debug(getMessage("inFunction", "getAlternateFilePath", "LazyFileLoader"));
+        return this.alternateFilePath;
+    }
+    setCheckTimeout(timeoutCheckMs: number): void {
+        logger.debug(getMessage("inFunction", "setCheckTimeout", "LazyFileLoader"));
+        this.timeoutCheckMs = timeoutCheckMs;
+    }
+    setReadTimeout(timeoutReadMs: number): void {
+        logger.debug(getMessage("inFunction", "setReadTimeout", "LazyFileLoader"));
+        this.timeoutReadMs = timeoutReadMs;
+    }
+    setFilePathTimeout(timeoutCheckMs: number, timeoutReadMs: number): void {
+        this.setCheckTimeout(timeoutCheckMs);
+        this.setReadTimeout(timeoutReadMs);
     }
 }
