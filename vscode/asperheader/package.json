@@ -2,7 +2,7 @@
   "name": "asperheader",
   "displayName": "Asper Header",
   "description": "This is an extension that will allow the developers of the Asperguide project to sign their file in an easier way and quicker",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "publisher": "HenryLetellier",
   "icon": "images/icon/favicon_transparent.png",
   "repository": {
@@ -278,7 +278,7 @@
             "...##.........#.############...",
             "......#.......#.#########......",
             ".......#......#.########.......",
-            ".........##.##...#####........."
+            ".........#####...#####........."
           ],
           "description": "The default ASCII logo used when random logos are disabled."
         },
@@ -348,5 +348,8 @@
     "eslint": "^9.34.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
   }
 }
