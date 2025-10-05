@@ -2,7 +2,7 @@
  * @file lazyFileLoad.ts
  * @brief Advanced lazy loading file system utility with intelligent caching and type safety
  * @author Henry Letellier
- * @version 1.0.8
+ * @version 1.0.10
  * @date 2025
  * 
  * This module implements a sophisticated lazy loading file system utility that serves as
@@ -379,18 +379,52 @@ export class LazyFileLoader<T = any> {
         logger.debug(getMessage("inFunction", "getFilePath", "LazyFileLoader"));
         return this.filePath;
     }
+
+    /**
+     * @brief Gets the alternate file path configured for this loader instance
+     * @return The alternate file path string if set, undefined otherwise
+     * 
+     * Returns the fallback file path that will be used if the primary file path
+     * fails to load. This provides a backup mechanism for file loading operations.
+     */
     getAlternateFilePath(): string | undefined {
         logger.debug(getMessage("inFunction", "getAlternateFilePath", "LazyFileLoader"));
         return this.alternateFilePath;
     }
+
+    /**
+     * @brief Sets the timeout for file existence checks
+     * @param timeoutCheckMs Timeout duration in milliseconds for file checks
+     * 
+     * Configures how long the loader will wait when checking if a file exists
+     * before timing out. This helps prevent indefinite blocking on slow file systems.
+     */
     setCheckTimeout(timeoutCheckMs: number): void {
         logger.debug(getMessage("inFunction", "setCheckTimeout", "LazyFileLoader"));
         this.timeoutCheckMs = timeoutCheckMs;
     }
+
+    /**
+     * @brief Sets the timeout for file read operations
+     * @param timeoutReadMs Timeout duration in milliseconds for file reads
+     * 
+     * Configures how long the loader will wait when reading file content
+     * before timing out. This prevents hanging on large files or slow storage.
+     */
     setReadTimeout(timeoutReadMs: number): void {
         logger.debug(getMessage("inFunction", "setReadTimeout", "LazyFileLoader"));
         this.timeoutReadMs = timeoutReadMs;
     }
+
+    /**
+     * @brief Sets both file check and read timeouts in a single operation
+     * @param timeoutCheckMs Timeout duration in milliseconds for file existence checks
+     * @param timeoutReadMs Timeout duration in milliseconds for file read operations
+     * 
+     * Convenience method that configures both timeout values simultaneously.
+     * This is useful when you want to set consistent timeout behavior for
+     * all file operations in one call.
+     */
     setFilePathTimeout(timeoutCheckMs: number, timeoutReadMs: number): void {
         this.setCheckTimeout(timeoutCheckMs);
         this.setReadTimeout(timeoutReadMs);

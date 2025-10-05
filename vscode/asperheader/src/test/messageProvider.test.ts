@@ -2,7 +2,7 @@
  * @file messageProvider.test.ts
  * @brief Comprehensive test suite for MessageProvider with message template validation
  * @author Henry Letellier
- * @version 1.0.8
+ * @version 1.0.10
  * @date 2025
  * 
  * This module provides extensive testing coverage for the MessageProvider module,

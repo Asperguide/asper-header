@@ -2,7 +2,7 @@
  * @file morseCode.ts
  * @brief Comprehensive Morse code translation system with International Morse Code compliance
  * @author Henry Letellier
- * @version 1.0.8
+ * @version 1.0.10
  * @date 2025
  * 
  * This module implements a complete Morse code translation system that provides bidirectional

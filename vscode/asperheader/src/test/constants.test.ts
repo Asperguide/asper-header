@@ -2,7 +2,7 @@
  * @file constants.test.ts
  * @brief Comprehensive test suite for extension constants validation and integrity
  * @author Henry Letellier
- * @version 1.0.8
+ * @version 1.0.10
  * @date 2025
  * 
  * This module provides extensive testing coverage for all constants defined in the

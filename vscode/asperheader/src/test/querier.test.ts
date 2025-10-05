@@ -2,7 +2,7 @@
  * @file querier.test.ts
  * @brief Comprehensive test suite for the Query user interaction system
  * @author Henry Letellier
- * @version 1.0.8
+ * @version 1.0.10
  * @date 2025
  * 
  * This test suite provides extensive coverage for the Query module, which manages

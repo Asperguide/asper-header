@@ -2,7 +2,7 @@
  * @file querier.ts
  * @brief Advanced user interaction system with intelligent prompting and comprehensive dialog management
  * @author Henry Letellier
- * @version 1.0.8
+ * @version 1.0.10
  * @date 2025
  * 
  * This module implements a sophisticated user interaction framework that serves as the

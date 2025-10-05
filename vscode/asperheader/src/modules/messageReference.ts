@@ -2,8 +2,8 @@
  * @file messageReference.ts
  * @brief Comprehensive multilingual message repository with advanced localization support
  * @author Henry Letellier
- * @version 1.0.8
- * @date 2025-10-03
+ * @version 1.0.10
+ * @date 2025-10-05
  * @copyright (c) 2025 Asperguide - All rights reserved
  * 
  * @details This module serves as the authoritative multilingual message repository for the entire

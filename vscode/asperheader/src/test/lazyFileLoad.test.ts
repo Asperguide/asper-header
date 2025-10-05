@@ -2,7 +2,7 @@
  * @file lazyFileLoad.test.ts
  * @brief Comprehensive test suite for LazyFileLoader with real file operations
  * @author Henry Letellier
- * @version 1.0.8
+ * @version 1.0.10
  * @date 2025
  * 
  * This module provides extensive testing coverage for the LazyFileLoader class,
