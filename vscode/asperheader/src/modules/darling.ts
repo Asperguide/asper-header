@@ -3,6 +3,7 @@
  * @brief Interactive character showcase system featuring "Darling in the FranXX" characters with rich presentation
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module implements an engaging character display system that serves as an Easter egg

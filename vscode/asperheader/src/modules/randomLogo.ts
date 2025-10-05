@@ -3,6 +3,7 @@
  * @brief Comprehensive ASCII art logo management and interactive display system
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module implements a sophisticated ASCII art logo management system that serves as

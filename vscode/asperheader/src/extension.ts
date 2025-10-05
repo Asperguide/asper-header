@@ -3,6 +3,7 @@
  * @brief Main extension entry point for AsperHeader VS Code extension
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This file serves as the primary activation point for the AsperHeader VS Code extension,

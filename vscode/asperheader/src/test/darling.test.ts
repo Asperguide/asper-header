@@ -3,6 +3,7 @@
  * @brief Comprehensive unit tests for the Darling character showcase system
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.4
  * @date 2025
  * 
  * This test suite provides extensive coverage for the Darling module, which manages

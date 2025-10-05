@@ -2,6 +2,7 @@
  * @file morseCode.ts
  * @brief Comprehensive Morse code translation system with International Morse Code compliance
  * @author Henry Letellier
+ * @since 1.0.0
  * @version 1.0.10
  * @date 2025
  * 

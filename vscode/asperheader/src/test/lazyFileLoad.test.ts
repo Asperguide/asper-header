@@ -3,6 +3,7 @@
  * @brief Comprehensive test suite for LazyFileLoader with real file operations
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.4
  * @date 2025
  * 
  * This module provides extensive testing coverage for the LazyFileLoader class,

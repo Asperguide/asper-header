@@ -3,6 +3,7 @@
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module serves as the core engine for generating, injecting, and managing 

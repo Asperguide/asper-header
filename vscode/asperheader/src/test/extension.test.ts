@@ -3,6 +3,7 @@
  * @brief Comprehensive test suite for AsperHeader extension core functionality
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module provides the main test suite for validating the core functionality

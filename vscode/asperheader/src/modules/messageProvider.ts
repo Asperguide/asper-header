@@ -3,6 +3,7 @@
  * @brief Comprehensive internationalization engine with intelligent language detection and message orchestration
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module serves as the central internationalization (i18n) engine for the AsperHeader

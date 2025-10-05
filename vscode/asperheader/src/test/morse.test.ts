@@ -3,6 +3,7 @@
  * @brief Comprehensive test suite for Morse code translation functionality
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.4
  * @date 2025
  * 
  * This module provides extensive testing coverage for the MorseTranslator class,
@@ -68,7 +69,7 @@ suite('MorseTranslator Tests', () => {
     });
 
     // Extended test coverage for edge cases and validation
-    
+
     /**
      * @brief Tests edge case handling for empty input
      * @test Validates proper handling of empty string input
@@ -146,7 +147,7 @@ suite('MorseTranslator Tests', () => {
     });
 
     // Bidirectional conversion tests
-    
+
     /**
      * @brief Tests bidirectional conversion accuracy for simple text
      * @test Validates round-trip translation consistency
@@ -192,7 +193,7 @@ suite('MorseTranslator Tests', () => {
     });
 
     // Morse to text conversion tests
-    
+
     /**
      * @brief Tests basic Morse to text conversion
      * @test Validates correct decoding of simple Morse code
@@ -240,7 +241,7 @@ suite('MorseTranslator Tests', () => {
     });
 
     // Performance and stress tests
-    
+
     /**
      * @brief Tests performance with large text input
      * @test Validates efficient processing of extensive text content

@@ -3,6 +3,7 @@
  * @brief Advanced configuration management and settings orchestration for AsperHeader
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module implements a sophisticated configuration management system that serves as the

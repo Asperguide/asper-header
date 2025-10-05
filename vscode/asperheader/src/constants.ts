@@ -3,6 +3,7 @@
  * @brief Global constants and configuration values for AsperHeader extension
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module defines all global constants, configuration values, and default settings

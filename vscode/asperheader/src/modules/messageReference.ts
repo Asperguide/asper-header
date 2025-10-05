@@ -3,6 +3,7 @@
  * @brief Comprehensive multilingual message repository with advanced localization support
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025-10-05
  * @copyright (c) 2025 Asperguide - All rights reserved
  * 
@@ -323,8 +324,8 @@
  * @note Undefined message keys return a standardized error message with the missing key identifier
  * @note Language pack validation occurs during extension initialization for early error detection
  * 
+ * @version 1.0.10
  * @since 1.0.0
- * @version 1.0.8
  * @see MessageProvider For the primary interface to access these messages
  * @see Logger For integration with the extension's logging system
  */
@@ -335,6 +336,7 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         alternateLogoDirectoryNotProvided: (): string => `No alternate logo directory provided.`,
         arrayNodeContent: (arrayName: string, arrayIndex: number, arrayNode: any[]): string => `${arrayName}[${arrayIndex}] = ${JSON.stringify(arrayNode)}.`,
         brokenHeader: (): string => "Broken header detected, injecting new one, please remove the previous one.",
+        bootingUp: (): string => "Asper Header Booting up",
         cacheAlreadyLoaded: (): string => "The cache is already loaded, returning stored instance.",
         chooseSingleLineCommentOption: (): string => "Please select your preferred comment prefix from the options below:",
         closedDocument: (): string => "The document is closed, stopping operations.",
@@ -343,6 +345,9 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         corruptedFileMetaData: (): string => "The required file meta data appears to not have been gathered correctly, aborting.",
         cwdDoesNotExist: (cwd: string): string => `The provided current working directory ${cwd} does not exist.`,
         cwdUpdated: (oldCwd: string, newCwd: string): string => `The current working directory referential has been updated from ${oldCwd} to ${newCwd}.`,
+        classInitialised: (moduleName: string, className: string): string => `>>> ${className}: ${moduleName} initialised`,
+        classesInitialised: (): string => "Classes initialised",
+        currentWorkingDirectorySet: (): string => "Current working directories set",
         darlingAge: (): string => "Age",
         darlingAlias: (): string => "Alias",
         darlingCopied: (name: string): string => `ASCII art copied for ${name}!`,
@@ -374,6 +379,8 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         fileRefreshed: (): string => "Refreshing file content.",
         fileSaveFailed: (): string => "Failed to save the file, please try saving it again.",
         fileUnloaded: (filePath: string): string => `File ${filePath} unloaded from memory`,
+        filePathsAndRootDirsUpdated: (): string => "File paths and root dirs updated",
+        filePathAlternateSet: (): string => "Alternate filepaths set",
         foundAlternateFilePathToLoad: (alternateFilePath: string) => `The alternate file path to load is set to '${alternateFilePath}'.`,
         foundAlternateLogoRootDir: (rootDir: string): string => `The current alternate logo root directory is: '${rootDir}'.`,
         foundCurrentWorkingDirectory: (cwd: string): string => `The current working directory has been set to '${cwd}'.`,
@@ -389,6 +396,7 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         getHeaderDescription: (): string => "Please provide a description: ",
         getHeaderPurpose: (): string => "Please provide the purpose of the file:",
         getHeaderTags: (): string => "Please enter the tags for this file, separated by commas:",
+        pathsSet: (): string => "Paths sets",
         headerInjectQuestion: (): string => "No header was found in this document. Would you like to add one?",
         headerInjectQuestionRefused: (): string => "You decided not to add the a header to the file.",
         headerNotFound: (): string => "No header was found in this document.",
@@ -399,6 +407,9 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         helloWorldGreetingsCommand: (moduleName: string): string => `Hello World from ${moduleName}!`,
         identifiedLanguage: (langName: string): string => `Identified language: ${langName}.`,
         inFunction: (functionName: string, className: string = "Not specified") => `In function: '${functionName}' from class: '${className}'`,
+        inActivate: (): string => "In activate",
+        inActivateAfterLogger: (): string => "In activate after logger.updateInstallationState",
+        inActivateAfterGuiDebug: (): string => "After logger.Gui.debug",
         inputArgs: (documentBody: string, filePath: string, fileName: string, fileExtension: string, languageId: string, documentEOL: string, documentVersion: string): string => `this.documentBody = '${documentBody}', this.filePath = '${filePath}', this.fileName = '${fileName}', this.fileExtension = '${fileExtension}', this.languageId = '${languageId}', this.documentEOL = '${documentEOL}', this.documentVersion = '${documentVersion}'`,
         inputboxError: (promptText: string, err: string): string => `Error in inputBox for ${promptText}: ${err}`,
         jsonContent: (jsonContentString: String) => `The content of the comment json file: ${jsonContentString}`,
@@ -445,6 +456,8 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         updateAbortedBecauseFileClosedSyncCancelled: (): string => "Update aborted because the file is closed and will thus not be synced.",
         updateEditDateMissingBounds: (): string => "Could not update the header: internal header markers were not found.",
         updatingEditionDate: (): string => "Updating the edition date.",
+        subscriptionsAdded: (): string => "Subscriptions added",
+        variablesRefreshed: (): string => "The variables from the configuration have been reloaded successfully.",
         watermarkAuthorName: (): string => "Author name",
         watermarkChosen: (watermark: string[]): string => `Watermark to display: ${JSON.stringify(watermark)}`,
         watermarkCopied: (name: string): string => `ASCII art copied for ${name}!`,

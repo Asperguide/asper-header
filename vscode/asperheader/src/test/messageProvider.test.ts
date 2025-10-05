@@ -3,6 +3,7 @@
  * @brief Comprehensive test suite for MessageProvider with message template validation
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.4
  * @date 2025
  * 
  * This module provides extensive testing coverage for the MessageProvider module,

@@ -3,6 +3,7 @@
  * @brief Advanced lazy loading file system utility with intelligent caching and type safety
  * @author Henry Letellier
  * @version 1.0.10
+ * @since 1.0.0
  * @date 2025
  * 
  * This module implements a sophisticated lazy loading file system utility that serves as
