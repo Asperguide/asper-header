@@ -155,10 +155,13 @@ export class Watermark {
      * that location. The current working directory is used for resolving
      * relative file paths.
      */
-    constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
+    constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined, alternateFilePath: string | undefined = undefined) {
         logger.debug(getMessage("inFunction", "constructor", "Watermark"));
         if (filePath) {
             this.fileInstance.updateFilePath(filePath);
+        }
+        if (alternateFilePath) {
+            this.fileInstance.updateAlternateFilePath(alternateFilePath);
         }
         if (cwd) {
             this.fileInstance.updateCurrentWorkingDirectory(cwd);
@@ -177,6 +180,10 @@ export class Watermark {
     async updateFilePath(filePath: string): Promise<boolean> {
         logger.debug(getMessage("inFunction", "updateFilePath", "Watermark"));
         return await this.fileInstance.updateFilePath(filePath);
+    }
+    async updateAlternateFilePath(alternateFilePath: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateAlternateFilePath", "Watermark"));
+        return await this.fileInstance.updateAlternateFilePath(alternateFilePath);
     }
 
     /**

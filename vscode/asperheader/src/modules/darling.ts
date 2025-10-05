@@ -143,10 +143,13 @@ export class Darling {
      * Initializes the Darling instance with optional file path and working
      * directory configurations. If not provided, default values are used.
      */
-    constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined) {
+    constructor(filePath: string | undefined = undefined, cwd: string | undefined = undefined, alternateFilePath: string | undefined = undefined) {
         logger.debug(getMessage("inFunction", "constructor", "Darling"));
         if (filePath) {
             this.fileInstance.updateFilePath(filePath);
+        }
+        if (alternateFilePath) {
+            this.fileInstance.updateAlternateFilePath(alternateFilePath);
         }
         if (cwd) {
             this.fileInstance.updateCurrentWorkingDirectory(cwd);
@@ -164,6 +167,10 @@ export class Darling {
     async updateFilePath(filePath: string): Promise<boolean> {
         logger.debug(getMessage("inFunction", "updateFilePath", "Darling"));
         return await this.fileInstance.updateFilePath(filePath);
+    }
+    async updateAlternateFilePath(alternateFilePath: string): Promise<boolean> {
+        logger.debug(getMessage("inFunction", "updateAlternateFilePath", "Darling"));
+        return await this.fileInstance.updateAlternateFilePath(alternateFilePath);
     }
 
     /**

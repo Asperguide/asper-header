@@ -176,15 +176,28 @@ export class RandomLogo {
      * If directory scanning fails, the error is logged and the method returns
      * false. The existing logo collection may be partially updated in this case.
      */
-    async updateRootDir(basePath: string): Promise<boolean> {
+    async updateRootDir(basePath: string, alternateBasePath: string | undefined = undefined): Promise<boolean> {
         logger.debug(getMessage("inFunction", "updateRootDir", "RandomLogo"));
         this.rootDir = basePath;
         try {
             await this.gatherAllLogoFiles(this.rootDir);
+            logger.debug(getMessage("foundLogoRootDir", basePath));
             return true;
         } catch (e) {
             logger.error(getMessage("logoRootDirUpdateError", String(e)));
-            return false;
+            if (alternateBasePath === undefined) {
+                logger.warning(getMessage("alternateLogoDirectoryNotProvided"));
+                return false;
+            }
+            this.rootDir = alternateBasePath;
+            try {
+                await this.gatherAllLogoFiles(this.rootDir);
+                logger.debug(getMessage("foundAlternateLogoRootDir", alternateBasePath));
+                return true;
+            } catch (e) {
+                logger.error(getMessage("alternateLogoDirectoryNotFound", alternateBasePath, String(e)));
+                return false;
+            }
         }
     }
 
