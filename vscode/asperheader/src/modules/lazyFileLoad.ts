@@ -76,7 +76,7 @@ import * as fsp from 'fs/promises';
 import * as path from 'path';
 import { logger } from './logger';
 import { getMessage } from './messageProvider';
-import { parse as parseJsonc } from 'jsonc-parser';
+import { parseJsonFile } from '../utils/jsoncLoader';
 
 /**
  * @class LazyFileLoader
@@ -103,7 +103,9 @@ export class LazyFileLoader<T = any> {
     private cache: T | undefined = undefined;
     /** @brief Current working directory for resolving relative paths */
     private cwd: string = "";
+    /** @brief The default delay allowed for the fs check before it is terminated */
     private timeoutCheckMs: number = 5000;
+    /** @brief The default delay allowed for the fs read before it is terminated */
     private timeoutReadMs: number = 10000;
 
     /**
@@ -212,7 +214,7 @@ export class LazyFileLoader<T = any> {
             try {
                 const absolutePath = await this.resolveAbsolutePath(candidate);
                 logger.debug(getMessage("filepathPresenceCheck", absolutePath));
-                
+
                 // Try to read the file directly - this will throw appropriate errors (ENOENT, EISDIR, etc.)
                 const content = await this.withTimeout(fsp.readFile(absolutePath, "utf-8"), this.timeoutReadMs, getMessage("readTimeout", this.timeoutReadMs, absolutePath));
                 logger.debug(getMessage("fileLength", absolutePath, content.length));
@@ -221,7 +223,7 @@ export class LazyFileLoader<T = any> {
                     if (fileExtension === ".json") {
                         this.cache = JSON.parse(content) as T;
                     } else if (fileExtension === ".jsonc") {
-                        this.cache = parseJsonc(content) as T;
+                        this.cache = await parseJsonFile(content) as T;
                     } else {
                         this.cache = content as T;
                     }
@@ -291,7 +293,7 @@ export class LazyFileLoader<T = any> {
     async updateFilePath(filePath: string, reload: boolean = false): Promise<boolean> {
         logger.debug(getMessage("inFunction", "updateFilePath", "LazyFileLoader"));
         const oldFilePath = this.filePath;
-        
+
         // If we have cached content and are changing to a different path, validate it exists
         if (this.cache && oldFilePath && filePath !== oldFilePath) {
             const absolutePath = await this.resolveAbsolutePath(filePath);
@@ -303,7 +305,7 @@ export class LazyFileLoader<T = any> {
                 throw error;
             }
         }
-        
+
         this.filePath = filePath;
         // Clear cache when file path changes to ensure fresh content
         this.cache = undefined;
