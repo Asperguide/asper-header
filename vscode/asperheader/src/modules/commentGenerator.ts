@@ -259,7 +259,7 @@ export class CommentGenerator {
         }
         const jsonContent = await this.languageComment?.get();
         // logger.info(getMessage("jsonContent", JSON.stringify(jsonContent)));
-        if (!jsonContent || (primaryKey in jsonContent) === false) {
+        if (!jsonContent || typeof jsonContent !== 'object' || jsonContent === null || (primaryKey in jsonContent) === false) {
             logger.Gui.error(getMessage("unknownFileStructure"));
             return commentStructure;
         }

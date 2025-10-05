@@ -367,7 +367,7 @@ export const messages: Record<string, Record<string, (...args: any[]) => string>
         fileLoaded: (absolutePath: string): string => `File ${absolutePath} loaded!`,
         fileLoadError: (filePath: string, error: string = "Notprovided"): string => `Failed to load file: '${filePath}'. Error: ${error}.`,
         fileNotFound: (filePath: string): string => `File not found: ${filePath}`,
-        fileParseError: (filePath: string, error: string = "Notprovided"): string => `The file content (${filePath}) could not be loaded successfully. Error: ${error}.`,
+        fileParseError: (filePath: string, error: string): string => `The file content (${filePath}) could not be loaded successfully. Error: ${error}.`,
         filepathPresenceCheck: (filePath: string): string => `Checking filepath presence: ${filePath}`,
         filePathProcessing: (filepath: string): string => `Processing file path: '${filepath}'.`,
         filePathUpdated: (oldFilePath: string, newFilePath: string): string => `The path has been updated from ${oldFilePath} to ${newFilePath}.`,
