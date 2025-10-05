@@ -72,7 +72,7 @@
  * ```
  */
 
-import * as fsp from "fs/promises";
+import * as fsp from 'fs/promises';
 import * as path from 'path';
 import { logger } from './logger';
 import { getMessage } from './messageProvider';
