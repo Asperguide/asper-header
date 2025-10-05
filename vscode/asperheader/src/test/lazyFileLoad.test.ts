@@ -285,7 +285,7 @@ suite('LazyFileLoader Test Suite', function () {
 
         /**
          * @brief Tests graceful handling of malformed JSON content
-         * @test Validates that JSON parsing errors are handled without crashing
+         * @test Validates that JSON parsing errors are handled without crashing and returns raw content
          */
         test('should handle malformed JSON gracefully', async () => {
             const malformedJson = '{ name: "test", value: 42, invalid }';
@@ -293,7 +293,8 @@ suite('LazyFileLoader Test Suite', function () {
             await loader.updateFilePath(testFilePath);
 
             const result = await loader.get();
-            assert.strictEqual(result, undefined);
+            // Should return raw content since file loaded successfully, even if JSON parsing failed
+            assert.strictEqual(result, malformedJson);
         });
 
         /**
@@ -426,9 +427,11 @@ suite('LazyFileLoader Test Suite', function () {
 
             const result = await loader.get();
 
-            // Note: Basic JSON.parse doesn't handle comments, this test verifies the extension detection
-            // In real implementation, you might use a JSONC parser
-            assert.strictEqual(result, undefined); // Expected to fail with standard JSON.parse
+            // Since we use a JSONC parser, this should successfully parse the file with comments
+            assert.ok(result !== undefined, 'JSONC file should be parsed successfully');
+            assert.strictEqual((result as any).name, 'jsonc-test');
+            assert.strictEqual((result as any).value, 789);
+            assert.strictEqual((result as any).enabled, true);
         });
     });
 
