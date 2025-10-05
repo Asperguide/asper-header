@@ -365,6 +365,7 @@ class LoggerInternals {
 class Gui {
     /** @brief Reference to shared logging utilities */
     private LI: LoggerInternals;
+    private fullyLoaded: boolean = false;
 
     /**
      * @brief Constructor for Gui logging class
@@ -374,8 +375,31 @@ class Gui {
      * Initializes the GUI logger with shared utilities for consistent
      * formatting and behavior across logging methods.
      */
-    constructor(loggerInternals: LoggerInternals, depthSearch: number | undefined = undefined) {
+    constructor(loggerInternals: LoggerInternals, fullyLoaded: boolean = false) {
         this.LI = loggerInternals;
+        this.fullyLoaded = fullyLoaded;
+    }
+
+    /**
+     * @brief Updates the initialization status of the GUI logger
+     * @param fullyLoaded Boolean indicating if the extension is fully loaded and GUI notifications should be displayed
+     * 
+     * Controls whether GUI notifications are actually displayed to users. When fullyLoaded is false,
+     * all GUI notification methods will return immediately without displaying messages. This prevents
+     * premature notifications during extension initialization phases where the extension context
+     * may not be properly established.
+     * 
+     * State Management:
+     * - **True**: Enables normal GUI notification behavior
+     * - **False**: Suppresses all GUI notifications (returns undefined immediately)
+     * 
+     * Use Cases:
+     * - Extension initialization and shutdown phases
+     * - Testing environments where GUI notifications should be suppressed
+     * - Conditional GUI behavior based on extension lifecycle state
+     */
+    updateLoadStatus(fullyLoaded: boolean = true): void {
+        this.fullyLoaded = fullyLoaded;
     }
     /**
      * @brief Displays an information notification to the user
@@ -388,6 +412,9 @@ class Gui {
      * buttons. Used for non-critical informational messages.
      */
     info<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
+        if (!this.fullyLoaded) {
+            return Promise.resolve(undefined);
+        }
         let final: string = "";
         final += CodeConfig.get("extensionName") + " ";
         final += this.LI.getCorrectPrefix(true, false, false, false);
@@ -406,6 +433,9 @@ class Gui {
      * interactive buttons. Used for potentially problematic situations.
      */
     warning<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
+        if (!this.fullyLoaded) {
+            return Promise.resolve(undefined);
+        }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
         final += CodeConfig.get("extensionName") + " ";
@@ -425,6 +455,9 @@ class Gui {
      * interactive buttons. Used for critical errors requiring user attention.
      */
     error<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
+        if (!this.fullyLoaded) {
+            return Promise.resolve(undefined);
+        }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
         final += CodeConfig.get("extensionName") + " ";
@@ -445,6 +478,9 @@ class Gui {
      * immediately if debug mode is disabled.
      */
     debug<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
+        if (!this.fullyLoaded) {
+            return Promise.resolve(undefined);
+        }
         if (!this.LI.debugEnabled()) {
             return Promise.resolve(undefined);
         }
@@ -513,8 +549,10 @@ class Log {
     public Gui: Gui = new Gui(this.LI);
     /** @brief Installation state flag determining console output behavior */
     private extensionInstalled: boolean = false;
+    /** @brief Variable to indicate the status of initialisation of the extension, determines what can be output */
+    private fullyLoaded: boolean = false;
     /** @brief Dedicated VS Code output channel for structured extension logging */
-    private output = vscode.window.createOutputChannel(CodeConfig.get("moduleName"));
+    private output: vscode.OutputChannel | undefined = undefined;
 
     /**
      * @brief Initializes the logging system with environment detection and auto-display
@@ -535,10 +573,55 @@ class Log {
      * - Console output is suppressed to reduce noise in user environments
      * - Focuses on GUI notifications for user interaction
      */
-    constructor(context: vscode.ExtensionContext | undefined = undefined) {
+    constructor(context: vscode.ExtensionContext | undefined = undefined, fullyLoaded: boolean = false) {
         this.extensionInstalled = this.LI.checkIfExtensionInstalled(context);
-        if (!this.extensionInstalled) {
-            this.output.show();
+        this.updateInitialisationStatus(fullyLoaded);
+    }
+
+    /**
+     * @brief Updates the initialization status and manages output channel lifecycle
+     * @param extensionLoaded Boolean indicating if the extension is fully loaded and operational
+     * 
+     * Manages the complete lifecycle of the logging system's output infrastructure based on
+     * extension initialization state. This method coordinates output channel creation/disposal,
+     * GUI notification availability, and development environment auto-display behavior.
+     * 
+     * Initialization Sequence (extensionLoaded = true):
+     * 1. Updates internal loaded state flag
+     * 2. Enables GUI notifications through Gui.updateLoadStatus()
+     * 3. Creates dedicated VS Code output channel for extension logs
+     * 4. Auto-displays output panel in development environments for immediate visibility
+     * 
+     * Shutdown Sequence (extensionLoaded = false):
+     * 1. Updates internal loaded state flag to false
+     * 2. Disables GUI notifications to prevent orphaned messages
+     * 3. Properly disposes of existing output channel to prevent resource leaks
+     * 4. Clears output channel reference for garbage collection
+     * 
+     * Resource Management:
+     * - **Output Channel**: Created using CodeConfig.get("moduleName") for consistent naming
+     * - **Memory Safety**: Proper disposal prevents VS Code output channel accumulation
+     * - **Development UX**: Auto-show in development mode for immediate log access
+     * 
+     * State Coordination:
+     * Ensures both Log and Gui classes maintain synchronized initialization state,
+     * preventing inconsistent behavior between console logging and GUI notifications.
+     */
+    updateInitialisationStatus(extensionLoaded: boolean = true): void {
+        if (extensionLoaded) {
+            this.fullyLoaded = extensionLoaded;
+            this.Gui.updateLoadStatus(this.fullyLoaded);
+            this.output = vscode.window.createOutputChannel(CodeConfig.get("moduleName"));
+            if (!this.extensionInstalled) {
+                this.output.show();
+            }
+        } else {
+            this.fullyLoaded = false;
+            this.Gui.updateLoadStatus(this.fullyLoaded);
+            if (this.output) {
+                this.output.dispose();
+                this.output = undefined;
+            }
         }
     }
 
@@ -564,10 +647,10 @@ class Log {
      * - Testing environment changes
      */
     updateInstallationState(context: vscode.ExtensionContext | undefined) {
+        this.info(`In updateInstallationState`);
         this.extensionInstalled = this.LI.checkIfExtensionInstalled(context);
-        if (!this.extensionInstalled) {
-            this.output.show();
-        }
+        this.info(`extensionInstalled = ${this.extensionInstalled}`);
+        this.info("Out of updateInstallationState");
     }
     /**
      * @brief Logs informational messages with automatic caller identification
@@ -597,6 +680,9 @@ class Log {
      * complex call chains where the default depth doesn't capture the desired caller.
      */
     info(message: string, searchDepth: number | undefined = undefined) {
+        if (!this.output) {
+            return;
+        }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
         final += CodeConfig.get("extensionName") + " ";
@@ -639,6 +725,9 @@ class Log {
      * appropriate styling (yellow color) for developer attention during debugging.
      */
     warning(message: string, searchDepth: number | undefined = undefined) {
+        if (!this.output) {
+            return;
+        }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
         final += CodeConfig.get("extensionName") + " ";
@@ -687,6 +776,9 @@ class Log {
      * of the console output availability.
      */
     error(message: string, searchDepth: number | undefined = undefined) {
+        if (!this.output) {
+            return;
+        }
         let final: string = "";
         final += this.LI.getDatetime() + " ";
         final += CodeConfig.get("extensionName") + " ";
@@ -740,6 +832,9 @@ class Log {
      */
     debug(message: string, searchDepth: number | undefined = undefined) {
         if (this.LI.debugEnabled() === false) {
+            return;
+        }
+        if (!this.output) {
             return;
         }
         let final: string = "";
