@@ -249,8 +249,22 @@ export async function activate(context: vscode.ExtensionContext) {
 		"formatingRules",
 		"languages.min.json"
 	);
+	const alternateJsonLanguagePath: string = path.join(
+		context.extensionPath,
+		"dist",
+		"assets",
+		"formatingRules",
+		"languages.min.json"
+	);
 	const darlingPath: string = path.join(
 		context.extensionPath,
+		"assets",
+		"bonus",
+		"ditf.min.json"
+	);
+	const alternateDarlingPath: string = path.join(
+		context.extensionPath,
+		"dist",
 		"assets",
 		"bonus",
 		"ditf.min.json"
@@ -261,20 +275,41 @@ export async function activate(context: vscode.ExtensionContext) {
 		"bonus",
 		"watermark.min.json"
 	);
+	const alternateWatermarkPath: string = path.join(
+		context.extensionPath,
+		"dist",
+		"assets",
+		"bonus",
+		"watermark.min.json"
+	);
 	const logoPath: string = path.join(
 		context.extensionPath,
 		"assets",
 		"asciiArt"
 	);
+	const alternateLogoPath: string = path.join(
+		context.extensionPath,
+		"dist",
+		"assets",
+		"asciiArt"
+	);
+	// Updating the current working directories of the classes
 	await DARLING.updateCurrentWorkingDirectory(context.extensionPath);
 	await WATERMARK.updateCurrentWorkingDirectory(context.extensionPath);
 	RANDOM_LOGO.updateCurrentWorkingDirectory(context.extensionPath);
 	await COMMENTS_FORMAT.updateCurrentWorkingDirectory(context.extensionPath);
+	// Updating the default file paths of the classes
 	await DARLING.updateFilePath(darlingPath);
 	await WATERMARK.updateFilePath(watermarkPath);
-	await RANDOM_LOGO.updateRootDir(logoPath);
+	await RANDOM_LOGO.updateRootDir(logoPath, alternateLogoPath);
 	await COMMENTS_FORMAT.updateFilePath(jsonLanguagePath);
+	// Updating the backup paths of the classes
+	await DARLING.updateAlternateFilePath(alternateDarlingPath);
+	await WATERMARK.updateAlternateFilePath(alternateWatermarkPath);
+	await COMMENTS_FORMAT.updateAlternateFilePath(alternateJsonLanguagePath);
+	// Initialising the variables of the CodeConfiguration class
 	await CodeConfiguration.refreshVariables();
+	// Initialising the random logo of the Comment generator class
 	COMMENT_GENERATOR.updateLogoInstanceRandomiser(RANDOM_LOGO);
 	logger.info(getMessage("extensionActivated", moduleName), 3);
 
