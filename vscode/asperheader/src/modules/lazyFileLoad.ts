@@ -215,8 +215,12 @@ export class LazyFileLoader<T = any> {
             try {
                 const absolutePath = await this.resolveAbsolutePath(candidate);
                 logger.debug(getMessage("filepathPresenceCheck", absolutePath));
-
-                // Try to read the file directly - this will throw appropriate errors (ENOENT, EISDIR, etc.)
+                // Check existence first (optional, or just try/catch read)
+                const exists = await this.pathExists(absolutePath, this.timeoutCheckMs);
+                if (!exists) {
+                    logger.warning(getMessage("notFoundFilePath", absolutePath));
+                    continue; // try next path
+                }
                 const content = await this.withTimeout(fsp.readFile(absolutePath, "utf-8"), this.timeoutReadMs, getMessage("readTimeout", this.timeoutReadMs, absolutePath));
                 logger.debug(getMessage("fileLength", absolutePath, content.length));
                 const fileExtension: string = path.extname(candidate).toLowerCase();
