@@ -25,6 +25,10 @@ echo "Copying the images and demos from the root of the repository to the vscode
 cp -rvf ../../images/* ./images
 echo "Removing the existing dist folder..."
 rm -rvf ./dist
+echo "Removing the existing out folder..."
+rm -rvf ./out
+echo "Removing the .vscode-test folder..."
+rm -rvf ./.vscode-test
 echo "Running pre-publishing commands..."
 npm run package
 STATUS=$?
