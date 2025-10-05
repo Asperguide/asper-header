@@ -54,23 +54,19 @@ import { Watermark } from "./modules/watermark";
 import { RandomLogo } from "./modules/randomLogo";
 import { query } from "./modules/querier";
 
-// ---- SHared variables ----
+// Extension boot message
+const earlyLog = vscode.window.createOutputChannel('AsperHeader-Preboot');
+earlyLog.appendLine('>>> AsperHeader: imports success');
+logger.info(getMessage("bootingUp"));
+
+// ---- Shared variables ----
 
 const updatingDocuments = new WeakSet<vscode.TextDocument>();
+earlyLog.appendLine('>>> AsperHeader: WeakSet initialised');
 
 const CodeConfiguration: CodeConfigType = CodeConfig;
+earlyLog.appendLine('>>> AsperHeader: CodeConfigType initialised');
 
-const COMMENTS_FORMAT = new LazyFileLoader<any>();
-
-const MORSETRANSLATOR_INITIALISED = new MorseTranslator();
-
-const COMMENT_GENERATOR: CommentGenerator = new CommentGenerator(COMMENTS_FORMAT);
-
-const DARLING: Darling = new Darling();
-
-const WATERMARK: Watermark = new Watermark();
-
-const RANDOM_LOGO: RandomLogo = new RandomLogo();
 
 // --- Helper functions ---
 
@@ -93,6 +89,7 @@ function getFileInfo(editor: vscode.TextEditor) {
 
 	return { filePath, fileName, fileExtension, languageId };
 }
+earlyLog.appendLine('>>> AsperHeader: getFileInfo initialised');
 
 // --- Command implementations ---
 
@@ -107,6 +104,7 @@ function helloWorldCommand() {
 	logger.debug(getMessage("inFunction", "helloWorldCommand"));
 	vscode.window.showInformationMessage(getMessage("helloWorldGreetingsCommand", moduleName));
 }
+earlyLog.appendLine('>>> AsperHeader: helloWorldCommand initialised');
 
 /**
  * @brief Inserts greeting message with current file information
@@ -123,15 +121,12 @@ async function sayHelloWorldCommand() {
 		logger.Gui.error(getMessage("noActiveEditor"));
 		return;
 	}
-
 	const { filePath, fileName, fileExtension, languageId } = getFileInfo(editor);
-
 	const message = getMessage("sayHelloWorldResponse", fileExtension, fileName, filePath, languageId);
-
 	await editor.edit(editBuilder => editBuilder.insert(new vscode.Position(0, 0), message));
-
 	logger.Gui.info(getMessage("messageWritten"));
 }
+earlyLog.appendLine('>>> AsperHeader: sayHelloWorldCommand initialised');
 
 /**
  * @brief Thread-safe document update handler for save events
@@ -142,14 +137,14 @@ async function sayHelloWorldCommand() {
  * header updates during save operations. Uses WeakSet tracking
  * to ensure atomic updates and prevent corruption.
  */
-async function updateSaveSafe(document: vscode.TextDocument) {
+async function updateSaveSafe(document: vscode.TextDocument, comment_generator: CommentGenerator) {
 	logger.debug(getMessage("inFunction", "updateSaveSafe"));
 	if (updatingDocuments.has(document)) {
 		return;
 	}
 	updatingDocuments.add(document);
 	try {
-		await COMMENT_GENERATOR.refreshHeader(document);
+		await comment_generator.refreshHeader(document);
 		if (document.isDirty) {
 			const status = await document.save();
 			if (!status) {
@@ -160,6 +155,7 @@ async function updateSaveSafe(document: vscode.TextDocument) {
 		updatingDocuments.delete(document);
 	}
 }
+earlyLog.appendLine('>>> AsperHeader: updateSaveSafe initialised');
 
 /**
  * @brief Updates cached workspace name from VS Code workspace state
@@ -183,6 +179,7 @@ function refreshWorkspaceName() {
 
 	CodeConfig.setWorkspaceName(workspaceName);
 }
+earlyLog.appendLine('>>> AsperHeader: refreshWorkspaceName initialised');
 
 /**
  * @brief Converts user input to Morse code through interactive GUI dialog
@@ -201,9 +198,10 @@ async function toMorseGui() {
 	}
 	const converted_response: string = MorseTranslator.toMorse(usr_input);
 	logger.info(getMessage("convertedContentCli", converted_response));
-	logger.Gui.info(getMessage("convertedContentGui"));
 	logger.Gui.info(`${converted_response}`);
+	logger.Gui.info(getMessage("convertedContentGui"));
 }
+earlyLog.appendLine('>>> AsperHeader: toMorseGui initialised');
 
 /**
  * @brief Converts Morse code input to plain text through interactive GUI dialog
@@ -222,9 +220,10 @@ async function fromMorseGui() {
 	}
 	const converted_response: string = MorseTranslator.fromMorse(usr_input);
 	logger.info(getMessage("convertedContentCli", converted_response));
-	logger.Gui.info(getMessage("convertedContentGui"));
 	logger.Gui.info(`${converted_response}`);
+	logger.Gui.info(getMessage("convertedContentGui"));
 }
+earlyLog.appendLine('>>> AsperHeader: fromMorseGui initialised');
 
 /**
  * @brief Main extension activation entry point
@@ -241,8 +240,35 @@ async function fromMorseGui() {
  * when activation events are triggered.
  */
 export async function activate(context: vscode.ExtensionContext) {
+	logger.updateInitialisationStatus(true);
+	logger.info(getMessage("inActivate"));
+	// Initialising the variables of the CodeConfiguration class
+	await CodeConfiguration.refreshVariables();
+	logger.info(getMessage("variablesRefreshed"));
+	// Updating the logger settings
 	logger.updateInstallationState(context);
+	logger.info(getMessage("inActivateAfterLogger"));
 	logger.Gui.debug(`context.extensionPath: ${context.extensionPath}`);
+	logger.info(getMessage("inActivateAfterGuiDebug"));
+
+	// Class initialisers
+	const COMMENTS_FORMAT = new LazyFileLoader<any>();
+	logger.debug(getMessage("classInitialised", "LazyFileLoader", moduleName));
+	earlyLog.appendLine('>>> AsperHeader: LazyFileLoader initialised');
+	const COMMENT_GENERATOR: CommentGenerator = new CommentGenerator(COMMENTS_FORMAT);
+	logger.debug(getMessage("classInitialised", "CommentGenerator", moduleName));
+	earlyLog.appendLine('>>> AsperHeader: CommentGenerator initialised');
+	const DARLING: Darling = new Darling();
+	earlyLog.appendLine('>>> AsperHeader: Darling initialised');
+	logger.debug(getMessage("classInitialised", "Darling", moduleName));
+	const WATERMARK: Watermark = new Watermark();
+	earlyLog.appendLine('>>> AsperHeader: Watermark initialised');
+	logger.debug(getMessage("classInitialised", "Watermark", moduleName));
+	const RANDOM_LOGO: RandomLogo = new RandomLogo();
+	earlyLog.appendLine('>>> AsperHeader: RandomLogo initialised');
+	logger.debug(getMessage("classInitialised", "RandomLogo", moduleName));
+	logger.debug(getMessage("classesInitialised"));
+
 	const jsonLanguagePath: string = path.join(
 		context.extensionPath,
 		"assets",
@@ -293,22 +319,24 @@ export async function activate(context: vscode.ExtensionContext) {
 		"assets",
 		"asciiArt"
 	);
+	logger.debug(getMessage("pathsSet"));
 	// Updating the current working directories of the classes
 	await DARLING.updateCurrentWorkingDirectory(context.extensionPath);
 	await WATERMARK.updateCurrentWorkingDirectory(context.extensionPath);
 	RANDOM_LOGO.updateCurrentWorkingDirectory(context.extensionPath);
 	await COMMENTS_FORMAT.updateCurrentWorkingDirectory(context.extensionPath);
+	logger.debug(getMessage("currentWorkingDirectorySet"));
 	// Updating the default file paths of the classes
 	await DARLING.updateFilePath(darlingPath);
 	await WATERMARK.updateFilePath(watermarkPath);
 	await RANDOM_LOGO.updateRootDir(logoPath, alternateLogoPath);
 	await COMMENTS_FORMAT.updateFilePath(jsonLanguagePath);
+	logger.debug(getMessage("filePathsAndRootDirsUpdated"));
 	// Updating the backup paths of the classes
 	await DARLING.updateAlternateFilePath(alternateDarlingPath);
 	await WATERMARK.updateAlternateFilePath(alternateWatermarkPath);
 	await COMMENTS_FORMAT.updateAlternateFilePath(alternateJsonLanguagePath);
-	// Initialising the variables of the CodeConfiguration class
-	await CodeConfiguration.refreshVariables();
+	logger.debug(getMessage("filePathAlternateSet"));
 	// Initialising the random logo of the Comment generator class
 	COMMENT_GENERATOR.updateLogoInstanceRandomiser(RANDOM_LOGO);
 	logger.info(getMessage("extensionActivated", moduleName), 3);
@@ -324,9 +352,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand(`${moduleName}.displayRandomLogo`, RANDOM_LOGO.displayRandomLogoInWindow.bind(RANDOM_LOGO)),
 		vscode.commands.registerCommand(`${moduleName}.toMorse`, toMorseGui),
 		vscode.commands.registerCommand(`${moduleName}.fromMorse`, fromMorseGui),
-		vscode.workspace.onDidSaveTextDocument(async (document: vscode.TextDocument) => { await updateSaveSafe(document); })
+		vscode.workspace.onDidSaveTextDocument(async (document: vscode.TextDocument) => { await updateSaveSafe(document, COMMENT_GENERATOR); }),
+		vscode.workspace.onDidChangeConfiguration(async (event) => { if (event.affectsConfiguration(moduleName)) { await CodeConfiguration.refreshVariables(); logger.debug(getMessage("variablesRefreshed")); } })
 	);
+	logger.debug(getMessage("subscriptionsAdded"));
 }
+earlyLog.appendLine('>>> AsperHeader: activate called');
 
 /**
  * @brief Extension cleanup and deactivation handler
