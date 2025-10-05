@@ -77,6 +77,7 @@
 
 import * as vscode from 'vscode';
 import { CodeConfig } from "./processConfiguration";
+import { moduleName } from '../constants';
 
 /**
  * @class LoggerInternals
@@ -321,6 +322,12 @@ class LoggerInternals {
             return true;
         }
     }
+
+    packageForUnsafe(message: string, info: boolean, warning: boolean, error: boolean, debug: boolean): string {
+        const datetime: string = this.getDatetime();
+        const correctPrefix: string = this.getCorrectPrefix(info, warning, error, debug);
+        return `${datetime} ${moduleName}:initialising ${correctPrefix} '${message}'`;
+    }
 }
 
 /**
@@ -413,6 +420,7 @@ class Gui {
      */
     info<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         if (!this.fullyLoaded) {
+            console.log(this.LI.packageForUnsafe(message, true, false, false, false));
             return Promise.resolve(undefined);
         }
         let final: string = "";
@@ -434,6 +442,7 @@ class Gui {
      */
     warning<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         if (!this.fullyLoaded) {
+            console.warn(this.LI.packageForUnsafe(message, false, true, false, false));
             return Promise.resolve(undefined);
         }
         let final: string = "";
@@ -456,6 +465,7 @@ class Gui {
      */
     error<T extends string>(message: string, ...items: T[]): Thenable<T | undefined> {
         if (!this.fullyLoaded) {
+            console.error(this.LI.packageForUnsafe(message, false, false, true, false));
             return Promise.resolve(undefined);
         }
         let final: string = "";
@@ -482,6 +492,7 @@ class Gui {
             return Promise.resolve(undefined);
         }
         if (!this.LI.debugEnabled()) {
+            console.log(this.LI.packageForUnsafe(message, false, false, false, true));
             return Promise.resolve(undefined);
         }
         let final: string = "";
@@ -681,6 +692,7 @@ class Log {
      */
     info(message: string, searchDepth: number | undefined = undefined) {
         if (!this.output) {
+            console.log(this.LI.packageForUnsafe(message, true, false, false, false));
             return;
         }
         let final: string = "";
@@ -726,6 +738,7 @@ class Log {
      */
     warning(message: string, searchDepth: number | undefined = undefined) {
         if (!this.output) {
+            console.warn(this.LI.packageForUnsafe(message, false, true, false, false));
             return;
         }
         let final: string = "";
@@ -777,6 +790,7 @@ class Log {
      */
     error(message: string, searchDepth: number | undefined = undefined) {
         if (!this.output) {
+            console.error(this.LI.packageForUnsafe(message, false, false, true, false));
             return;
         }
         let final: string = "";
@@ -835,6 +849,7 @@ class Log {
             return;
         }
         if (!this.output) {
+            console.log(this.LI.packageForUnsafe(message, false, false, false, true));
             return;
         }
         let final: string = "";
