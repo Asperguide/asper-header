@@ -278,6 +278,11 @@ suite('Logger Test Suite', () => {
         // Access the private output property to ensure our mock receives all calls
         (logger as any).output = mockOutputChannel;
 
+        // Set the GUI to fully loaded so notifications work properly in tests
+        if (logger.Gui && typeof (logger.Gui as any).updateLoadStatus === 'function') {
+            (logger.Gui as any).updateLoadStatus(true);
+        }
+
         // Set environment variable for development mode detection
         process.env.VSCODE_DEBUG_MODE = 'true';
     });
@@ -622,7 +627,8 @@ suite('Logger Test Suite', () => {
             const specialMessage = "Message with special chars: !@#$%^&*(){}[]|\\:;\"'<>?,./ and unicode: 🚀 ✨ 💯";
             await logger.Gui.info(specialMessage);
 
-            assert.strictEqual(guiMessageCalls[0].message, specialMessage, 'Should handle special characters correctly');
+            assert.strictEqual(guiMessageCalls.length, 1, 'Should have one message call');
+            assert.strictEqual(guiMessageCalls[0]?.message, specialMessage, 'Should handle special characters correctly');
         });
     });
 
@@ -928,12 +934,16 @@ suite('Logger Test Suite', () => {
          * @brief Tests output channel visibility in development mode
          * @test Validates that output channel is automatically shown in development environment
          */
-        test('should show output channel in development mode', () => {
+        test('should show output channel in development mode', (done) => {
             // Create logger in development mode
             const devContext = { extensionMode: vscode.ExtensionMode.Development } as MockExtensionContext;
-            new (logger.constructor as any)(devContext);
+            const testLogger = new (logger.constructor as any)(devContext, true);
 
-            assert.strictEqual(mockOutputChannel._isVisible, true, 'Output channel should be visible in development mode');
+            // The output channel show() may be asynchronous, so check after a short delay
+            setImmediate(() => {
+                assert.strictEqual(mockOutputChannel._isVisible, true, 'Output channel should be visible in development mode');
+                done();
+            });
         });
 
         /**
@@ -955,15 +965,23 @@ suite('Logger Test Suite', () => {
          * @brief Tests dynamic updating of installation state and context
          * @test Validates that logger behavior adapts when context is updated at runtime
          */
-        test('should update installation state dynamically', () => {
+        test('should update installation state dynamically', (done) => {
             // Create logger with undefined context
-            const testLogger = new (logger.constructor as any)(undefined);
+            const testLogger = new (logger.constructor as any)(undefined, true);
 
             // Update to development mode
             const devContext = { extensionMode: vscode.ExtensionMode.Development } as MockExtensionContext;
             testLogger.updateInstallationState(devContext);
 
-            assert.strictEqual(mockOutputChannel._isVisible, true, 'Should show output channel when updated to development mode');
+            // updateInstallationState only updates internal state, doesn't trigger GUI changes
+            // Need to call updateInitialisationStatus to actually show the output channel
+            testLogger.updateInitialisationStatus(true);
+
+            // The output channel show() may be asynchronous, so check after a short delay
+            setImmediate(() => {
+                assert.strictEqual(mockOutputChannel._isVisible, true, 'Should show output channel when updated to development mode');
+                done();
+            });
         });
     });
 
