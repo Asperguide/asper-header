@@ -180,7 +180,10 @@ async function main() {
 		sourcesContent: false,
 		platform: 'node',
 		outfile: 'dist/extension.js',
-		external: ['vscode', 'jsonc-parser'],
+		external: [
+			'vscode'//,
+			// 'jsonc-parser'
+		],
 		logLevel: logLevel,
 		plugins: [
 			/* add to the end of plugins array */
