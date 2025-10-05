@@ -196,6 +196,19 @@ The extension currently supports the following languages:
 - Add a text to morse and morse to text translator.
 - Update the doxygen documentation
 
+### 1.0.9
+
+- Add additional debug lines to help track the program evolution when running.
+
+### 1.0.10
+
+- Fix the indefinite hang when a file does not exist, it now errors out after 5 seconds/attempt if the file is not found
+- Update the program to check 2 different paths due to possible alterations of how the module packaging could shift.
+- Refactor the lazyFileLoad class to be more robust to different file types and paths.
+- Add the missing translations for the recently added sentences (v1.0.8, v1.0.9, v1.0.10)
+- Add jsonc file loading suppport
+- Add a script to help make sure that the languages all have the same amount of entries (so that the program will not throw a sentence not found due to a missing text entry).
+
 ---
 
 ## Following Extension Guidelines

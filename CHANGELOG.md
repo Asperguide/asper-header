@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.10] - 05/10/2025
+
+### Added
+
+- The missing translations for the recently added sentences (v1.0.8, v1.0.9, v1.0.10)
+- Support for loading jsonc files
+- A script to help make sure that the languages all have the same amount of entries (so that the program will not throw a sentence not found due to a missing text entry).
+
+### Changed
+
+- Update the program to check 2 different paths due to possible alterations of how the module packaging could shift.
+- Refactor the lazyFileLoad class to be more robust to different file types and paths.
+
+### Fixed
+
+- Fix the indefinite hang when a file does not exist, it now errors out after 5 seconds/attempt if the file is not found
+
+---
+
+## [1.0.9] - 04/10/2025
+
+### Added
+
+- Debug lines in the code to help track more precisely the function calls.
+
+---
+
 ## [1.0.8] - 04/10/2025
 
 ### Added
