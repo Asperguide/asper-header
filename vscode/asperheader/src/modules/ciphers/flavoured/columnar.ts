@@ -1,12 +1,44 @@
+/**
+ * @file columnar.ts
+ * @brief Implementation of the Columnar Transposition cipher
+ * @details The Columnar Transposition cipher rearranges plaintext by writing it
+ *          into a grid row by row, then reading it column by column in an order
+ *          determined by the alphabetical sorting of the key characters.
+ * @author AsperGuide
+ * @version 1.0.0
+ * @date 2025
+ */
+
 import { BaseCipher } from "../base/baseCipher";
 
+/**
+ * @class ColumnarCipher
+ * @brief Implementation of the Columnar Transposition cipher
+ * @details Arranges plaintext in a rectangular grid based on key length,
+ *          then reads columns in the order determined by sorting the key.
+ *          This provides a transposition-based encryption method.
+ */
 export class ColumnarCipher extends BaseCipher {
+    /**
+     * @brief Identifier name for this cipher
+     */
     readonly CipherName = "Columnar";
 
+    /**
+     * @brief Constructor for Columnar Transposition cipher
+     * @details Initializes the cipher. The key is provided during encode/decode operations.
+     */
     constructor() {
         super();
     }
 
+    /**
+     * @brief Determines the column reading order based on alphabetical key sorting
+     * @param key The keyword used for column ordering (default: empty string)
+     * @return Array of column indices in the order they should be read
+     * @details Sorts key characters alphabetically and returns the original indices
+     *          in their new sorted positions, defining the column reading sequence.
+     */
     private getOrder(key: string = ""): number[] {
         const cleanKey = this.sanitize(key);
         const indexedChars: { ch: string; i: number }[] = [];
@@ -25,6 +57,14 @@ export class ColumnarCipher extends BaseCipher {
         return order;
     }
 
+    /**
+     * @brief Encodes plaintext using Columnar Transposition
+     * @param plainText The text to encode (default: empty string)
+     * @param key The keyword determining column order (default: empty string)
+     * @return The encoded text with characters rearranged by column transposition
+     * @details Arranges plaintext in a grid with columns equal to key length,
+     *          then reads columns in the order determined by alphabetical key sorting.
+     */
     encode(plainText: string = "", key: string = ""): string {
         const order = this.getOrder(key);
         const cols = order.length;
@@ -44,6 +84,14 @@ export class ColumnarCipher extends BaseCipher {
         return output;
     }
 
+    /**
+     * @brief Decodes Columnar Transposition cipher text back to plaintext
+     * @param cipherText The encoded text to decode (default: empty string)
+     * @param key The keyword used for encoding (default: empty string)
+     * @return The decoded plaintext with original character order restored
+     * @details Reverses the columnar transposition by redistributing characters
+     *          back to their original grid positions based on the key order.
+     */
     decode(cipherText: string = "", key: string = ""): string {
         const order = this.getOrder(key);
         const cols = order.length;

@@ -1,12 +1,55 @@
+/**
+ * @file enigma.ts
+ * @brief Implementation of a simplified Enigma machine cipher
+ * @details The Enigma machine was used by German forces during WWII for secure
+ *          communication. This implementation simulates the rotor mechanism with
+ *          stepping rotors and a reflector, though simplified compared to the
+ *          actual historical machine.
+ * @author AsperGuide
+ * @version 1.0.0
+ * @date 2025
+ */
+
 import { BaseCipher } from "../base/baseCipher";
 
+/**
+ * @class EnigmaCipher
+ * @brief Simplified implementation of the Enigma machine polyalphabetic cipher
+ * @details Simulates the Enigma's rotor mechanism where each keypress advances
+ *          the rotors, creating a different substitution alphabet for each character.
+ *          Uses multiple rotors with stepping mechanism and a reflector.
+ */
 export class EnigmaCipher extends BaseCipher {
+    /**
+     * @brief Identifier name for this cipher
+     */
     readonly CipherName = "Enigma";
 
+    /**
+     * @brief Array of rotor substitution alphabets
+     * @details Each rotor defines a substitution alphabet that rotates with each use
+     */
     rotors: string[];
+
+    /**
+     * @brief Reflector alphabet for the return path
+     * @details The reflector ensures that encryption and decryption are symmetric
+     */
     reflector: string;
+
+    /**
+     * @brief Current positions of each rotor (0-25)
+     * @details Tracks the rotation state of each rotor for proper stepping
+     */
     positions: number[];
 
+    /**
+     * @brief Constructor for Enigma cipher
+     * @param rotors Array of rotor substitution alphabets (default: 3 historical rotors)
+     * @param reflector Reflector substitution alphabet (default: historical reflector B)
+     * @details Initializes the Enigma machine with specified rotors and reflector.
+     *          All rotors start at position 0.
+     */
     constructor(
         rotors: string[] = [
             "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
@@ -21,6 +64,12 @@ export class EnigmaCipher extends BaseCipher {
         this.positions = Array(rotors.length).fill(0);
     }
 
+    /**
+     * @brief Advances the rotor positions for the next encryption
+     * @details Implements the rotor stepping mechanism. The first rotor always advances,
+     *          and subsequent rotors advance when the previous rotor completes a full rotation.
+     *          This creates the polyalphabetic nature of the Enigma cipher.
+     */
     private step(): void {
         this.positions[0] = this.mod(this.positions[0] + 1, 26);
 
@@ -31,6 +80,14 @@ export class EnigmaCipher extends BaseCipher {
         }
     }
 
+    /**
+     * @brief Encodes plaintext using the Enigma machine simulation
+     * @param plainText The text to encode (default: empty string)
+     * @return The encoded text with Enigma rotor transformations applied
+     * @details For each character: steps rotors, passes through rotors forward,
+     *          reflects through reflector, then passes back through rotors in reverse.
+     *          Non-alphabetic characters are preserved unchanged.
+     */
     encode(plainText: string = ""): string {
         let output = "";
 
@@ -70,6 +127,14 @@ export class EnigmaCipher extends BaseCipher {
         return output;
     }
 
+    /**
+     * @brief Decodes Enigma cipher text back to plaintext
+     * @param cipherText The encoded text to decode (default: empty string)
+     * @return The decoded plaintext
+     * @details Due to the symmetric nature of the Enigma machine (reciprocal cipher),
+     *          the same encoding process serves for decoding. The reflector ensures
+     *          that E(E(x)) = x for any character x.
+     */
     decode(cipherText: string = ""): string {
         // Enigma is symmetrical
         return this.encode(cipherText);

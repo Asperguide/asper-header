@@ -1,23 +1,49 @@
+/**
+ * @file tapcode.ts
+ * @brief Implementation of the Tap Code cipher
+ * @details The Tap Code cipher encodes letters using a 5×5 Polybius square
+ *          where I and J share the same cell. Each letter is represented by
+ *          two groups of dots — the first for the row, the second for the column.
+ *          Used by prisoners of war for covert communication.
+ * @author AsperGuide
+ * @version 1.0.0
+ * @date 2025
+ */
+
 import { BaseCipher } from "../base/baseCipher";
 
 /**
- * The Tap Code Cipher encodes letters using a 5x5 Polybius square
- * (I and J share the same cell). Each letter is represented by
- * two groups of dots — the first for the row, the second for the column.
+ * @class TapCodeCipher
+ * @brief Implementation of the Tap Code prisoner communication cipher
+ * @details Uses a 5×5 grid where each letter is encoded as two groups of dots
+ *          representing row and column positions. Originally used by American
+ *          POWs in Vietnam for silent communication through wall tapping.
  */
 export class TapCodeCipher extends BaseCipher {
+    /**
+     * @brief Identifier name for this cipher
+     */
     readonly CipherName = "Tap Code";
 
-    // 5x5 grid of letters, excluding J
+    /**
+     * @brief Modified alphabet for 5×5 grid (excludes J, shares with I)
+     */
     static readonly ALPHABET: string = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
 
+    /**
+     * @brief Constructor for Tap Code cipher
+     * @details Initializes the cipher using the 25-letter alphabet (I/J combined).
+     */
     constructor() {
         super();
     }
 
     /**
-     * Encode plaintext into Tap Code notation (dot groups separated by spaces).
-     * Example: "HELLO" → ".. .... / . ..... / ... . / ... . / .... ..."
+     * @brief Encodes plaintext into Tap Code notation (dot groups separated by spaces)
+     * @param plaintext The text to encode
+     * @return Tap code representation with dots and spaces
+     * @details Converts each letter to row/column coordinates, then represents
+     *          each coordinate as a group of dots. Example: "HELLO" → ".. .... / . ..... / ... . / ... . / .... ..."
      */
     encode(plaintext: string): string {
         const letters = TapCodeCipher.ALPHABET;
@@ -45,7 +71,11 @@ export class TapCodeCipher extends BaseCipher {
     }
 
     /**
-     * Decode Tap Code back into plaintext.
+     * @brief Decodes Tap Code cipher text back to plaintext
+     * @param ciphertext The encoded text with dot groups and slashes
+     * @return The decoded plaintext with letters restored from tap patterns
+     * @details Converts groups of dots back to row/column coordinates, then maps
+     *          coordinates to letters using the 5×5 grid (I/J share same position).
      */
     decode(ciphertext: string): string {
         const letters = TapCodeCipher.ALPHABET;

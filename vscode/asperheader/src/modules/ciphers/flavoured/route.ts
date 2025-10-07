@@ -1,20 +1,44 @@
+/**
+ * @file route.ts
+ * @brief Implementation of the Route cipher
+ * @details The Route cipher writes text row-by-row into a rectangular grid
+ *          and then reads it following a spiral route pattern. This creates
+ *          a transposition cipher where the reading path determines the encryption.
+ * @author AsperGuide
+ * @version 1.0.0
+ * @date 2025
+ */
+
 import { BaseCipher } from "../base/baseCipher";
 
 /**
- * The Route Cipher writes text row-by-row into a rectangular grid
- * and then reads it off following a spiral route.
+ * @class RouteCipher
+ * @brief Implementation of the Route transposition cipher
+ * @details Arranges plaintext in a rectangular grid, then reads it following
+ *          a predetermined spiral route to create the ciphertext. The route
+ *          pattern determines the specific transposition applied.
  */
 export class RouteCipher extends BaseCipher {
+    /**
+     * @brief Identifier name for this cipher
+     */
     readonly CipherName = "Route";
 
+    /**
+     * @brief Constructor for Route cipher
+     * @details Initializes the cipher. Grid dimensions are specified during encode/decode operations.
+     */
     constructor() {
         super();
     }
 
     /**
-     * Encodes plaintext using a spiral route pattern through a rectangular grid.
+     * @brief Encodes plaintext using spiral route pattern through rectangular grid
      * @param plaintext The text to encode
      * @param width Number of columns in the grid
+     * @return The encoded text following the spiral reading route
+     * @details Fills grid row-by-row, then reads following a clockwise spiral
+     *          pattern starting from the top-left corner.
      */
     encode(plaintext: string, width: number): string {
         const w = width;

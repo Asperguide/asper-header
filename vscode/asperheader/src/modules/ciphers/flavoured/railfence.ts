@@ -1,12 +1,46 @@
+/**
+ * @file railfence.ts
+ * @brief Implementation of the Rail Fence (Zigzag) cipher
+ * @details The Rail Fence cipher is a transposition cipher that writes the message
+ *          in a zigzag pattern across multiple "rails" (rows), then reads off the
+ *          letters row by row. The number of rails determines the encryption strength.
+ * @author AsperGuide
+ * @version 1.0.0
+ * @date 2025
+ */
+
 import { BaseCipher } from "../base/baseCipher";
 
+/**
+ * @class RailFenceCipher
+ * @brief Implementation of the Rail Fence transposition cipher
+ * @details Arranges plaintext in a zigzag pattern across multiple rails (rows),
+ *          then reads the text row-wise to create the ciphertext. The pattern
+ *          alternates direction when reaching the top or bottom rail.
+ */
 export class RailFenceCipher extends BaseCipher {
+    /**
+     * @brief Identifier name for this cipher
+     */
     readonly CipherName = "RailFence";
 
+    /**
+     * @brief Constructor for Rail Fence cipher
+     * @details Initializes the Rail Fence cipher. The number of rails is specified
+     *          during encode/decode operations.
+     */
     constructor() {
         super();
     }
 
+    /**
+     * @brief Encodes plaintext using Rail Fence zigzag pattern
+     * @param plainText The text to encode
+     * @param rails Number of rails (rows) for the zigzag pattern (default: 3)
+     * @return The encoded text with characters rearranged by rail order
+     * @details Creates a zigzag pattern by placing characters on alternating rails,
+     *          changing direction at top and bottom. Then concatenates all rails.
+     */
     encode(plainText: string, rails: number = 3): string {
         if (rails <= 1) {
             return plainText;
@@ -33,6 +67,14 @@ export class RailFenceCipher extends BaseCipher {
         return cipherText;
     }
 
+    /**
+     * @brief Decodes Rail Fence cipher text back to original plaintext
+     * @param cipherText The encoded text to decode
+     * @param rails Number of rails used during encoding (default: 3)
+     * @return The decoded plaintext with original character order restored
+     * @details Reconstructs the zigzag pattern, determines character distribution
+     *          across rails, then follows the original pattern to rebuild plaintext.
+     */
     decode(cipherText: string, rails: number = 3): string {
         if (rails <= 1) {
             return cipherText;
