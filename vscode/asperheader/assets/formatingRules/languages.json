@@ -589,7 +589,8 @@
                 "git-commit",
                 "git-rebase",
                 "dotenv",
-                "pip-requirements"
+                "pip-requirements",
+                "ignore"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -672,6 +673,9 @@
                     "requirements.dev.txt",
                     "requirements.prod.txt",
                     "requirements.ci.txt"
+                ],
+                "ignore": [
+                    ".gitignore"
                 ]
             }
         },
