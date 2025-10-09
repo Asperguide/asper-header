@@ -260,7 +260,7 @@
           "description": "Optional suffix after the year in date values. Leave empty for none."
         },
         "asperheader.headerLogo": {
-          "type": "string[]",
+          "type": "array",
           "default": [
             "..........####...####..........",
             "......###.....#.#########......",
@@ -308,7 +308,7 @@
           "description": "If true, a random ASCII logo will be chosen from the logo bank for each generated header."
         },
         "asperheader.extensionIgnore": {
-          "type": "string[]",
+          "type": "array",
           "default": [],
           "description": "A list of file globs or extensions where the header injection should not run on save."
         },
