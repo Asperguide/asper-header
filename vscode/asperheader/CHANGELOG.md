@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.12] - 09/10/2025
+
+### Changed
+
+- The types in the user settings for the extension.
+
+---
+
+## [1.0.11] - 06/10/2025
+
+### Added
+
+- The missing translations
+
+---
+
 ## [1.0.10] - 05/10/2025
 
 ### Added
