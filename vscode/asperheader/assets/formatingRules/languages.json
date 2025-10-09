@@ -588,7 +588,8 @@
                 "ninja build files",
                 "git-commit",
                 "git-rebase",
-                "dotenv"
+                "dotenv",
+                "pip-requirements"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -665,6 +666,12 @@
                 ],
                 "dotenv": [
                     "env"
+                ],
+                "pip-requirements": [
+                    "requirements.txt",
+                    "requirements.dev.txt",
+                    "requirements.prod.txt",
+                    "requirements.ci.txt"
                 ]
             }
         },
