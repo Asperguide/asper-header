@@ -587,7 +587,8 @@
                 "boo",
                 "ninja build files",
                 "git-commit",
-                "git-rebase"
+                "git-rebase",
+                "dotenv"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -661,6 +662,9 @@
                 ],
                 "ninja build files": [
                     ".ninja"
+                ],
+                "dotenv": [
+                    "env"
                 ]
             }
         },
