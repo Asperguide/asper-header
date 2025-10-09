@@ -209,7 +209,7 @@ The extension currently supports the following languages:
 - Add jsonc file loading suppport
 - Add a script to help make sure that the languages all have the same amount of entries (so that the program will not throw a sentence not found due to a missing text entry).
 
-### 1.0.11
+## 1.0.11
 
 - Add the missing translations
 
