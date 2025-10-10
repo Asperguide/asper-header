@@ -221,6 +221,10 @@ The extension currently supports the following languages:
 
 - Add support for .env, pip requirements, .gitignore, LICENSE, code-workspace files
 
+## 1.0.14
+
+- Add an option to provide a default description to avoid having to ask the user for it at every trigger.
+
 ---
 
 ## Following Extension Guidelines

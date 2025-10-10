@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.14] - 10/10/2025
+
+### Added
+
+- An option to provide a default description to avoid having to ask the user for it at every trigger.
+
+---
+
 ## [1.0.13] - 10/10/2025
 
-## Added
+### Added
 
 - Support for .env, pip requirements, .gitignore, LICENSE and code-workspace files
 

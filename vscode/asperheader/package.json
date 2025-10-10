@@ -2,7 +2,7 @@
   "name": "asperheader",
   "displayName": "Asper Header",
   "description": "This is an extension that will allow the developers of the Asperguide project to sign their file in an easier way and quicker",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "publisher": "HenryLetellier",
   "icon": "images/icon/favicon_transparent.png",
   "repository": {
@@ -316,6 +316,11 @@
           "type": "boolean",
           "default": false,
           "description": "If true, the name of the active workspace will be used as the displayed project name."
+        },
+        "asperheader.projectDescription": {
+          "type": "string",
+          "default": "",
+          "description": "If set, will bypass the description prompt/question and fill it with the description provided here."
         }
       }
     }
