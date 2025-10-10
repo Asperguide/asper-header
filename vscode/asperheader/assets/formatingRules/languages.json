@@ -1083,7 +1083,8 @@
                 ],
                 "markdown": [
                     ".md",
-                    ".markdown"
+                    ".markdown",
+                    "LICENSE"
                 ],
                 "xml": [
                     ".xml",
