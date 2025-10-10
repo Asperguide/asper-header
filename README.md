@@ -96,14 +96,15 @@ AsperHeader contributes the following settings:
 | `asperheader.headerDateSeperatorDay` | string | `"-"` | Separator for day in dates. |
 | `asperheader.headerDateSeperatorMonth` | string | `"-"` | Separator for month in dates. |
 | `asperheader.headerDateSeperatorYear` | string | `""` | Separator for year in dates. |
-| `asperheader.headerLogo` | string[] | *[ASCII logo default]* | Default ASCII logo array. |
+| `asperheader.headerLogo` | array | *[ASCII logo default]* | Default ASCII logo array. |
 | `asperheader.maxScanLength` | number | `100` | Maximum lines scanned for existing headers. |
 | `asperheader.enableDebug` | boolean | `true` | Enable debug logging. |
 | `asperheader.refreshOnSave` | boolean | `true` | Automatically refresh header on file save. |
 | `asperheader.promptToCreateIfMissing` | boolean | `true` | Prompt to create header if missing. |
 | `asperheader.randomLogo` | boolean | `false` | Insert a random ASCII logo on each header generation. |
-| `asperheader.extensionIgnore` | string[] | `[]` | File extensions to ignore when saving. |
+| `asperheader.extensionIgnore` | array | `[]` | File extensions to ignore when saving. |
 | `asperheader.useWorkspaceNameWhenAvailable` | boolean | `false` | Use the workspace name when available. |
+| `asperheader.projectDescription` | string | "" | The description to use instead of asking the user every time. |
 
 ---
 
