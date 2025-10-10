@@ -2,7 +2,7 @@
  * @file commentGenerator.ts
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.10
+ * @version 1.0.14
  * @since 1.0.0
  * @date 2025
  * 
@@ -330,8 +330,14 @@ export class CommentGenerator {
     private async determineHeaderDescription(): Promise<string[]> {
         logger.debug(getMessage("inFunction", "determineHeaderDescription", "CommentGenerator"));
         let final: string[] = [];
-        const usrResponse: string | undefined = await query.input(getMessage("getHeaderDescription"));
-        final.push(usrResponse || "");
+        const usrProjectDescription: string = this.Config.get("projectDescription");
+        if (usrProjectDescription.length === 0) {
+            const usrResponse: string | undefined = await query.input(getMessage("getHeaderDescription"));
+            final.push(usrResponse || "");
+        } else {
+            logger.debug(getMessage("configDescriptionUsed"));
+            final.push(usrProjectDescription);
+        }
         return final;
     }
 

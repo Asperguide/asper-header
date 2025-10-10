@@ -2,7 +2,7 @@
  * @file processConfiguration.ts
  * @brief Advanced configuration management and settings orchestration for AsperHeader
  * @author Henry Letellier
- * @version 1.0.10
+ * @version 1.0.14
  * @since 1.0.0
  * @date 2025
  * 
@@ -183,6 +183,9 @@ class Configuration {
     /** @brief The setting that allows the program to know the user's preference regarding wether to use the workspace name when available */
     private useWorkspaceNameWhenAvailable: boolean = CONST.useWorkspaceNameWhenAvailable;
 
+    /** @brief The description if provided by the user in the configuration file */
+    private projectDescription: string = CONST.projectDescription;
+
     /**
      * @brief Refreshes all configuration values from VS Code workspace settings
      * @return Promise that resolves when all configuration values are updated
@@ -240,6 +243,7 @@ class Configuration {
         this.randomLogo = config.get<boolean>("randomLogo", CONST.randomLogo);
         this.extensionIgnore = config.get<string[]>("extensionIgnore", CONST.extensionIgnore);
         this.useWorkspaceNameWhenAvailable = config.get<boolean>("useWorkspaceNameWhenAvailable", CONST.useWorkspaceNameWhenAvailable);
+        this.projectDescription = config.get<string>("projectDescription", CONST.projectDescription);
     }
 
     /**
