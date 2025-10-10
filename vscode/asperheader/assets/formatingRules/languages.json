@@ -145,7 +145,8 @@
                     ".json"
                 ],
                 "jsonc": [
-                    ".jsonc"
+                    ".jsonc",
+                    ".code-workspace"
                 ],
                 "go": [
                     ".go"
