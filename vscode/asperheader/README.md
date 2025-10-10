@@ -217,6 +217,10 @@ The extension currently supports the following languages:
 
 - Fix the types in the user settings for the extension.
 
+## 1.0.13
+
+- Add support for .env, pip requirements, .gitignore, LICENSE, code-workspace files
+
 ---
 
 ## Following Extension Guidelines

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.13] - 10/10/2025
+
+## Added
+
+- Support for .env, pip requirements, .gitignore, LICENSE and code-workspace files
+
 ---
 
 ## [1.0.12] - 09/10/2025
