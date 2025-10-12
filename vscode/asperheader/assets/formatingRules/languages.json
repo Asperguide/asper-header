@@ -591,7 +591,8 @@
                 "git-rebase",
                 "dotenv",
                 "pip-requirements",
-                "ignore"
+                "ignore",
+                "properties"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -677,6 +678,9 @@
                 ],
                 "ignore": [
                     ".gitignore"
+                ],
+                "properties": [
+                    "env"
                 ]
             }
         },
