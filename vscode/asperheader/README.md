@@ -228,7 +228,7 @@ The extension currently supports the following languages:
 
 ## 1.0.15
 
-- Add support for rtf and properties files
+- Add support for rtf, properties and doxyfile files
 
 ---
 

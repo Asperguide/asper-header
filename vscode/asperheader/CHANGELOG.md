@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Support for rtf files
 - Support for properties files
+- Support for doxyfile files
 
 ## [1.0.14] - 10/10/2025
 
