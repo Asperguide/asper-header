@@ -573,6 +573,7 @@
                 "shellscript",
                 "apache",
                 "nginx",
+                "doxyfile",
                 "dockerfile",
                 "dockerfile",
                 "dockercompose",
@@ -681,7 +682,8 @@
                 ],
                 "properties": [
                     "env"
-                ]
+                ],
+                "doxyfile": []
             }
         },
         {
@@ -2246,6 +2248,25 @@
             "fileExtensions": {
                 "WSF": [
                     ".wsf"
+                ]
+            }
+        },
+        {
+            "langs": [
+                "rtf"
+            ],
+            "prompt_comment_opening_type": false,
+            "singleLine": [
+                "\\*\\"
+            ],
+            "multiLine": [
+                "{\\*\\",
+                "\\*\\",
+                "\\*\\}"
+            ],
+            "fileExtensions": {
+                "RTF": [
+                    ".rtf"
                 ]
             }
         }

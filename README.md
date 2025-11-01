@@ -226,6 +226,10 @@ The extension currently supports the following languages:
 
 - Add an option to provide a default description to avoid having to ask the user for it at every trigger.
 
+## 1.0.15
+
+- Add support for rtf, properties and doxyfile files
+
 ---
 
 ## Following Extension Guidelines
