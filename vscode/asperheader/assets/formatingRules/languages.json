@@ -2046,7 +2046,8 @@
                 "VBS",
                 "Visual Basic Script",
                 "Monkey",
-                "BlitzBasic"
+                "BlitzBasic",
+                "plantuml"
             ],
             "prompt_comment_opening_type": false,
             "singleLine": [
@@ -2072,6 +2073,11 @@
                 ],
                 "BlitzBasic": [
                     ".bb"
+                ],
+                "plantuml": [
+                    ".pu",
+                    ".puml",
+                    ".plantuml"
                 ]
             }
         },

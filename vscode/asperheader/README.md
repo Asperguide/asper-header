@@ -230,6 +230,11 @@ The extension currently supports the following languages:
 
 - Add support for rtf, properties and doxyfile files
 
+## 1.0.16
+
+- Add support for PlantUML files
+- Update package dependency versions
+
 ---
 
 ## Following Extension Guidelines
