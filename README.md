@@ -210,27 +210,27 @@ The extension currently supports the following languages:
 - Add jsonc file loading suppport
 - Add a script to help make sure that the languages all have the same amount of entries (so that the program will not throw a sentence not found due to a missing text entry).
 
-## 1.0.11
+### 1.0.11
 
 - Add the missing translations
 
-## 1.0.12
+### 1.0.12
 
 - Fix the types in the user settings for the extension.
 
-## 1.0.13
+### 1.0.13
 
 - Add support for .env, pip requirements, .gitignore, LICENSE, code-workspace files
 
-## 1.0.14
+### 1.0.14
 
 - Add an option to provide a default description to avoid having to ask the user for it at every trigger.
 
-## 1.0.15
+### 1.0.15
 
 - Add support for rtf, properties and doxyfile files
 
-## 1.0.16
+### 1.0.16
 
 - Add support for PlantUML files
 - Update package dependency versions
