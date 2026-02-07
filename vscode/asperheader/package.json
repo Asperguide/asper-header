@@ -356,5 +356,8 @@
   },
   "dependencies": {
     "jsonc-parser": "^3.3.1"
+  },
+  "overrides": {
+    "diff": "^8.0.3"
   }
 }
