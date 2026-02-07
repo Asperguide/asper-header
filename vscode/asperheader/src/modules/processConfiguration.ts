@@ -2,7 +2,7 @@
  * @file processConfiguration.ts
  * @brief Advanced configuration management and settings orchestration for AsperHeader
  * @author Henry Letellier
- * @version 1.0.14
+ * @version 1.0.18
  * @since 1.0.0
  * @date 2025
  * 
@@ -186,6 +186,25 @@ class Configuration {
     /** @brief The description if provided by the user in the configuration file */
     private projectDescription: string = CONST.projectDescription;
 
+    /** @brief Array of the languages with the data to prepend */
+    private languagePrepend: object = CONST.languagePrepend;
+
+    /** @brief Array of the languages with the data to append */
+    private languageAppend: object = CONST.languageAppend;
+
+    // Comment override
+    /** @brief Array of the custom comment override for single line comments */
+    private languageSingleLineComment: object = CONST.languageSingleLineComment;
+
+    /** @brief Array of the custom comment override for multi line comments */
+    private languageMultiLineComment: object = CONST.languageMultiLineComment;
+
+    /** @brief Remove trailing header spaces */
+    private removeTrailingHeaderSpaces: boolean = CONST.removeTrailingHeaderSpaces;
+
+    /** @brief Prefer single line comments when possible */
+    private preferSingleLineComments: boolean = CONST.preferSingleLineComments;
+
     /**
      * @brief Refreshes all configuration values from VS Code workspace settings
      * @return Promise that resolves when all configuration values are updated
@@ -244,6 +263,12 @@ class Configuration {
         this.extensionIgnore = config.get<string[]>("extensionIgnore", CONST.extensionIgnore);
         this.useWorkspaceNameWhenAvailable = config.get<boolean>("useWorkspaceNameWhenAvailable", CONST.useWorkspaceNameWhenAvailable);
         this.projectDescription = config.get<string>("projectDescription", CONST.projectDescription);
+        this.languagePrepend = config.get<object>("languagePrepend", CONST.languagePrepend);
+        this.languageAppend = config.get<object>("languageAppend", CONST.languageAppend);
+        this.languageSingleLineComment = config.get<object>("languageSingleLineComment", CONST.languageSingleLineComment);
+        this.languageMultiLineComment = config.get<object>("languageMultiLineComment", CONST.languageMultiLineComment);
+        this.removeTrailingHeaderSpaces = config.get<boolean>("removeTrailingHeaderSpaces", CONST.removeTrailingHeaderSpaces);
+        this.preferSingleLineComments = config.get<boolean>("preferSingleLineComments", CONST.preferSingleLineComments);
     }
 
     /**
