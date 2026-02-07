@@ -235,6 +235,10 @@ The extension currently supports the following languages:
 - Add support for PlantUML files
 - Update package dependency versions
 
+### 1.0.17
+
+- Fix issue of bulk saving only updating the open file.
+
 ---
 
 ## Following Extension Guidelines
