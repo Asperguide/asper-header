@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.18] - 7/02/2026
+
+## Added
+
+- language prepend option
+- language append option
+- language single line comment override
+- language multiline comment override
+- removing trailing spaces from the header
+- option to prefer single line comments to multiline one per language
+
 ## [1.0.17] - 7/02/2026
 
 ### Fixed

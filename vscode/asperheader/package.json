@@ -2,7 +2,7 @@
   "name": "asperheader",
   "displayName": "Asper Header",
   "description": "This is an extension that will allow the developers of the Asperguide project to sign their file in an easier way and quicker",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "publisher": "HenryLetellier",
   "icon": "images/icon/favicon_transparent.png",
   "repository": {
@@ -321,6 +321,36 @@
           "type": "string",
           "default": "",
           "description": "If set, will bypass the description prompt/question and fill it with the description provided here."
+        },
+        "asperheader.languagePrepend": {
+          "type": "object",
+          "default": {},
+          "description": "If set, and language is matched, will put the text specified in the string in front of the comment during the initial generation of the header. example for python: {\"python\": \"r\"}, example for bash scripts: {\"bash\":\"#!/usr/bin/env bash\\n\"}"
+        },
+        "asperheader.languageAppend": {
+          "type": "object",
+          "default": {},
+          "description": "If set, and language is matched, will append the text specified in the string after the comment during the initial generation of the header. Useful for adding formatting or boilerplate. example: {\"python\": \"\\n# Code begins\"} to add a separator comment after the header"
+        },
+        "asperheader.languageSingleLineCommentOverride": {
+          "type": "object",
+          "default": {},
+          "description": "Specify an override of your choice for the single line comment to be used when it's specified language (name is case insensitive) is matched. example: {\"idris\":\"|||\"} instead of the default '--'"
+        },
+        "asperheader.languageMultiLineCommentOverride": {
+          "type": "object",
+          "default": {},
+          "description": "Specify an override of your choice for the multiline comment to be used when it's specified language (name is case insensitive) is matched. example: {\"c\":[\"/*\",\"**\",\"*/\"]}"
+        },
+        "asperheader.removeTrailingHeaderSpaces": {
+          "type": "boolean",
+          "default": true,
+          "description": "Toggle wether to remove trailing whitespaces from the lines in the header that might contain them due to the generation (i.e: a space after the 'LOGO:' due to there being a newline instead of text)"
+        },
+        "asperheader.preferSingleLineComments": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prefer using the single line comments when available for the language instead of the multiline version"
         }
       }
     }

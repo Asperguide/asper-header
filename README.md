@@ -104,7 +104,13 @@ AsperHeader contributes the following settings:
 | `asperheader.randomLogo` | boolean | `false` | Insert a random ASCII logo on each header generation. |
 | `asperheader.extensionIgnore` | array | `[]` | File extensions to ignore when saving. |
 | `asperheader.useWorkspaceNameWhenAvailable` | boolean | `false` | Use the workspace name when available. |
-| `asperheader.projectDescription` | string | "" | The description to use instead of asking the user every time. |
+| `asperheader.projectDescription` | string | `""` | The description to use instead of asking the user every time. |
+| `asperheader.languagePrepend` | object | `{}` | If set, and language is matched, will put the text specified in the string in front of the comment during the initial generation of the header. example for python: `{"python": "r"}`, example for bash scripts: `{"bash":"#!/usr/bin/env bash\n"}` |
+| `asperheader.languageAppend` | object | `{}` | If set, and language is matched, will append the text specified in the string after the comment during the initial generation of the header. Useful for adding formatting or boilerplate. example: `{"python": "\n# Code begins"}` to add a separator comment after the header |
+| `asperheader.languageSingleLineCommentOverride` | object | `{}` | Specify an override of your choice for the single line comment to be used when it's specified language (name is case insensitive) is matched. example: `{"idris":"\|\|\|"}` instead of the default '--' |
+| `asperheader.languageMultiLineCommentOverride` | object | `{}` | Specify an override of your choice for the multiline comment to be used when it's specified language (name is case insensitive) is matched. example: `{"c":["/*","**","*/"]}` |
+| `asperheader.removeTrailingHeaderSpaces` | boolean | `true` | Toggle wether to remove trailing whitespaces from the lines in the header that might contain them due to the generation (i.e: a space after the `LOGO:` due to there being a newline instead of text) |
+| `asperheader.preferSingleLineComments` | boolean | `false` | Prefer using the single line comments when available for the language instead of the multiline version |
 
 ---
 
@@ -238,6 +244,14 @@ The extension currently supports the following languages:
 ### 1.0.17
 
 - Fix issue of bulk saving only updating the open file.
+
+### 1.0.18
+
+- Add an option to specify a character to add before the header based on the language (during initial header generation)
+- Add an option to specify a character to add after the header based on the language (during initial header generation)
+- Add an option to toggle between single and multi line comments preference (during initial generation)
+- Add an option to override the comment used for single line comments per language (during initial generation)
+- Add an option to override the comment used for multiline comments per language (during initial generation)
 
 ---
 
