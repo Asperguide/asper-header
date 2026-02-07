@@ -188,7 +188,7 @@ export class CommentGenerator {
         if (!editor) {
             logger.warning(getMessage("noFocusedEditors"));
         } else {
-            this.updateFileInfo(editor);
+            this.updateFileInfo(editor.document);
             logger.debug(getMessage("foundFocusEditor"));
         }
         if (!randomLogoInstance) {
@@ -542,23 +542,18 @@ export class CommentGenerator {
     }
 
     /**
-     * @brief Updates internal file metadata from editor/document
-     * @param editor VS Code text editor instance
-     * @param document Optional document override (uses editor.document if not provided)
+     * @brief Updates internal file metadata from document
+     * @param document VS Code text document instance
      * 
      * Extracts and stores file metadata including path, name, extension,
      * language ID, EOL type, and version. Resets header boundary markers
      * and updates configuration-dependent properties.
      */
-    private updateFileInfo(editor: vscode.TextEditor, document: vscode.TextDocument | undefined = undefined) {
+    private updateFileInfo(document: vscode.TextDocument) {
         logger.debug(getMessage("inFunction", "updateFileInfo", "CommentGenerator"));
         this.headerInnerEnd = undefined;
         this.headerInnerStart = undefined;
-        if (document === undefined) {
-            this.documentBody = editor.document;
-        } else {
-            this.documentBody = document;
-        }
+        this.documentBody = document;
         if (this.Config.get("useWorkspaceNameWhenAvailable")) {
             this.projectName = this.Config.get("workspaceName") || this.Config.get("extensionName");
         } else {
@@ -704,7 +699,7 @@ export class CommentGenerator {
      * and updates it with the current date and time. Requires that header
      * boundaries have been previously determined by locateIfHeaderPresent().
      */
-    private async updateEditDate(editor: vscode.TextEditor, comments: string[]) {
+    private async updateEditDate(document: vscode.TextDocument, comments: string[]) {
         logger.debug(getMessage("inFunction", "updateEditDate", "CommentGenerator"));
         const commentOpener: string = comments[0] || "";
         const commentMiddle: string = comments[1] || "";
@@ -746,10 +741,10 @@ export class CommentGenerator {
             return;
         }
 
-        await editor.edit(editBuilder => {
-            const range = this.documentBody!.lineAt(targetLine!).range;
-            editBuilder.replace(range, newLine);
-        });
+        const edit = new vscode.WorkspaceEdit();
+        const range = document.lineAt(targetLine).range;
+        edit.replace(document.uri, range, newLine);
+        await vscode.workspace.applyEdit(edit);
 
         const msg: string = getMessage("lastModifiedUpdated");
         logger.info(msg);
@@ -821,13 +816,26 @@ export class CommentGenerator {
      * Generates a complete header using buildTheHeader() and inserts it at the
      * top of the document. Handles shebang line detection and offset calculation.
      */
-    private async writeHeaderToFile(editor: vscode.TextEditor, comments: string[]): Promise<number> {
+    private async writeHeaderToFile(document: vscode.TextDocument, comments: string[]): Promise<number> {
         logger.debug(getMessage("inFunction", "writeHeaderToFile", "CommentGenerator"));
-        let offset: number = 0;
-        const headerContent: string[] = await this.buildTheHeader(comments);
-        // determine if the first line has a shebang like line on the first line, if true, add a new line, and write from that line.
-        const headerString: string = headerContent.join("");
-        await editor.edit(editBuilder => editBuilder.insert(new vscode.Position(offset, 0), headerString));
+        const headerLines: string[] = await this.buildTheHeader(comments);
+        const headerText: string = headerLines.join(this.determineNewLine(document.eol));
+        let insertPosition = 0;
+        if (document.lineCount > 0) {
+            const firstLine = document.lineAt(0).text;
+            if (firstLine.startsWith('#!')) {
+                insertPosition = 1;
+                if (document.lineCount > 1 && document.lineAt(1).text !== '') {
+                    const edit = new vscode.WorkspaceEdit();
+                    edit.insert(document.uri, new vscode.Position(1, 0), this.determineNewLine(document.eol));
+                    await vscode.workspace.applyEdit(edit);
+                    insertPosition = 2;
+                }
+            }
+        }
+        const edit = new vscode.WorkspaceEdit();
+        edit.insert(document.uri, new vscode.Position(insertPosition, 0), headerText + this.determineNewLine(document.eol));
+        await vscode.workspace.applyEdit(edit);
         return this.Config.get("statusSuccess");
     }
     /**
@@ -849,7 +857,7 @@ export class CommentGenerator {
             logger.Gui.error(getMessage("openFileToApplyHeader"));
             return;
         }
-        this.updateFileInfo(editor);
+        this.updateFileInfo(editor.document);
         // Checking that the meta data is filled out.
         if (
             this.documentBody === undefined || this.filePath === undefined
@@ -882,11 +890,11 @@ export class CommentGenerator {
         }
         if (response === true) {
             logger.Gui.info(getMessage("updatingEditionDate"));
-            await this.updateEditDate(editor, comments);
+            await this.updateEditDate(editor.document, comments);
             return;
         }
         if (response === false) {
-            let status: number = await this.writeHeaderToFile(editor, comments);
+            let status: number = await this.writeHeaderToFile(editor.document, comments);
             if (status === this.Config.get("statusError")) {
                 logger.Gui.error(getMessage("headerWriteFailed"));
                 return;
@@ -950,13 +958,11 @@ export class CommentGenerator {
         if (!refreshOnSave) {
             return;
         }
-        const editor = vscode.window.activeTextEditor;
-        if (editor === undefined || document === undefined) {
-            logger.error(getMessage("noFocusedEditors"));
-            logger.Gui.error(getMessage("openFileToApplyHeader"));
+        if (document === undefined) {
+            logger.error(getMessage("noDocumentProvided"));
             return;
         }
-        this.updateFileInfo(editor, document);
+        this.updateFileInfo(document);
         // Checking that the meta data is filled out.
         if (
             this.documentBody === undefined || this.filePath === undefined
@@ -1003,7 +1009,7 @@ export class CommentGenerator {
                 logger.Gui.info(getMessage("headerInjectQuestionRefused"));
                 return;
             }
-            const status: number = await this.writeHeaderToFile(editor, comments);
+            const status: number = await this.writeHeaderToFile(document, comments);
             if (status === this.Config.get("statusError")) {
                 logger.Gui.error(getMessage("headerWriteFailed"));
                 return;
@@ -1012,7 +1018,7 @@ export class CommentGenerator {
         }
         if (response === true) {
             logger.Gui.info(getMessage("updatingEditionDate"));
-            await this.updateEditDate(editor, comments);
+            await this.updateEditDate(document, comments);
             return;
         }
     }

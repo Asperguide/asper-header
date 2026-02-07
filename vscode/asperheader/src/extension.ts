@@ -241,13 +241,13 @@ earlyLog.appendLine('>>> AsperHeader: fromMorseGui initialised');
  * when activation events are triggered.
  */
 export async function activate(context: vscode.ExtensionContext) {
+	logger.updateInstallationState(context);
 	logger.updateInitialisationStatus(true);
 	logger.info(getMessage("inActivate"));
 	// Initialising the variables of the CodeConfiguration class
 	await CodeConfiguration.refreshVariables();
 	logger.info(getMessage("variablesRefreshed"));
 	// Updating the logger settings
-	logger.updateInstallationState(context);
 	logger.info(getMessage("inActivateAfterLogger"));
 	logger.Gui.debug(`context.extensionPath: ${context.extensionPath}`);
 	logger.info(getMessage("inActivateAfterGuiDebug"));
