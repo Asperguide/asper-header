@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Fetch doxygen docker
@@ -113,7 +113,7 @@ jobs:
           ls -a ${{ env.OUTPUT_GENERATION }}/${{ env.HTML_GENERATION }}
       - name: Save cache
         id: cache-save
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: ${{ env.CACHE_KEY }}
           path: ${{ env.OUTPUT_GENERATION }}
@@ -125,12 +125,12 @@ jobs:
     if: success()
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Get generated documentation
         id: cache-documentation-restore
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: ${{ env.CACHE_KEY }}
           path: ${{ env.OUTPUT_GENERATION }}
@@ -271,7 +271,7 @@ jobs:
 
       - name: Save cache
         id: cache-save
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
           path: ${{ env.TEMPORARY_FOLDER }}
@@ -288,7 +288,7 @@ jobs:
     if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: main
           fetch-depth: 0
@@ -296,7 +296,7 @@ jobs:
       - name: Get generated documentation
         id: html-cache-restore
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
           path: ${{ env.OUTPUT_GENERATION }}
@@ -333,13 +333,13 @@ jobs:
       DOCUMENTATION_ZIP_NAME: documentation.zip
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Get generated documentation
         id: cache-documentation-restore
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: ${{ env.CACHE_KEY_CLEANED }}
           path: ${{ env.TEMPORARY_FOLDER }}
@@ -531,7 +531,7 @@ jobs:
     needs: export_other_formats_when_present
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Delete Created cache
