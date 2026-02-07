@@ -2,7 +2,7 @@
  * @file extension.ts
  * @brief Main extension entry point for AsperHeader VS Code extension
  * @author Henry Letellier
- * @version 1.0.10
+ * @version 1.0.17
  * @since 1.0.0
  * @date 2025
  * 
