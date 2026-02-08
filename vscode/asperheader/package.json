@@ -18,7 +18,25 @@
     "vscode": "^1.104.0"
   },
   "categories": [
+    "Formatters",
     "Other"
+  ],
+  "keywords": [
+    "header",
+    "file-header",
+    "comment",
+    "copyright",
+    "documentation",
+    "ascii-art",
+    "logo",
+    "boilerplate",
+    "template",
+    "metadata",
+    "timestamp",
+    "auto-update",
+    "code-formatting",
+    "multilingual",
+    "morse-code"
   ],
   "activationEvents": [
     "onStartupFinished",
