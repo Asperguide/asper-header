@@ -11,7 +11,12 @@ Although tailored for Asperguide, it is available on the [VS Code Marketplace](h
 
 ## Source repository
 
-The source repository can be found here: [github.com](https://github.com/Asperguide/asper-header)
+The source repository can be found here: [GitHub](https://github.com/Asperguide/asper-header)
+
+Join our community discussions:
+
+- [General Discussion](https://github.com/Asperguide/asper-header/discussions/35)
+- [Q&A](https://github.com/Asperguide/asper-header/discussions/36)
 
 ---
 
@@ -254,6 +259,17 @@ The extension currently supports the following languages:
 - Add an option to override the comment used for multiline comments per language (during initial generation)
 - Fix issue where version 1.0.17 would add extra lines between single line comments in the header
 - Add tags to the extension to make it easier to find on the marketplaces
+
+---
+
+## Community
+
+Join the conversation and connect with other AsperHeader users:
+
+- [General Discussion](https://github.com/Asperguide/asper-header/discussions/35) - Share your experience, feedback, and projects
+- [Q&A](https://github.com/Asperguide/asper-header/discussions/36) - Get help and ask questions
+
+We'd love to see your custom configurations, ASCII art logos, and creative header designs!
 
 ---
 

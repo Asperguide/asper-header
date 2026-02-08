@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - language multiline comment override
 - removing trailing spaces from the header
 - option to prefer single line comments to multiline one per language
+- tags to make the extension easier to get discovered on the different marketplaces
+- GitHub Discussions for community engagement: [General Discussion](https://github.com/Asperguide/asper-header/discussions/35) and [Q&A](https://github.com/Asperguide/asper-header/discussions/36)
 
 ## Fixed
 
