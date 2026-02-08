@@ -252,6 +252,7 @@ The extension currently supports the following languages:
 - Add an option to toggle between single and multi line comments preference (during initial generation)
 - Add an option to override the comment used for single line comments per language (during initial generation)
 - Add an option to override the comment used for multiline comments per language (during initial generation)
+- Fix issue where version 1.0.17 would add extra lines between single line comments in the header
 
 ---
 

@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - removing trailing spaces from the header
 - option to prefer single line comments to multiline one per language
 
+## Fixed
+
+- issue introduced in version 1.0.17 where an extra line would be added after each single comment line.
+
 ## [1.0.17] - 7/02/2026
 
 ### Fixed
