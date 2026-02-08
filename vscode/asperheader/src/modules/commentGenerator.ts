@@ -480,6 +480,15 @@ export class CommentGenerator {
         return final;
     }
 
+    /**
+     * @brief Conditionally removes trailing whitespace from content
+     * @param content String content to process
+     * @return Trimmed string if trimTrailingSpaces enabled, original string otherwise
+     * 
+     * Applies trailing whitespace removal based on the removeTrailingHeaderSpaces
+     * configuration setting. Used throughout header generation to maintain
+     * consistent whitespace handling in generated headers.
+     */
     private mySmartTrimmer(content: string): string {
         if (this.trimTrailingSpaces) {
             return content.trimEnd();
@@ -598,6 +607,22 @@ export class CommentGenerator {
         this.documentVersion = this.documentBody.version;
     }
 
+    /**
+     * @brief Prepends language-specific text before header if configured
+     * @param buildHeader Array of header lines being constructed
+     * @param eol End-of-line type for the document
+     * @param languageId Optional language identifier for lookup
+     * @return Modified buildHeader array with prepended content if applicable
+     * 
+     * Checks the languagePrepend configuration for language-specific text to insert
+     * before the header comment block. Useful for adding shebangs, encoding declarations,
+     * or other language-specific preambles. Handles both string and array configurations.
+     * 
+     * @example Python raw string prefix:
+     * ```json
+     * "languagePrepend": {"python": "r"}
+     * ```
+     */
     private prependIfPresent(buildHeader: string[], eol: vscode.EndOfLine, languageId?: string): string[] {
         if (languageId === undefined) {
             return buildHeader;
@@ -614,6 +639,23 @@ export class CommentGenerator {
         return buildHeader;
     }
 
+    /**
+     * @brief Appends language-specific text after header if configured
+     * @param buildHeader Array of header lines being constructed
+     * @param eol End-of-line type for the document
+     * @param languageId Optional language identifier for lookup
+     * @return Modified buildHeader array with appended content if applicable
+     * 
+     * Checks the languageAppend configuration for language-specific text to insert
+     * after the header comment block. Useful for adding code section markers,
+     * import statements, or other language-specific boilerplate. Handles both
+     * string and array configurations.
+     * 
+     * @example Python code section marker:
+     * ```json
+     * "languageAppend": {"python": "\n# Code begins"}
+     * ```
+     */
     private appendIfPresent(buildHeader: string[], eol: vscode.EndOfLine, languageId?: string): string[] {
         if (languageId === undefined) {
             return buildHeader;
@@ -630,6 +672,28 @@ export class CommentGenerator {
         return buildHeader;
     }
 
+    /**
+     * @brief Applies language-specific comment style overrides
+     * @param determinedComment Base comment style determined from language config
+     * @return Modified CommentStyle with user-configured overrides applied
+     * 
+     * Checks the languageSingleLineCommentOverride and languageMultiLineCommentOverride
+     * configurations to apply custom comment syntax for specific languages. This allows
+     * users to override default comment styles when language detection provides
+     * undesirable defaults or when specialized comment formats are needed.
+     * 
+     * @example Override Idris single-line comment:
+     * ```json
+     * "languageSingleLineCommentOverride": {"idris": "|||"}
+     * ```
+     * 
+     * @example Override C multi-line comment:
+     * ```json
+     * "languageMultiLineCommentOverride": {"c": ["/*", "**", "* /"]}
+     * ```
+     * @note for the c example, a space had to be added to the closing comment because it
+     * would otherwise clash with this documentation comment.
+     */
     private getOverrideIfPresent(determinedComment: CommentStyle): CommentStyle {
         // If the language is not known, nothing to override
         if (!determinedComment.language) {
@@ -898,6 +962,21 @@ export class CommentGenerator {
         return false;
     }
 
+    /**
+     * @brief Determines insertion line offset for header placement
+     * @param document VS Code text document to analyze
+     * @return Line number where header should be inserted (0 or 1)
+     * 
+     * Detects the presence of shebang (#!) lines at the start of the document
+     * and returns appropriate insertion offset. Shebangs must remain as the first
+     * line of executable scripts, so headers are inserted after them when present.
+     * 
+     * @example Bash script with shebang:
+     * ```bash
+     * #!/bin/bash
+     * # Header inserted here (line 1)
+     * ```
+     */
     private skipFirstLineInDocument(document: vscode.TextDocument): number {
         let insertLine = 0;
 
