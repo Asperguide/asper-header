@@ -2,7 +2,7 @@
  * @file commentGenerator.ts
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.14
+ * @version 1.0.18
  * @since 1.0.0
  * @date 2025
  * 
@@ -167,6 +167,8 @@ export class CommentGenerator {
     private projectCopyRight: string = this.Config.get("projectCopyright");
     /** @brief Whether to add blank line after multiline sections */
     private addBlankLineAfterMultiline: boolean = this.Config.get("headerAddBlankLineAfterMultiline");
+    /** @brief Wether to remove trailing spaces after a generated line */
+    private trimTrailingSpaces: boolean = this.Config.get("removeTrailingHeaderSpaces");
 
     /**
      * @brief Constructor for CommentGenerator class
@@ -464,6 +466,13 @@ export class CommentGenerator {
         return final;
     }
 
+    private mySmartTrimmer(content: string): string {
+        if (this.trimTrailingSpaces) {
+            return content.trimEnd()
+        }
+        return content
+    }
+
     /**
      * @brief Formats a multi-line key-value section for the header
      * @param comment Comment prefix for each line
@@ -479,7 +488,8 @@ export class CommentGenerator {
     private addMultilineKey(comment: string, eol: vscode.EndOfLine, tagName: string, tagDefinition: string[]): string {
         logger.debug(getMessage("inFunction", "addMultilineKey", "CommentGenerator"));
         const eolStr: string = this.determineNewLine(eol);
-        let final: string = comment + tagName + this.addKeyDefinitionSeparator() + eolStr;
+        const keyLine: string = comment + tagName + this.mySmartTrimmer(this.addKeyDefinitionSeparator()) + eolStr;
+        let final: string = keyLine;
         for (let i = 0; i < tagDefinition.length; i++) {
             final += comment + tagDefinition[i] + eolStr;
         }
@@ -574,6 +584,101 @@ export class CommentGenerator {
         this.documentVersion = this.documentBody.version;
     }
 
+    private prependIfPresent(buildHeader: string[]): string[] {
+
+        // Apply language-specific prepend if configured
+        const languageId = this.languageId?.toLowerCase() || "";
+        const prependConfig = this.Config.get("languagePrepend");
+        if (prependConfig && prependConfig[languageId]) {
+            buildHeader.push(prependConfig[languageId]);
+            logger.debug(getMessage("languagePrependApplied", languageId));
+        }
+        return buildHeader;
+    }
+
+    private appendIfPresent(buildHeader: string[]): string[] {
+        // Apply language-specific append if configured
+        const appendConfig = this.Config.get("languageAppend");
+        if (appendConfig && appendConfig[languageId]) {
+            buildHeader.push(appendConfig[languageId]);
+            logger.debug(getMessage("languageAppendApplied", languageId));
+        }
+
+        // Remove trailing spaces if configured
+        if (this.Config.get("removeTrailingHeaderSpaces")) {
+            buildHeader = buildHeader.map(line => line.trimEnd());
+            logger.debug(getMessage("trailingSpacesRemoved"));
+        }
+        return buildHeader;
+    }
+
+    private async getOverrideIfPresent(determinedComment: CommentStyle): Promise<CommentStyle> {
+        logger.debug(getMessage("inFunction", "getCorrectPrefix", "CommentGenerator"));
+        let commentOpener: string = "";
+        let commentMiddle: string = "";
+        let commentCloser: string = "";
+
+        // Apply language-specific comment overrides if configured
+        const languageId = this.languageId?.toLowerCase() || "";
+        const singleLineOverride = this.Config.get("languageSingleLineComment");
+        const multiLineOverride = this.Config.get("languageMultiLineComment");
+
+        let effectiveComment = { ...determinedComment };
+
+        if (singleLineOverride && singleLineOverride[languageId]) {
+            effectiveComment.singleLine = Array.isArray(singleLineOverride[languageId])
+                ? singleLineOverride[languageId]
+                : [singleLineOverride[languageId]];
+            logger.debug(getMessage("singleLineCommentOverrideApplied", languageId));
+        }
+
+        if (multiLineOverride && multiLineOverride[languageId]) {
+            effectiveComment.multiLine = Array.isArray(multiLineOverride[languageId])
+                ? multiLineOverride[languageId]
+                : [multiLineOverride[languageId]];
+            logger.debug(getMessage("multiLineCommentOverrideApplied", languageId));
+        }
+
+        // Determine comment style preference
+        const preferSingleLine = this.Config.get("preferSingleLineComments");
+        const hasMultiLine = effectiveComment.multiLine.length >= 2;
+        const hasSingleLine = effectiveComment.singleLine.length > 0;
+
+        if (hasMultiLine && (!preferSingleLine || !hasSingleLine)) {
+            // Use multi-line comments
+            commentOpener = effectiveComment.multiLine[0];
+            if (effectiveComment.multiLine.length >= 3) {
+                commentMiddle = effectiveComment.multiLine[1];
+                commentCloser = effectiveComment.multiLine[2];
+            } else {
+                commentMiddle = "";
+                commentCloser = effectiveComment.multiLine[1];
+            }
+        } else if (hasSingleLine) {
+            // Use single-line comments
+            if (effectiveComment.prompt_comment_opening_type) {
+                // Ask the user for the type to use based on the single comments that are present.
+                const commentString: string = await this.getSingleCommentOption(effectiveComment.singleLine);
+                commentOpener = commentString;
+                commentMiddle = commentString;
+                commentCloser = commentString;
+            } else {
+                commentOpener = effectiveComment.singleLine[0];
+                commentMiddle = effectiveComment.singleLine[0];
+                commentCloser = effectiveComment.singleLine[0];
+            }
+        } else {
+            commentOpener = "";
+            commentMiddle = "";
+            commentCloser = "";
+        }
+
+        commentOpener += this.Config.get("headerCommentSpacing");
+        commentMiddle += this.Config.get("headerCommentSpacing");
+        commentCloser += this.Config.get("headerCommentSpacing");
+        return [commentOpener, commentMiddle, commentCloser];
+    }
+
     /**
      * @brief Determines comment prefixes based on comment style configuration
      * @param determinedComment Comment style configuration for the language
@@ -643,6 +748,8 @@ export class CommentGenerator {
         const commentMiddle: string = comments[1] || "";
         const commentCloser: string = comments[2] || "";
         let buildHeader: string[] = [];
+        // Check wether there are elements required to be added before the header
+        buildHeader = this.prependIfPresent(buildHeader);
         // Preparing the header content so that it can be put in a comment and written.
         if (commentOpener.length > 0) {
             buildHeader.push(`${commentOpener}${this.determineNewLine(eol)}`);
@@ -687,6 +794,9 @@ export class CommentGenerator {
         if (commentCloser.length > 0) {
             buildHeader.push(`${commentCloser}${this.determineNewLine(eol)}`);
         }
+
+        buildHeader = this.appendIfPresent(buildHeader);
+
         return buildHeader;
     }
 
