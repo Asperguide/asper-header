@@ -776,9 +776,8 @@ export class CommentGenerator {
         if (commentCloser.length > 0) {
             buildHeader.push(`${commentCloser}${this.determineNewLine(eol)}`);
         }
-
+        // Check wether there are elements required to be added after the header
         buildHeader = this.appendIfPresent(buildHeader, eol, languageId);
-
         return buildHeader;
     }
 
@@ -899,6 +898,18 @@ export class CommentGenerator {
         return false;
     }
 
+    private skipFirstLineInDocument(document: vscode.TextDocument): number {
+        let insertLine = 0;
+
+        if (document.lineCount > 0) {
+            const firstLine = document.lineAt(0).text;
+            if (firstLine.startsWith("#!")) {
+                insertLine = 1;
+            }
+        }
+        return insertLine;
+    }
+
     /**
      * @brief Writes a new header to the beginning of the file
      * @param editor VS Code text editor instance
@@ -910,26 +921,21 @@ export class CommentGenerator {
      */
     private async writeHeaderToFile(document: vscode.TextDocument, comments: string[], languageId?: string): Promise<number> {
         logger.debug(getMessage("inFunction", "writeHeaderToFile", "CommentGenerator"));
-        const headerLines: string[] = await this.buildTheHeader(comments, languageId);
-        const headerText: string = headerLines.join(this.determineNewLine(document.eol));
-        let insertPosition = 0;
-        if (document.lineCount > 0) {
-            const firstLine = document.lineAt(0).text;
-            if (firstLine.startsWith('#!')) {
-                insertPosition = 1;
-                if (document.lineCount > 1 && document.lineAt(1).text !== '') {
-                    const edit = new vscode.WorkspaceEdit();
-                    edit.insert(document.uri, new vscode.Position(1, 0), this.determineNewLine(document.eol));
-                    await vscode.workspace.applyEdit(edit);
-                    insertPosition = 2;
-                }
-            }
-        }
+
+        const headerLines = await this.buildTheHeader(comments, languageId);
+        const headerText = headerLines.join("");
         const edit = new vscode.WorkspaceEdit();
-        edit.insert(document.uri, new vscode.Position(insertPosition, 0), headerText + this.determineNewLine(document.eol));
+        const insertLine: number = this.skipFirstLineInDocument(document);
+        edit.insert(
+            document.uri,
+            new vscode.Position(insertLine, 0),
+            headerText
+        );
+
         await vscode.workspace.applyEdit(edit);
         return this.Config.get("statusSuccess");
     }
+
     /**
      * @brief Main method to inject or update header in active editor
      * 
