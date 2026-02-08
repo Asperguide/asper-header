@@ -604,12 +604,12 @@ export class CommentGenerator {
         }
         const instance = this.languageAppend[languageId];
         if (instance !== undefined) {
+            let instanceCleaned: string = instance;
             if (Array.isArray(instance)) {
-                buildHeader.push(instance.join(this.determineNewLine(eol)));
-            } else {
-                buildHeader.push(this.languageAppend[languageId]);
+                instanceCleaned = instance.join(this.determineNewLine(eol));
             }
-            logger.debug(getMessage("languageAppendApplied", languageId));
+            buildHeader.push(instanceCleaned);
+            logger.debug(getMessage("languagePrependApplied", languageId, instanceCleaned));
         }
         return buildHeader;
     }
@@ -620,12 +620,12 @@ export class CommentGenerator {
         }
         const instance = this.languageAppend[languageId];
         if (instance !== undefined) {
+            let instanceCleaned: string = instance
             if (Array.isArray(instance)) {
-                buildHeader.push(instance.join(this.determineNewLine(eol)));
-            } else {
-                buildHeader.push(this.languageAppend[languageId]);
+                instanceCleaned = instance.join(this.determineNewLine(eol));
             }
-            logger.debug(getMessage("languageAppendApplied", languageId));
+            buildHeader.push(instanceCleaned);
+            logger.debug(getMessage("languageAppendApplied", languageId, instanceCleaned));
         }
         return buildHeader;
     }
