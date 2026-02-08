@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - language multiline comment override
 - removing trailing spaces from the header
 - option to prefer single line comments to multiline one per language
+- tags to make the extension easier to get discovered on the different marketplaces
 
 ## Fixed
 

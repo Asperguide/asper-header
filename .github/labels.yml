@@ -1,0 +1,132 @@
+# GitHub Labels Configuration
+# Use with: https://github.com/marketplace/actions/github-labeler
+
+# Type Labels
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+- name: "language-support"
+  color: "1d76db"
+  description: "Support for a new programming language or file type"
+
+# Priority Labels
+- name: "priority: critical"
+  color: "b60205"
+  description: "Critical priority - security issues, data loss"
+
+- name: "priority: high"
+  color: "d93f0b"
+  description: "High priority - major functionality broken"
+
+- name: "priority: medium"
+  color: "fbca04"
+  description: "Medium priority - normal bug fixes"
+
+- name: "priority: low"
+  color: "0e8a16"
+  description: "Low priority - nice to have"
+
+# Status Labels
+- name: "status: needs-triage"
+  color: "ededed"
+  description: "Needs initial review and categorization"
+
+- name: "status: investigating"
+  color: "fef2c0"
+  description: "Currently being investigated"
+
+- name: "status: in-progress"
+  color: "c5def5"
+  description: "Work has started"
+
+- name: "status: blocked"
+  color: "e99695"
+  description: "Blocked by another issue or external factor"
+
+- name: "status: needs-info"
+  color: "fef2c0"
+  description: "Waiting for additional information from reporter"
+
+- name: "status: ready"
+  color: "0e8a16"
+  description: "Ready to be worked on"
+
+# Resolution Labels
+- name: "wontfix"
+  color: "ffffff"
+  description: "This will not be worked on"
+
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "This issue or pull request already exists"
+
+- name: "invalid"
+  color: "e4e669"
+  description: "This doesn't seem right"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed - community contributions welcome"
+
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+# Area Labels
+- name: "area: core"
+  color: "5319e7"
+  description: "Core extension functionality"
+
+- name: "area: configuration"
+  color: "5319e7"
+  description: "Configuration and settings"
+
+- name: "area: i18n"
+  color: "5319e7"
+  description: "Internationalization and translations"
+
+- name: "area: testing"
+  color: "5319e7"
+  description: "Testing and test coverage"
+
+- name: "area: build"
+  color: "5319e7"
+  description: "Build system, packaging, CI/CD"
+
+- name: "area: performance"
+  color: "5319e7"
+  description: "Performance improvements"
+
+# Special Labels
+- name: "breaking-change"
+  color: "b60205"
+  description: "Breaking change - major version bump required"
+
+- name: "security"
+  color: "b60205"
+  description: "Security vulnerability or security-related"
+
+- name: "dependencies"
+  color: "0366d6"
+  description: "Pull requests that update a dependency"
+
+- name: "stale"
+  color: "eeeeee"
+  description: "No activity for extended period"
+
+- name: "needs-discussion"
+  color: "fbca04"
+  description: "Needs team discussion before proceeding"

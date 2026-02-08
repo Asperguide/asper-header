@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/Asperguide/asper-header/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: Developer Documentation
+    url: https://asperguide.github.io/asper-header/
+    about: Read the full Doxygen-generated documentation
+  - name: User Guide
+    url: https://github.com/Asperguide/asper-header/blob/main/README.md
+    about: Read the complete user guide and configuration options
+  - name: Security Vulnerability
+    url: https://github.com/Asperguide/asper-header/security/advisories/new
+    about: Report a security vulnerability privately

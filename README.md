@@ -5,7 +5,7 @@
 **AsperHeader** is a Visual Studio Code extension built primarily for the **Asperguide development team**.
 It provides an easy and standardized way to generate, insert, and maintain structured file headers across projects.
 
-Although tailored for Asperguide, it is available on the VS Code Marketplace for anyone who may find it useful.
+Although tailored for Asperguide, it is available on the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=HenryLetellier.asperheader) and [Open VSX Registry](https://open-vsx.org/extension/HenryLetellier/asperheader) for anyone who may find it useful.
 
 ---
 
@@ -253,6 +253,7 @@ The extension currently supports the following languages:
 - Add an option to override the comment used for single line comments per language (during initial generation)
 - Add an option to override the comment used for multiline comments per language (during initial generation)
 - Fix issue where version 1.0.17 would add extra lines between single line comments in the header
+- Add tags to the extension to make it easier to find on the marketplaces
 
 ---
 
@@ -264,7 +265,8 @@ This extension follows [VS Code Extension Guidelines](https://code.visualstudio.
 
 ## For More Information
 
-- [VS Code Extension Marketplace](https://marketplace.visualstudio.com/)
+- [AsperHeader on VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=HenryLetellier.asperheader)
+- [AsperHeader on Open VSX Registry](https://open-vsx.org/extension/HenryLetellier/asperheader)
 - [VS Code Docs](https://code.visualstudio.com/docs)
 
 ---
