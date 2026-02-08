@@ -482,9 +482,9 @@ export class CommentGenerator {
 
     private mySmartTrimmer(content: string): string {
         if (this.trimTrailingSpaces) {
-            return content.trimEnd()
+            return content.trimEnd();
         }
-        return content
+        return content;
     }
 
     /**
@@ -620,7 +620,7 @@ export class CommentGenerator {
         }
         const instance = this.languageAppend[languageId];
         if (instance !== undefined) {
-            let instanceCleaned: string = instance
+            let instanceCleaned: string = instance;
             if (Array.isArray(instance)) {
                 instanceCleaned = instance.join(this.determineNewLine(eol));
             }
