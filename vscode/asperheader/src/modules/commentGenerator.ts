@@ -598,30 +598,34 @@ export class CommentGenerator {
         this.documentVersion = this.documentBody.version;
     }
 
-    private prependIfPresent(buildHeader: string[]): string[] {
-
-        // Apply language-specific prepend if configured
-        const languageId = this.languageId?.toLowerCase() || "";
-        const prependConfig = this.Config.get("languagePrepend");
-        if (prependConfig && prependConfig[languageId]) {
-            buildHeader.push(prependConfig[languageId]);
-            logger.debug(getMessage("languagePrependApplied", languageId));
+    private prependIfPresent(buildHeader: string[], eol: vscode.EndOfLine, languageId?: string): string[] {
+        if (languageId === undefined) {
+            return buildHeader;
+        }
+        const instance = this.languageAppend[languageId];
+        if (instance !== undefined) {
+            if (Array.isArray(instance)) {
+                buildHeader.push(instance.join(this.determineNewLine(eol)));
+            } else {
+                buildHeader.push(this.languageAppend[languageId]);
+            }
+            logger.debug(getMessage("languageAppendApplied", languageId));
         }
         return buildHeader;
     }
 
-    private appendIfPresent(buildHeader: string[]): string[] {
-        // Apply language-specific append if configured
-        const appendConfig = this.Config.get("languageAppend");
-        if (appendConfig && appendConfig[languageId]) {
-            buildHeader.push(appendConfig[languageId]);
-            logger.debug(getMessage("languageAppendApplied", languageId));
+    private appendIfPresent(buildHeader: string[], eol: vscode.EndOfLine, languageId?: string): string[] {
+        if (languageId === undefined) {
+            return buildHeader;
         }
-
-        // Remove trailing spaces if configured
-        if (this.Config.get("removeTrailingHeaderSpaces")) {
-            buildHeader = buildHeader.map(line => line.trimEnd());
-            logger.debug(getMessage("trailingSpacesRemoved"));
+        const instance = this.languageAppend[languageId];
+        if (instance !== undefined) {
+            if (Array.isArray(instance)) {
+                buildHeader.push(instance.join(this.determineNewLine(eol)));
+            } else {
+                buildHeader.push(this.languageAppend[languageId]);
+            }
+            logger.debug(getMessage("languageAppendApplied", languageId));
         }
         return buildHeader;
     }
@@ -718,7 +722,7 @@ export class CommentGenerator {
      * - Telegraph-style closing markers
      * - Closing comment delimiter
      */
-    private async buildTheHeader(comments: string[]): Promise<string[]> {
+    private async buildTheHeader(comments: string[], languageId?: string): Promise<string[]> {
         logger.debug(getMessage("inFunction", "buildTheHeader", "CommentGenerator"));
         const eol: vscode.EndOfLine = this.documentEOL || vscode.EndOfLine.LF;
         const unknownTerm: string = getMessage("unknown");
@@ -727,7 +731,7 @@ export class CommentGenerator {
         const commentCloser: string = comments[2] || "";
         let buildHeader: string[] = [];
         // Check wether there are elements required to be added before the header
-        buildHeader = this.prependIfPresent(buildHeader);
+        buildHeader = this.prependIfPresent(buildHeader, eol, languageId);
         // Preparing the header content so that it can be put in a comment and written.
         if (commentOpener.length > 0) {
             buildHeader.push(`${commentOpener}${this.determineNewLine(eol)}`);
@@ -773,7 +777,7 @@ export class CommentGenerator {
             buildHeader.push(`${commentCloser}${this.determineNewLine(eol)}`);
         }
 
-        buildHeader = this.appendIfPresent(buildHeader);
+        buildHeader = this.appendIfPresent(buildHeader, eol, languageId);
 
         return buildHeader;
     }
@@ -904,9 +908,9 @@ export class CommentGenerator {
      * Generates a complete header using buildTheHeader() and inserts it at the
      * top of the document. Handles shebang line detection and offset calculation.
      */
-    private async writeHeaderToFile(document: vscode.TextDocument, comments: string[]): Promise<number> {
+    private async writeHeaderToFile(document: vscode.TextDocument, comments: string[], languageId?: string): Promise<number> {
         logger.debug(getMessage("inFunction", "writeHeaderToFile", "CommentGenerator"));
-        const headerLines: string[] = await this.buildTheHeader(comments);
+        const headerLines: string[] = await this.buildTheHeader(comments, languageId);
         const headerText: string = headerLines.join(this.determineNewLine(document.eol));
         let insertPosition = 0;
         if (document.lineCount > 0) {
@@ -982,7 +986,7 @@ export class CommentGenerator {
             return;
         }
         if (response === false) {
-            let status: number = await this.writeHeaderToFile(editor.document, comments);
+            let status: number = await this.writeHeaderToFile(editor.document, comments, determineComment.language);
             if (status === this.Config.get("statusError")) {
                 logger.Gui.error(getMessage("headerWriteFailed"));
                 return;
@@ -1097,7 +1101,7 @@ export class CommentGenerator {
                 logger.Gui.info(getMessage("headerInjectQuestionRefused"));
                 return;
             }
-            const status: number = await this.writeHeaderToFile(document, comments);
+            const status: number = await this.writeHeaderToFile(document, comments, determineComment.language);
             if (status === this.Config.get("statusError")) {
                 logger.Gui.error(getMessage("headerWriteFailed"));
                 return;
