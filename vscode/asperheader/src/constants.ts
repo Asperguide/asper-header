@@ -255,10 +255,10 @@ export const authorLogo: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgA
 // ============================================================================
 
 /** @brief Array of the languages with the data to prepend */
-export const languageAppend: object = {};
+export const languageAppend: Record<string, string> = {};
 
 /** @brief Array of the languages with the data to append */
-export const languagePrepend: object = {};
+export const languagePrepend: Record<string, string> = {};
 
 
 // ============================================================================
@@ -266,10 +266,10 @@ export const languagePrepend: object = {};
 // ============================================================================
 
 /** @brief Array of the custom comment override for single line comments */
-export const languageSingleLineComment: object = {};
+export const languageSingleLineComment: Record<string, string> = {};
 
 /** @brief Array of the custom comment override for multi line comments */
-export const languageMultiLineComment: object = {};
+export const languageMultiLineComment: Record<string, string[]> = {};
 
 /** @brief Remove trailing header spaces */
 export const removeTrailingHeaderSpaces: boolean = true;

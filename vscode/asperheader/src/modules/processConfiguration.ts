@@ -263,10 +263,10 @@ class Configuration {
         this.extensionIgnore = config.get<string[]>("extensionIgnore", CONST.extensionIgnore);
         this.useWorkspaceNameWhenAvailable = config.get<boolean>("useWorkspaceNameWhenAvailable", CONST.useWorkspaceNameWhenAvailable);
         this.projectDescription = config.get<string>("projectDescription", CONST.projectDescription);
-        this.languagePrepend = config.get<object>("languagePrepend", CONST.languagePrepend);
-        this.languageAppend = config.get<object>("languageAppend", CONST.languageAppend);
-        this.languageSingleLineComment = config.get<object>("languageSingleLineComment", CONST.languageSingleLineComment);
-        this.languageMultiLineComment = config.get<object>("languageMultiLineComment", CONST.languageMultiLineComment);
+        this.languagePrepend = config.get<Record<string, string>>("languagePrepend", CONST.languagePrepend);
+        this.languageAppend = config.get<Record<string, string>>("languageAppend", CONST.languageAppend);
+        this.languageSingleLineComment = config.get<Record<string, string>>("languageSingleLineComment", CONST.languageSingleLineComment);
+        this.languageMultiLineComment = config.get<Record<string, string[]>>("languageMultiLineComment", CONST.languageMultiLineComment);
         this.removeTrailingHeaderSpaces = config.get<boolean>("removeTrailingHeaderSpaces", CONST.removeTrailingHeaderSpaces);
         this.preferSingleLineComments = config.get<boolean>("preferSingleLineComments", CONST.preferSingleLineComments);
     }

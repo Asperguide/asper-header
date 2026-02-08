@@ -79,6 +79,8 @@ interface CommentStyle {
     multiLine: string[];
     /** @brief Whether to prompt user for comment type selection when multiple options exist */
     prompt_comment_opening_type: boolean;
+    /** @brief Wether the language was identified or not */
+    language?: string;
 }
 
 /**
@@ -167,8 +169,18 @@ export class CommentGenerator {
     private projectCopyRight: string = this.Config.get("projectCopyright");
     /** @brief Whether to add blank line after multiline sections */
     private addBlankLineAfterMultiline: boolean = this.Config.get("headerAddBlankLineAfterMultiline");
+    /** @brief The content to prepend to the comment before it is present */
+    private languagePrepend: Record<string, string> = this.Config.get("languagePrepend");
+    /** @brief The content to append to the comment after it is present */
+    private languageAppend: Record<string, string> = this.Config.get("languageAppend");
+    /** @brief Wether to follow a custom comment ruleset to override single line comments for a given language */
+    private singleLineOverride: Record<string, string> = this.Config.get("languageSingleLineComment");
+    /** @brief Wether to follow a custom comment ruleset to override multi line comments for a given language */
+    private multiLineOverride: Record<string, string[]> = this.Config.get("languageMultiLineComment");
     /** @brief Wether to remove trailing spaces after a generated line */
     private trimTrailingSpaces: boolean = this.Config.get("removeTrailingHeaderSpaces");
+    /** @brief Wether to choose single line comments when multi line comments are available */
+    private preferSingleLineComments: boolean = this.Config.get("preferSingleLineComments");
 
     /**
      * @brief Constructor for CommentGenerator class
@@ -255,6 +267,7 @@ export class CommentGenerator {
             singleLine: [],
             multiLine: [],
             prompt_comment_opening_type: false,
+            language: undefined,
         };
         if (this.languageComment === undefined) {
             logger.Gui.error(getMessage("missingFileError"));
@@ -315,6 +328,7 @@ export class CommentGenerator {
                 commentStructure.singleLine = node.singleLine ?? [];
                 commentStructure.multiLine = node.multiLine ?? [];
                 commentStructure.prompt_comment_opening_type = node.prompt_comment_opening_type ?? false;
+                commentStructure.language = locatedName ?? undefined;
                 return commentStructure;
             }
         }
@@ -612,73 +626,36 @@ export class CommentGenerator {
         return buildHeader;
     }
 
-    private async getOverrideIfPresent(determinedComment: CommentStyle): Promise<CommentStyle> {
-        logger.debug(getMessage("inFunction", "getCorrectPrefix", "CommentGenerator"));
-        let commentOpener: string = "";
-        let commentMiddle: string = "";
-        let commentCloser: string = "";
-
-        // Apply language-specific comment overrides if configured
-        const languageId = this.languageId?.toLowerCase() || "";
-        const singleLineOverride = this.Config.get("languageSingleLineComment");
-        const multiLineOverride = this.Config.get("languageMultiLineComment");
-
-        let effectiveComment = { ...determinedComment };
-
-        if (singleLineOverride && singleLineOverride[languageId]) {
-            effectiveComment.singleLine = Array.isArray(singleLineOverride[languageId])
-                ? singleLineOverride[languageId]
-                : [singleLineOverride[languageId]];
-            logger.debug(getMessage("singleLineCommentOverrideApplied", languageId));
+    private getOverrideIfPresent(determinedComment: CommentStyle): CommentStyle {
+        // If the language is not known, nothing to override
+        if (!determinedComment.language) {
+            return determinedComment;
         }
 
-        if (multiLineOverride && multiLineOverride[languageId]) {
-            effectiveComment.multiLine = Array.isArray(multiLineOverride[languageId])
-                ? multiLineOverride[languageId]
-                : [multiLineOverride[languageId]];
-            logger.debug(getMessage("multiLineCommentOverrideApplied", languageId));
-        }
+        const languageId = determinedComment.language;
 
-        // Determine comment style preference
-        const preferSingleLine = this.Config.get("preferSingleLineComments");
-        const hasMultiLine = effectiveComment.multiLine.length >= 2;
-        const hasSingleLine = effectiveComment.singleLine.length > 0;
-
-        if (hasMultiLine && (!preferSingleLine || !hasSingleLine)) {
-            // Use multi-line comments
-            commentOpener = effectiveComment.multiLine[0];
-            if (effectiveComment.multiLine.length >= 3) {
-                commentMiddle = effectiveComment.multiLine[1];
-                commentCloser = effectiveComment.multiLine[2];
+        // Apply single-line override if present
+        const singleOverride = this.singleLineOverride[languageId];
+        if (singleOverride !== undefined) {
+            // Wrap the single string into an array since CommentStyle.singleLine expects string[]
+            if (Array.isArray(singleOverride)) {
+                determinedComment.singleLine = singleOverride;
             } else {
-                commentMiddle = "";
-                commentCloser = effectiveComment.multiLine[1];
+                determinedComment.singleLine = [singleOverride];
             }
-        } else if (hasSingleLine) {
-            // Use single-line comments
-            if (effectiveComment.prompt_comment_opening_type) {
-                // Ask the user for the type to use based on the single comments that are present.
-                const commentString: string = await this.getSingleCommentOption(effectiveComment.singleLine);
-                commentOpener = commentString;
-                commentMiddle = commentString;
-                commentCloser = commentString;
-            } else {
-                commentOpener = effectiveComment.singleLine[0];
-                commentMiddle = effectiveComment.singleLine[0];
-                commentCloser = effectiveComment.singleLine[0];
-            }
-        } else {
-            commentOpener = "";
-            commentMiddle = "";
-            commentCloser = "";
+            logger.debug(getMessage("singleLineCommentOverrideApplied", languageId, determinedComment.singleLine));
         }
 
-        commentOpener += this.Config.get("headerCommentSpacing");
-        commentMiddle += this.Config.get("headerCommentSpacing");
-        commentCloser += this.Config.get("headerCommentSpacing");
-        return [commentOpener, commentMiddle, commentCloser];
+        // Apply multi-line override if present
+        const multiOverride = this.multiLineOverride[languageId];
+        if (multiOverride !== undefined) {
+            // multiOverride is already a string[]
+            determinedComment.multiLine = multiOverride;
+            logger.debug(getMessage("multiLineCommentOverrideApplied", languageId, determinedComment.multiLine));
+        }
+
+        return determinedComment;
     }
-
     /**
      * @brief Determines comment prefixes based on comment style configuration
      * @param determinedComment Comment style configuration for the language
@@ -693,26 +670,27 @@ export class CommentGenerator {
         let commentOpener: string = "";
         let commentMiddle: string = "";
         let commentCloser: string = "";
-        if (determinedComment.multiLine.length >= 2) {
-            commentOpener = determinedComment.multiLine[0];
-            if (determinedComment.multiLine.length >= 3) {
-                commentMiddle = determinedComment.multiLine[1];
-                commentCloser = determinedComment.multiLine[2];
+        const determinedComment_checked: CommentStyle = this.getOverrideIfPresent(determinedComment);
+        if (determinedComment_checked.multiLine.length >= 2 && this.preferSingleLineComments === false) {
+            commentOpener = determinedComment_checked.multiLine[0];
+            if (determinedComment_checked.multiLine.length >= 3) {
+                commentMiddle = determinedComment_checked.multiLine[1];
+                commentCloser = determinedComment_checked.multiLine[2];
             } else {
                 commentMiddle = "";
-                commentCloser = determinedComment.multiLine[1];
+                commentCloser = determinedComment_checked.multiLine[1];
             }
-        } else if (determinedComment.singleLine.length > 0) {
-            if (determinedComment.prompt_comment_opening_type) {
+        } else if (determinedComment_checked.singleLine.length > 0) {
+            if (determinedComment_checked.prompt_comment_opening_type) {
                 // Ask the user for the type to use based on the single comments that are present.
-                const commentString: string = await this.getSingleCommentOption(determinedComment.singleLine);
+                const commentString: string = await this.getSingleCommentOption(determinedComment_checked.singleLine);
                 commentOpener = commentString;
                 commentMiddle = commentString;
                 commentCloser = commentString;
             } else {
-                commentOpener = determinedComment.singleLine[0];
-                commentMiddle = determinedComment.singleLine[0];
-                commentCloser = determinedComment.singleLine[0];
+                commentOpener = determinedComment_checked.singleLine[0];
+                commentMiddle = determinedComment_checked.singleLine[0];
+                commentCloser = determinedComment_checked.singleLine[0];
             }
         } else {
             commentOpener = "";
