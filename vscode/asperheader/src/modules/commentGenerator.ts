@@ -627,7 +627,7 @@ export class CommentGenerator {
         if (languageId === undefined) {
             return buildHeader;
         }
-        const instance = this.languageAppend[languageId];
+        const instance = this.languagePrepend[languageId];
         if (instance !== undefined) {
             let instanceCleaned: string = instance;
             if (Array.isArray(instance)) {

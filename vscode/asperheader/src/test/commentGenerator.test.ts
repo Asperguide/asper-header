@@ -1420,6 +1420,415 @@ const someCode = true;`;
         });
     });
 
+    /**
+     * @brief Test suite for language-specific customization features (v1.0.18+)
+     * 
+     * Validates the new language customization features added in v1.0.18 including
+     * prepend/append text, comment overrides, trailing space removal, and
+     * single-line comment preference.
+     */
+    suite('Language Customization Features', () => {
+        /**
+         * @brief Tests mySmartTrimmer with trailing space removal enabled
+         * @test Validates that trailing spaces are removed when configured
+         */
+        test('should trim trailing spaces when enabled', () => {
+            const document = new MockTextDocument('/test/test.ts');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.trimTrailingSpaces = true;
+
+            const result = generatorAny.mySmartTrimmer('content with spaces   ');
+            assert.strictEqual(result, 'content with spaces');
+        });
+
+        /**
+         * @brief Tests mySmartTrimmer with trailing space removal disabled
+         * @test Validates that trailing spaces are preserved when configured
+         */
+        test('should preserve trailing spaces when disabled', () => {
+            const document = new MockTextDocument('/test/test.ts');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.trimTrailingSpaces = false;
+
+            const result = generatorAny.mySmartTrimmer('content with spaces   ');
+            assert.strictEqual(result, 'content with spaces   ');
+        });
+
+        /**
+         * @brief Tests language prepend functionality with string content
+         * @test Validates that language-specific text is prepended before header
+         */
+        test('should prepend language-specific text when configured', () => {
+            const document = new MockTextDocument('/test/test.py', '', 'python');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.languagePrepend = { python: '#!/usr/bin/env python\n' };
+
+            let buildHeader: string[] = [];
+            buildHeader = generatorAny.prependIfPresent(buildHeader, vscode.EndOfLine.LF, 'python');
+
+            assert.strictEqual(buildHeader.length, 1);
+            assert.strictEqual(buildHeader[0], '#!/usr/bin/env python\n');
+        });
+
+        /**
+         * @brief Tests language prepend with array content
+         * @test Validates that array-based prepend content is properly joined
+         */
+        test('should handle array prepend content', () => {
+            const document = new MockTextDocument('/test/test.py', '', 'python');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.languagePrepend = { python: ['#!/usr/bin/env python', '# -*- coding: utf-8 -*-'] };
+
+            let buildHeader: string[] = [];
+            buildHeader = generatorAny.prependIfPresent(buildHeader, vscode.EndOfLine.LF, 'python');
+
+            assert.strictEqual(buildHeader.length, 1);
+            assert.ok(buildHeader[0].includes('#!/usr/bin/env python'));
+        });
+
+        /**
+         * @brief Tests language prepend with undefined language
+         * @test Validates graceful handling when language ID is not provided
+         */
+        test('should skip prepend when language is undefined', () => {
+            const document = new MockTextDocument('/test/test.ts');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.languagePrepend = { python: '#!/usr/bin/env python\n' };
+
+            let buildHeader: string[] = [];
+            buildHeader = generatorAny.prependIfPresent(buildHeader, vscode.EndOfLine.LF, undefined);
+
+            assert.strictEqual(buildHeader.length, 0);
+        });
+
+        /**
+         * @brief Tests language append functionality with string content
+         * @test Validates that language-specific text is appended after header
+         */
+        test('should append language-specific text when configured', () => {
+            const document = new MockTextDocument('/test/test.py', '', 'python');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.languageAppend = { python: '\n# Code begins\n' };
+
+            let buildHeader: string[] = [];
+            buildHeader = generatorAny.appendIfPresent(buildHeader, vscode.EndOfLine.LF, 'python');
+
+            assert.strictEqual(buildHeader.length, 1);
+            assert.strictEqual(buildHeader[0], '\n# Code begins\n');
+        });
+
+        /**
+         * @brief Tests language append with array content
+         * @test Validates that array-based append content is properly joined
+         */
+        test('should handle array append content', () => {
+            const document = new MockTextDocument('/test/test.py', '', 'python');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.languageAppend = { python: ['', '# Code begins', '# ============'] };
+
+            let buildHeader: string[] = [];
+            buildHeader = generatorAny.appendIfPresent(buildHeader, vscode.EndOfLine.LF, 'python');
+
+            assert.strictEqual(buildHeader.length, 1);
+            assert.ok(buildHeader[0].includes('# Code begins'));
+        });
+
+        /**
+         * @brief Tests language append with undefined language
+         * @test Validates graceful handling when language ID is not provided
+         */
+        test('should skip append when language is undefined', () => {
+            const document = new MockTextDocument('/test/test.ts');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.languageAppend = { python: '\n# Code begins\n' };
+
+            let buildHeader: string[] = [];
+            buildHeader = generatorAny.appendIfPresent(buildHeader, vscode.EndOfLine.LF, undefined);
+
+            assert.strictEqual(buildHeader.length, 0);
+        });
+
+        /**
+         * @brief Tests single-line comment override functionality
+         * @test Validates that user-configured single-line comments override defaults
+         */
+        test('should apply single-line comment override when configured', () => {
+            const document = new MockTextDocument('/test/test.idr', '', 'idris');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.singleLineOverride = { idris: '|||' };
+
+            const commentStyle = {
+                singleLine: ['--'],
+                multiLine: [],
+                prompt_comment_opening_type: false,
+                language: 'idris'
+            };
+
+            const result = generatorAny.getOverrideIfPresent(commentStyle);
+
+            assert.deepStrictEqual(result.singleLine, ['|||']);
+            assert.strictEqual(result.language, 'idris');
+        });
+
+        /**
+         * @brief Tests multi-line comment override functionality
+         * @test Validates that user-configured multi-line comments override defaults
+         */
+        test('should apply multi-line comment override when configured', () => {
+            const document = new MockTextDocument('/test/test.c', '', 'c');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.multiLineOverride = { c: ['/*', '**', '*/'] };
+
+            const commentStyle = {
+                singleLine: ['//'],
+                multiLine: ['/*', ' *', ' */'],
+                prompt_comment_opening_type: false,
+                language: 'c'
+            };
+
+            const result = generatorAny.getOverrideIfPresent(commentStyle);
+
+            assert.deepStrictEqual(result.multiLine, ['/*', '**', '*/']);
+            assert.strictEqual(result.language, 'c');
+        });
+
+        /**
+         * @brief Tests override with array-based single-line comment
+         * @test Validates proper handling of array overrides for single-line comments
+         */
+        test('should handle array single-line comment override', () => {
+            const document = new MockTextDocument('/test/test.idr', '', 'idris');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.singleLineOverride = { idris: ['|||', '---'] };
+
+            const commentStyle = {
+                singleLine: ['--'],
+                multiLine: [],
+                prompt_comment_opening_type: false,
+                language: 'idris'
+            };
+
+            const result = generatorAny.getOverrideIfPresent(commentStyle);
+
+            assert.deepStrictEqual(result.singleLine, ['|||', '---']);
+        });
+
+        /**
+         * @brief Tests override when language is unknown
+         * @test Validates that overrides are skipped when language cannot be determined
+         */
+        test('should skip override when language is undefined', () => {
+            const document = new MockTextDocument('/test/test.ts');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.singleLineOverride = { idris: '|||' };
+
+            const commentStyle = {
+                singleLine: ['--'],
+                multiLine: [],
+                prompt_comment_opening_type: false,
+                language: undefined
+            };
+
+            const result = generatorAny.getOverrideIfPresent(commentStyle);
+
+            assert.deepStrictEqual(result.singleLine, ['--']);
+            assert.strictEqual(result.language, undefined);
+        });
+
+        /**
+         * @brief Tests preferSingleLineComments when set to true
+         * @test Validates that single-line comments are preferred over multi-line
+         */
+        test('should prefer single-line comments when configured', async () => {
+            const document = new MockTextDocument('/test/test.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.preferSingleLineComments = true;
+
+            const commentStyle = {
+                singleLine: ['//'],
+                multiLine: ['/*', ' *', ' */'],
+                prompt_comment_opening_type: false,
+                language: 'typescript'
+            };
+
+            const prefixes = await generatorAny.getCorrectCommentPrefix(commentStyle);
+
+            // All three prefixes should be the same (single-line)
+            assert.ok(prefixes[0].includes('//'));
+            assert.ok(prefixes[1].includes('//'));
+            assert.ok(prefixes[2].includes('//'));
+        });
+
+        /**
+         * @brief Tests default multi-line comment preference
+         * @test Validates that multi-line comments are used by default
+         */
+        test('should use multi-line comments by default', async () => {
+            const document = new MockTextDocument('/test/test.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            generatorAny.preferSingleLineComments = false;
+
+            const commentStyle = {
+                singleLine: ['//'],
+                multiLine: ['/*', ' *', ' */'],
+                prompt_comment_opening_type: false,
+                language: 'typescript'
+            };
+
+            const prefixes = await generatorAny.getCorrectCommentPrefix(commentStyle);
+
+            // Should use multi-line style
+            assert.ok(prefixes[0].includes('/*'));
+            assert.ok(prefixes[1].includes(' *'));
+            assert.ok(prefixes[2].includes(' */'));
+        });
+    });
+
+    /**
+     * @brief Test suite for shebang detection and header placement
+     * 
+     * Validates the CommentGenerator's ability to detect shebang lines
+     * and properly position headers after them in executable scripts.
+     */
+    suite('Shebang Detection', () => {
+        /**
+         * @brief Tests detection of bash shebang line
+         * @test Validates that header is placed after shebang in bash scripts
+         */
+        test('should detect bash shebang and skip first line', () => {
+            const content = '#!/bin/bash\necho "Hello World"';
+            const document = new MockTextDocument('/test/script.sh', content, 'shellscript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            const insertLine = generatorAny.skipFirstLineInDocument(document);
+
+            assert.strictEqual(insertLine, 1);
+        });
+
+        /**
+         * @brief Tests detection of Python shebang line
+         * @test Validates that header is placed after shebang in Python scripts
+         */
+        test('should detect python shebang and skip first line', () => {
+            const content = '#!/usr/bin/env python3\nprint("Hello World")';
+            const document = new MockTextDocument('/test/script.py', content, 'python');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            const insertLine = generatorAny.skipFirstLineInDocument(document);
+
+            assert.strictEqual(insertLine, 1);
+        });
+
+        /**
+         * @brief Tests behavior with no shebang present
+         * @test Validates that header is placed at line 0 when no shebang exists
+         */
+        test('should insert at line 0 when no shebang present', () => {
+            const content = 'import sys\nprint("Hello World")';
+            const document = new MockTextDocument('/test/script.py', content, 'python');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            const insertLine = generatorAny.skipFirstLineInDocument(document);
+
+            assert.strictEqual(insertLine, 0);
+        });
+
+        /**
+         * @brief Tests behavior with empty document
+         * @test Validates graceful handling of empty files
+         */
+        test('should handle empty document', () => {
+            const document = new MockTextDocument('/test/empty.sh', '', 'shellscript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            const insertLine = generatorAny.skipFirstLineInDocument(document);
+
+            assert.strictEqual(insertLine, 0);
+        });
+
+        /**
+         * @brief Tests behavior with hash but not shebang
+         * @test Validates that regular comments starting with # are not treated as shebangs
+         */
+        test('should not treat regular hash comments as shebang', () => {
+            const content = '# This is a comment\nprint("Hello")';
+            const document = new MockTextDocument('/test/script.py', content, 'python');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            const insertLine = generatorAny.skipFirstLineInDocument(document);
+
+            assert.strictEqual(insertLine, 0);
+        });
+
+        /**
+         * @brief Tests shebang with additional components
+         * @test Validates detection of shebangs with arguments
+         */
+        test('should detect shebang with arguments', () => {
+            const content = '#!/usr/bin/env node --harmony\nconsole.log("Test")';
+            const document = new MockTextDocument('/test/script.js', content, 'javascript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            const insertLine = generatorAny.skipFirstLineInDocument(document);
+
+            assert.strictEqual(insertLine, 1);
+        });
+    });
+
     suite('Error Handling and Edge Cases', () => {
         /**
          * @brief Tests handling of missing language configuration loader
