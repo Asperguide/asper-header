@@ -16,13 +16,13 @@ jobs:
       - uses: actions/stale@v10
         with:
           # General settings
-          days-before-stale: 60
+          days-before-stale: 30
           days-before-close: 14
           operations-per-run: 100
           
           # Issue settings
           stale-issue-message: |
-            This issue has been automatically marked as stale because it has not had any activity for 60 days.
+            This issue has been automatically marked as stale because it has not had any activity for 30 days.
             
             It will be closed in 14 days if no further activity occurs.
             
@@ -39,7 +39,7 @@ jobs:
           
           # PR settings
           stale-pr-message: |
-            This pull request has been automatically marked as stale because it has not had any activity for 60 days.
+            This pull request has been automatically marked as stale because it has not had any activity for 30 days.
             
             It will be closed in 14 days if no further activity occurs.
             
