@@ -55,12 +55,8 @@ jobs:
           stale-pr-label: 'stale'
           
           # Labels that prevent staling
-          exempt-issue-labels: 'priority: critical,priority: high,security,help wanted,good first issue,needs-discussion'
-          exempt-pr-labels: 'priority: critical,priority: high,security'
-          
-          # Users whose issues/PRs should never be marked stale
-          exempt-issue-creators: 'renovate[bot],HenraL'
-          exempt-pr-creators: 'renovate[bot],HenraL'
+          exempt-issue-labels: 'priority: critical,priority: high,security,help wanted,good first issue,needs-discussion,exempt'
+          exempt-pr-labels: 'priority: critical,priority: high,security,exempt'
           
           # Labels that indicate activity
           exempt-all-milestones: true
