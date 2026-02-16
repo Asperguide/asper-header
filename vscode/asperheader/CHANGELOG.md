@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.19] - 16/02/2026
+
+### Fixed
+
+- processing of the description entry when charage returns are provided. (comments in front of the description content are now properly prepended)
+- header checking (issue of a closing line being before the opening line)
+- header checking (grace lines (the user defined maximum scan lines added onto the current user defined scan lines) when the opening line of the header was found but not the closing one)
+
 ## [1.0.18] - 7/02/2026
 
-## Added
+### Added
 
 - language prepend option
 - language append option
@@ -18,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - tags to make the extension easier to get discovered on the different marketplaces
 - GitHub Discussions for community engagement: [General Discussion](https://github.com/Asperguide/asper-header/discussions/35) and [Q&A](https://github.com/Asperguide/asper-header/discussions/36)
 
-## Fixed
+### Fixed
 
 - issue introduced in version 1.0.17 where an extra line would be added after each single comment line.
 
