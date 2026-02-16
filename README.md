@@ -260,6 +260,11 @@ The extension currently supports the following languages:
 - Fix issue where version 1.0.17 would add extra lines between single line comments in the header
 - Add tags to the extension to make it easier to find on the marketplaces
 
+### 1.0.19
+
+- Fix processing of the description entry when charage returns are provided. (comments in front of the description content are now properly prepended)
+- Fix header checking (issue of a closing line being before the opening line, grace lines (the user defined maximum scan lines added onto the current user defined scan lines) when the opening line of the header was found but not the closing one)
+
 ---
 
 ## Community
