@@ -935,30 +935,47 @@ export class CommentGenerator {
             logger.warning(getMessage("closedDocument"));
             return undefined;
         }
+        const documentTotalLines: number = this.documentBody.lineCount;
         const eol: vscode.EndOfLine = this.documentEOL ?? vscode.EndOfLine.LF;
-        const opener: string = this.headerOpener(commentMiddle, eol, this.projectName);
-        const closer: string = this.headerCloser(commentMiddle, eol, this.projectName);
-        const scanLines: number = Math.min(this.maxScanLength, this.documentBody.lineCount);
+        const opener: string = this.headerOpener(commentMiddle, eol, this.projectName).trimEnd();
+        const closer: string = this.headerCloser(commentMiddle, eol, this.projectName).trimEnd();
+        const scanLines: number = Math.min(this.maxScanLength, documentTotalLines);
+        const graceLines: number = Math.min((this.maxScanLength * 2), documentTotalLines);
         let lineOpenerFound: boolean = false;
         let lineCloserFound: boolean = false;
-        for (let i = 0; i < scanLines; i++) {
+        for (let i = 0; i < scanLines || (i < graceLines && lineOpenerFound && !lineCloserFound); i++) {
             const lineText = this.documentBody.lineAt(i).text;
-            if (lineText === opener.trimEnd() && lineCloserFound) {
+            if (i >= scanLines) {
+                logger.info(getMessage("graceLines"));
+            }
+
+            // If we encounter a closer before any opener, the header is broken
+            if (lineText === closer && !lineOpenerFound) {
                 logger.Gui.warning(getMessage("brokenHeader"));
                 return false;
             }
-            if (lineText === closer.trimEnd() && !lineOpenerFound) {
+
+            // If we encounter an opener after a closer was already found, header is broken
+            if (lineText === opener && lineCloserFound) {
                 logger.Gui.warning(getMessage("brokenHeader"));
                 return false;
             }
-            if (lineText === opener.trimEnd() && (!lineCloserFound && !lineOpenerFound)) {
+
+            // Detect opener
+            if (lineText === opener && !lineOpenerFound) {
                 lineOpenerFound = true;
                 this.headerInnerStart = i;
                 logger.info(getMessage("headerOpenerFound"));
                 continue;
             }
-            if (lineText === closer.trimEnd() && (!lineCloserFound && lineOpenerFound)) {
+
+            // Detect closer (only valid if opener was already seen)
+            if (lineText === closer && !lineCloserFound) {
                 this.headerInnerEnd = i;
+                lineCloserFound = true;
+            }
+
+            if (lineCloserFound && lineOpenerFound) {
                 logger.info(getMessage("headerOpenerAndCloserFound"));
                 return true;
             }
