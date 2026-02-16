@@ -345,15 +345,20 @@ export class CommentGenerator {
      */
     private async determineHeaderDescription(): Promise<string[]> {
         logger.debug(getMessage("inFunction", "determineHeaderDescription", "CommentGenerator"));
-        let final: string[] = [];
-        const usrProjectDescription: string = this.Config.get("projectDescription");
-        if (usrProjectDescription.length === 0) {
+        const rawAny = this.Config.get("projectDescription");
+        let intermediate: string = "";
+        if (Array.isArray(rawAny)) {
+            intermediate = rawAny.join(this.determineNewLine(this.documentEOL || vscode.EndOfLine.LF));
+        } else {
+            intermediate = String(rawAny ?? "");
+        }
+        if (intermediate.trim().length === 0) {
             const usrResponse: string | undefined = await query.input(getMessage("getHeaderDescription"));
-            final.push(usrResponse || "");
+            intermediate = (usrResponse || "");
         } else {
             logger.debug(getMessage("configDescriptionUsed"));
-            final.push(usrProjectDescription);
         }
+        const final = intermediate.split(/\r?\n/);
         return final;
     }
 
