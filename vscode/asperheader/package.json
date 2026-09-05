@@ -2,7 +2,7 @@
   "name": "asperheader",
   "displayName": "Asper Header",
   "description": "This is an extension that will allow the developers of the Asperguide project to sign their file in an easier way and quicker",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "publisher": "HenryLetellier",
   "icon": "images/icon/favicon_transparent.png",
   "repository": {
@@ -219,7 +219,7 @@
         },
         "asperheader.headerLastModifiedKey": {
           "type": "string",
-          "default": "LAST Modified",
+          "default": "LAST MODIFIED",
           "description": "The keyword used for the last modified timestamp field."
         },
         "asperheader.headerDescriptionKey": {
@@ -280,6 +280,35 @@
         "asperheader.headerLogo": {
           "type": "array",
           "default": [
+            "...........+++....................",
+            "..........+++++...................",
+            "..........++..++..................",
+            ".........++...+++.................",
+            "........+++....++.................",
+            ".......+++......++................",
+            ".......++........++++++++++.......",
+            "......++......+++++++....+++++++..",
+            ".....+++....+++...+++.........+++.",
+            "....+++...+++......++......+++....",
+            "....++...+++........++++++........",
+            "...++...+++.......+++++...........",
+            "..++....++....++++...+++..........",
+            ".+++...+++++++........++..........",
+            "+++...++++.............++.........",
+            "+++++..+++.............+++........",
+            "........++................++++++++",
+            "........+++.....................++",
+            ".........++.....................++",
+            "..........++....................++",
+            "...........+++..................++",
+            ".............+++++..........+++++.",
+            ".................++++++++++++....."
+          ],
+          "description": "The default ASCII logo used when random logos are disabled."
+        },
+        "asperheader.oldHeaderLogo": {
+          "type": "array",
+          "default": [
             "..........####...####..........",
             "......###.....#.#########......",
             "....##........#.###########....",
@@ -298,7 +327,12 @@
             ".......#......#.########.......",
             ".........#####...#####........."
           ],
-          "description": "The default ASCII logo used when random logos are disabled."
+          "description": "The previous default ASCII logo used when random logos are disabled."
+        },
+        "asperheader.useOldHeaderLogo": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use the old logo instead of the new one."
         },
         "asperheader.maxScanLength": {
           "type": "number",
