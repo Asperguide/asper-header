@@ -108,7 +108,7 @@ export const headerFileKey: string = "FILE";
 /** @brief Key identifier for file creation timestamp field */
 export const headerCreationDateKey: string = "CREATION DATE";
 /** @brief Key identifier for last modification timestamp field */
-export const headerLastModifiedKey: string = "LAST Modified";
+export const headerLastModifiedKey: string = "LAST MODIFIED";
 /** @brief Key identifier for file description field in headers */
 export const headerDescriptionKey: string = "DESCRIPTION";
 /** @brief Key identifier for copyright information field */
