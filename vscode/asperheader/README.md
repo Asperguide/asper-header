@@ -73,7 +73,7 @@ None. The extension works out of the box with Visual Studio Code.
 AsperHeader contributes the following settings:
 
 | Setting | Type | Default | Description |
-|---------|------|---------|-------------|
+| --------- | ------ | --------- | ------------- |
 | `asperheader.extensionName` | string | `"AsperHeader"` | Name of the extension being used. |
 | `asperheader.projectCopyright` | string | `"(c) Asperguide"` | Copyright message for the header. |
 | `asperheader.headerOpenerDecorationOpen` | string | `"+==== "` | Opening text for the header frame. |
@@ -132,7 +132,7 @@ AsperHeader now provides **comprehensive multilingual support** for user interfa
 The extension currently supports the following languages:
 
 | Language | Locale Code |
-|----------|-------------|
+| ---------- | ------------- |
 | English (US) | `en` |
 | French | `fr` |
 | Italian | `it` |
@@ -264,6 +264,12 @@ The extension currently supports the following languages:
 
 - Fix processing of the description entry when charage returns are provided. (comments in front of the description content are now properly prepended)
 - Fix header checking (issue of a closing line being before the opening line, grace lines (the user defined maximum scan lines added onto the current user defined scan lines) when the opening line of the header was found but not the closing one)
+
+### 1.0.20
+
+- Fix trailing whitespaces that remained at the end of the first line of the comment
+- Fix format detection for .gitignore files
+- Update package dependencies to their latest version
 
 ---
 
