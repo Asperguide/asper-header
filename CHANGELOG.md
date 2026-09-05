@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.20] - 5/09/2026
+
+### Fixed
+
+- trailing whitespaces that remained at the end of the first line of the comment
+- format detection for .gitignore files
+
+### Updated
+
+- package dependencies to their latest version
+
 ## [1.0.19] - 16/02/2026
 
 ### Fixed

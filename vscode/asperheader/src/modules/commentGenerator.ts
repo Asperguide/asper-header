@@ -773,6 +773,7 @@ export class CommentGenerator {
         commentOpener += this.Config.get("headerCommentSpacing");
         commentMiddle += this.Config.get("headerCommentSpacing");
         commentCloser += this.Config.get("headerCommentSpacing");
+
         return [commentOpener, commentMiddle, commentCloser];
     }
 
@@ -803,7 +804,7 @@ export class CommentGenerator {
         buildHeader = this.prependIfPresent(buildHeader, eol, languageId);
         // Preparing the header content so that it can be put in a comment and written.
         if (commentOpener.length > 0) {
-            buildHeader.push(`${commentOpener}${this.determineNewLine(eol)}`);
+            buildHeader.push(`${this.mySmartTrimmer(commentOpener)}${this.determineNewLine(eol)}`);
         }
         // Opening the header
         buildHeader.push(this.headerOpener(commentMiddle, eol, this.projectName));

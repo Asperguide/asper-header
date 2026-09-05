@@ -1996,7 +1996,8 @@
                     ".ocx"
                 ],
                 "plaintext": [
-                    ".txt"
+                    ".txt",
+                    ".gitkeep"
                 ]
             }
         },
