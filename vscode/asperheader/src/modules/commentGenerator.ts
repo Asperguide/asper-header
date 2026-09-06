@@ -2,7 +2,7 @@
  * @file commentGenerator.ts
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.18
+ * @version 1.0.21
  * @since 1.0.0
  * @date 2025
  * 
@@ -34,6 +34,7 @@
  * - Telegraph-style protocol markers for structured headers
  * - Copyright and authorship attribution
  * - File description and purpose documentation
+ * - Versioned logo selection for backward compatibility (`headerLogoVersions`, `useHeaderLogoVersion`, `headerLogoVersionReference`) @since 1.0.21
  * 
  * Integration Points:
  * This module integrates with the extension's save event handlers, workspace
@@ -161,8 +162,27 @@ export class CommentGenerator {
     private headerInnerEnd: number | undefined = undefined;
     /** @brief Maximum number of lines to scan when looking for existing headers */
     private maxScanLength: number = this.Config.get("maxScanLength");
-    /** @brief Array of logo lines to display in header */
+    /** @brief Default logo lines used when versioning and random logo are disabled */
     private headerLogo: string[] = this.Config.get("headerLogo");
+    /**
+     * @brief Mapping of version identifiers to ASCII logo arrays
+     * @details Populated from `headerLogoVersions` setting; enables pinning historic logos.
+     * @since 1.0.21
+     */
+    private headerLogoVersions: Record<string, string[]> = this.Config.get("headerLogoVersions");
+    /**
+     * @brief Flag enabling versioned logo selection
+     * @details When true, `headerLogoVersionReference` is resolved against `headerLogoVersions`.
+     * Ignored if `randomLogo` is true.
+     * @since 1.0.21
+     */
+    private useHeaderLogoVersion: boolean = this.Config.get("useHeaderLogoVersion");
+    /**
+     * @brief Version key for the logo to use when versioning is enabled
+     * @details Must match a key in `headerLogoVersions`; defaults to `"v2"`.
+     * @since 1.0.21
+     */
+    private headerLogoVersionReference: string = this.Config.get("headerLogoVersionReference");
     /** @brief Project name to display in header */
     private projectName: string = this.Config.get("extensionName");
     /** @brief Copyright information */
@@ -600,7 +620,18 @@ export class CommentGenerator {
         this.filePath = this.documentBody.uri.fsPath;
         this.projectCopyRight = this.Config.get("projectCopyright");
         this.addBlankLineAfterMultiline = this.Config.get("headerAddBlankLineAfterMultiline");
-        this.maxScanLength = this.Config.get("defaultMaxScanLength") + this.headerLogo.length;
+        this.maxScanLength = this.Config.get("defaultMaxScanLength");
+        if (this.useHeaderLogoVersion) {
+            if (this.headerLogoVersionReference in this.headerLogoVersions) {
+                logger.debug(getMessage("headerLogoReference", this.headerLogoVersionReference));
+                this.maxScanLength += this.headerLogoVersions[this.headerLogoVersionReference].length;
+            } else {
+                logger.error(getMessage("headerLogoReferenceNotFound", this.headerLogoVersionReference));
+            }
+        } else {
+            logger.debug(getMessage("headerLogoVersionDisabled"));
+            this.maxScanLength += this.headerLogo.length;
+        }
         this.fileName = this.documentBody.uri.path.split('/').pop() || "unknown";
         if (this.fileName.includes('.')) {
             this.fileExtension = this.fileName.split('.').pop() || "none";
@@ -820,6 +851,14 @@ export class CommentGenerator {
                 }
             } catch (e) {
                 logger.error(getMessage("randomLogoGatheringFailed", String(e)));
+            }
+        } else if (this.useHeaderLogoVersion === true) {
+            if (this.headerLogoVersionReference in this.headerLogoVersions) {
+                logger.debug(getMessage("headerLogoReference", this.headerLogoVersionReference));
+                logoContent = this.headerLogoVersions[this.headerLogoVersionReference];
+            } else {
+                logger.error(getMessage("headerLogoReferenceNotFound", this.headerLogoVersionReference));
+                logger.Gui.error(getMessage("headerLogoReferenceNotFoundGUI", this.headerLogoVersionReference));
             }
         }
         buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Config.get("headerLogoKey"), logoContent));

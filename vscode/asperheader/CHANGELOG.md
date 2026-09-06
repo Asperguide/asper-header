@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.21] - 6/09/2026
+
+### Added
+
+- a method to allow the user to switch between logo versions without requiring the user to override the default logo field.
+
 ## [1.0.20] - 5/09/2026
 
 ### Fixed
