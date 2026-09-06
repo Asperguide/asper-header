@@ -2,7 +2,7 @@
  * @file processConfiguration.ts
  * @brief Advanced configuration management and settings orchestration for AsperHeader
  * @author Henry Letellier
- * @version 1.0.18
+ * @version 1.0.21
  * @since 1.0.0
  * @date 2025
  * 
@@ -23,7 +23,7 @@
  * - **Visual Formatting**: Header decorations, separators, and visual styling options
  * - **Telegraph Protocol**: Communication markers, block terminators, and transmission symbols
  * - **Temporal Settings**: Date/time formats, timezone handling, and timestamp preferences  
- * - **Logo Management**: ASCII art selection, randomization, and display preferences
+ * - **Logo Management**: ASCII art selection, randomization, versioned storage (`headerLogoVersions`, `useHeaderLogoVersion`, `headerLogoVersionReference` since 1.0.21) and display preferences
  * - **Performance Tuning**: File scanning limits, processing thresholds, and optimization settings
  * - **Feature Control**: Debug modes, auto-refresh behavior, and experimental features
  * - **File Processing**: Extension filters, ignore patterns, and inclusion rules
@@ -160,11 +160,26 @@ class Configuration {
     // Content and behavior configuration
     /** @brief Default ASCII art logo lines for headers */
     private headerLogo: string[] = CONST.defaultHeaderLogo;
-    /** @brief Different versions for the header logo */
+    /**
+     * @brief Versioned logo collection for backward-compatible header generation
+     * @details Keyed by version id (e.g. `v1`, `v1-wide`, `v2`). Allows pinning old logos per-project.
+     * Synced from `asperheader.headerLogoVersions` setting.
+     * @since 1.0.21
+     */
     private headerLogoVersions: Record<string, string[]> = CONST.headerLogoVersions;
-    /** @brief Use a version specified from the list or the default logo */
+    /**
+     * @brief Enable versioned logo resolution
+     * @details If true, `headerLogoVersionReference` is looked up in `headerLogoVersions`.
+     * Has no effect when `randomLogo` is true.
+     * @since 1.0.21
+     */
     private useHeaderLogoVersion: boolean = CONST.useHeaderLogoVersion;
-    /** @brief Specify the version of the logo that is to be used. */
+    /**
+     * @brief Selected version key for the header logo
+     * @details Defaults to `"v2"`. Must exist in `headerLogoVersions`; otherwise fallback to default logo
+     * with error `headerLogoReferenceNotFound`.
+     * @since 1.0.21
+     */
     private headerLogoVersionReference: string = CONST.headerLogoVersionReference;
     /** @brief Maximum number of lines to scan when searching for existing headers */
     private maxScanLength: number = CONST.defaultMaxScanLength;

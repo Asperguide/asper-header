@@ -2,7 +2,7 @@
  * @file constants.ts
  * @brief Global constants and configuration values for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.18
+ * @version 1.0.21
  * @since 1.0.0
  * @date 2025
  * 
@@ -182,6 +182,24 @@ export const defaultHeaderLogo: string[] = [
 ];
 
 
+/**
+ * @brief Versioned ASCII art logo collection for backward compatibility
+ *
+ * Stores all historic logo designs indexed by version identifier. Allows users
+ * to pin a specific logo version via `useHeaderLogoVersion` and
+ * `headerLogoVersionReference` without overriding the current `defaultHeaderLogo`.
+ * Each version is a string array where each entry represents one rendered line.
+ *
+ * @details Available versions:
+ * - `v1-wide` – Extra-wide 47-char design with block-style header
+ * - `v1`      – Compact 32-char design (legacy)
+ * - `v2`      – Current default (+++ pattern, 32-char, 17 lines)
+ *
+ * @since 1.0.21
+ * @see defaultHeaderLogo
+ * @see useHeaderLogoVersion
+ * @see headerLogoVersionReference
+ */
 export const headerLogoVersions: Record<string, string[]> = {
     "v1-wide": [
         "................####.......####................",
@@ -256,8 +274,24 @@ export const headerLogoVersions: Record<string, string[]> = {
     ]
 };
 
+/**
+ * @brief Toggle to use a versioned logo instead of the latest default logo
+ * @details When `true`, the generator selects the logo from `headerLogoVersions`
+ * using `headerLogoVersionReference`. Ignored when `randomLogo` is enabled.
+ * @since 1.0.21
+ */
 export const useHeaderLogoVersion: boolean = false;
 
+/**
+ * @brief Version key referencing an entry in `headerLogoVersions`
+ * @details Default is `"v2"` (current logo). Must match a key in `headerLogoVersions`;
+ * otherwise the extension falls back to the default logo and logs
+ * `headerLogoReferenceNotFound` / `headerLogoReferenceNotFoundGUI`.
+ * Supports user-defined versions by extending `headerLogoVersions` via settings.
+ * @since 1.0.21
+ * @see headerLogoVersions
+ * @see useHeaderLogoVersion
+ */
 export const headerLogoVersionReference: string = "v2";
 
 // ============================================================================

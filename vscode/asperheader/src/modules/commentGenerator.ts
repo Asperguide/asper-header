@@ -2,7 +2,7 @@
  * @file commentGenerator.ts
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.18
+ * @version 1.0.21
  * @since 1.0.0
  * @date 2025
  * 
@@ -34,6 +34,7 @@
  * - Telegraph-style protocol markers for structured headers
  * - Copyright and authorship attribution
  * - File description and purpose documentation
+ * - Versioned logo selection for backward compatibility (`headerLogoVersions`, `useHeaderLogoVersion`, `headerLogoVersionReference`) @since 1.0.21
  * 
  * Integration Points:
  * This module integrates with the extension's save event handlers, workspace
@@ -161,13 +162,26 @@ export class CommentGenerator {
     private headerInnerEnd: number | undefined = undefined;
     /** @brief Maximum number of lines to scan when looking for existing headers */
     private maxScanLength: number = this.Config.get("maxScanLength");
-    /** @brief Array of logo lines to display in header */
+    /** @brief Default logo lines used when versioning and random logo are disabled */
     private headerLogo: string[] = this.Config.get("headerLogo");
-    /** @brief Array of logo lines to display in header */
+    /**
+     * @brief Mapping of version identifiers to ASCII logo arrays
+     * @details Populated from `headerLogoVersions` setting; enables pinning historic logos.
+     * @since 1.0.21
+     */
     private headerLogoVersions: Record<string, string[]> = this.Config.get("headerLogoVersions");
-    /** @brief Array of logo lines to display in header */
+    /**
+     * @brief Flag enabling versioned logo selection
+     * @details When true, `headerLogoVersionReference` is resolved against `headerLogoVersions`.
+     * Ignored if `randomLogo` is true.
+     * @since 1.0.21
+     */
     private useHeaderLogoVersion: boolean = this.Config.get("useHeaderLogoVersion");
-    /** @brief The version of the header to use */
+    /**
+     * @brief Version key for the logo to use when versioning is enabled
+     * @details Must match a key in `headerLogoVersions`; defaults to `"v2"`.
+     * @since 1.0.21
+     */
     private headerLogoVersionReference: string = this.Config.get("headerLogoVersionReference");
     /** @brief Project name to display in header */
     private projectName: string = this.Config.get("extensionName");

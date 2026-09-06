@@ -2,7 +2,7 @@
  * @file messageReference.ts
  * @brief Comprehensive multilingual message repository with advanced localization support
  * @author Henry Letellier
- * @version 1.0.18
+ * @version 1.0.21
  * @since 1.0.0
  * @date 2025-10-05
  * @copyright (c) 2025 Asperguide - All rights reserved
@@ -324,7 +324,7 @@
  * @note Undefined message keys return a standardized error message with the missing key identifier
  * @note Language pack validation occurs during extension initialization for early error detection
  * 
- * @version 1.0.14
+ * @version 1.0.21
  * @since 1.0.0
  * @see MessageProvider For the primary interface to access these messages
  * @see Logger For integration with the extension's logging system
