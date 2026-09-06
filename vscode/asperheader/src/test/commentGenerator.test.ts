@@ -1287,21 +1287,23 @@ const someCode = true;`;
          * @test Validates proper modification date refresh in existing header structures
          */
         test('should update existing header timestamp', async () => {
+            // Use header that matches current constants (telegraph markers, LAST MODIFIED all caps)
             const headerContent = `/*
- * ═══════════════════════ ◄ BEGIN TestProject ► ═══════════════════════
- * Logo:
- * ▄▄▄▄▄▄▄▄
- * ───────
- * Project: TestProject
- * File: test.ts  
- * Created: 03-10-2025
- * LAST Modified: 15:30:45 03-10-2025
- * Description:
+ * +==== BEGIN AsperHeader =================+
+ * LOGO:
+ * ...........+++....................
+ * ..........+++++...................
+ * PROJECT: AsperHeader
+ * FILE: test.ts
+ * CREATION DATE: 03-10-2025
+ * LAST MODIFIED: 15:30:45 03-10-2025
+ * DESCRIPTION:
  * Test file
- * ───────
- * Copyright: © 2025
- * Purpose: Testing
- * ═══════════════════════ ◄ END TestProject ► ═══════════════════════
+ * /STOP
+ * COPYRIGHT: (c) Asperguide
+ * PURPOSE: Testing
+ * // AR
+ * +==== END AsperHeader =================+
  */`;
 
             const document = new MockTextDocument('/test/test.ts', headerContent);
@@ -1311,13 +1313,130 @@ const someCode = true;`;
             const generatorAny = generator as any;
             const comments = ['/* ', ' * ', ' */'];
 
-            // Simulate finding header bounds
+            // Simulate finding header bounds - headerInnerStart/End must bracket the LAST MODIFIED line
             generatorAny.headerInnerStart = 1;
-            generatorAny.headerInnerEnd = 15;
+            generatorAny.headerInnerEnd = 14;
 
             await generatorAny.updateEditDate(document, comments);
 
             assert.strictEqual(mockWorkspaceEdits.length, 1);
+        });
+
+        test('should fail to update if LAST MODIFIED key has wrong casing (case-sensitive)', async () => {
+            // Regression guard for d220005: key changed from "LAST Modified" to "LAST MODIFIED"
+            // updateEditDate uses includes() with case-sensitive match, so wrong casing should NOT update
+            const headerContent = `/*
+ * +==== BEGIN AsperHeader =================+
+ * LOGO:
+ * ...........+++....................
+ * PROJECT: AsperHeader
+ * FILE: test.ts
+ * CREATION DATE: 03-10-2025
+ * LAST Modified: 15:30:45 03-10-2025
+ * DESCRIPTION:
+ * Test file
+ * /STOP
+ * COPYRIGHT: (c) Asperguide
+ * PURPOSE: Testing
+ * // AR
+ * +==== END AsperHeader =================+
+ */`;
+
+            const document = new MockTextDocument('/test/test.ts', headerContent);
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+
+            const generatorAny = generator as any;
+            const comments = ['/* ', ' * ', ' */'];
+
+            generatorAny.headerInnerStart = 1;
+            generatorAny.headerInnerEnd = 14;
+
+            await generatorAny.updateEditDate(document, comments);
+
+            // Should NOT have performed an edit because key casing is wrong
+            assert.strictEqual(mockWorkspaceEdits.length, 0);
+        });
+    });
+
+    /**
+     * @brief Test suite for logo height / maxScanLength calculation
+     *
+     * Validates the fix introduced in 6f132be where maxScanLength is computed as
+     * defaultMaxScanLength + logo height, with support for versioned logos.
+     * This guards against regressions when the default logo height changes (23 lines for v2)
+     * or when headerLogoVersions are used.
+     */
+    suite('Logo Height and MaxScanLength Calculation', () => {
+        test('should compute maxScanLength as defaultMaxScanLength + default logo height', () => {
+            const document = new MockTextDocument('/test/file.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            const expected = CodeConfig.get("defaultMaxScanLength") + CodeConfig.get("headerLogo").length;
+            // defaultMaxScanLength=100, default logo is v2 with 23 lines => 123
+            assert.strictEqual(generatorAny.maxScanLength, expected, `maxScanLength should be defaultMaxScanLength (${CodeConfig.get("defaultMaxScanLength")}) + logo height (${CodeConfig.get("headerLogo").length})`);
+            assert.strictEqual(generatorAny.maxScanLength, 123);
+        });
+
+        test('should compute maxScanLength using versioned logo when enabled (v1)', () => {
+            const document = new MockTextDocument('/test/file.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            // Simulate versioned logo enabled with v1 (17 lines)
+            generatorAny.useHeaderLogoVersion = true;
+            generatorAny.headerLogoVersionReference = "v1";
+            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
+            // Re-trigger updateFileInfo to recalc
+            generatorAny.updateFileInfo(document as any);
+            const expected = CodeConfig.get("defaultMaxScanLength") + generatorAny.headerLogoVersions["v1"].length;
+            assert.strictEqual(generatorAny.maxScanLength, expected);
+            assert.strictEqual(generatorAny.headerLogoVersions["v1"].length, 17);
+            assert.strictEqual(generatorAny.maxScanLength, 117);
+        });
+
+        test('should compute maxScanLength using versioned logo v1-wide (25 lines)', () => {
+            const document = new MockTextDocument('/test/file.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            generatorAny.useHeaderLogoVersion = true;
+            generatorAny.headerLogoVersionReference = "v1-wide";
+            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
+            generatorAny.updateFileInfo(document as any);
+            const expected = CodeConfig.get("defaultMaxScanLength") + generatorAny.headerLogoVersions["v1-wide"].length;
+            assert.strictEqual(generatorAny.maxScanLength, expected);
+            assert.strictEqual(generatorAny.headerLogoVersions["v1-wide"].length, 25);
+            assert.strictEqual(generatorAny.maxScanLength, 125);
+        });
+
+        test('should compute maxScanLength using v2 when versioned (also 23 lines)', () => {
+            const document = new MockTextDocument('/test/file.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            generatorAny.useHeaderLogoVersion = true;
+            generatorAny.headerLogoVersionReference = "v2";
+            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
+            generatorAny.updateFileInfo(document as any);
+            const expected = CodeConfig.get("defaultMaxScanLength") + generatorAny.headerLogoVersions["v2"].length;
+            assert.strictEqual(generatorAny.maxScanLength, expected);
+            assert.strictEqual(generatorAny.maxScanLength, 123);
+        });
+
+        test('should keep maxScanLength at default when versioned logo reference is unknown', () => {
+            const document = new MockTextDocument('/test/file.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            generatorAny.useHeaderLogoVersion = true;
+            generatorAny.headerLogoVersionReference = "nonexistent";
+            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
+            generatorAny.updateFileInfo(document as any);
+            // When reference not found, code does NOT add logo height, leaves at defaultMaxScanLength
+            assert.strictEqual(generatorAny.maxScanLength, CodeConfig.get("defaultMaxScanLength"));
+            assert.strictEqual(generatorAny.maxScanLength, 100);
         });
     });
 

@@ -102,6 +102,9 @@ AsperHeader contributes the following settings:
 | `asperheader.headerDateSeperatorMonth` | string | `"-"` | Separator for month in dates. |
 | `asperheader.headerDateSeperatorYear` | string | `""` | Separator for year in dates. |
 | `asperheader.headerLogo` | array | *[ASCII logo default]* | Default ASCII logo array. |
+| `asperheader.headerLogoVersions` | object | `{}` | The versions of the logo labeled so it can be chosen, you can use this if you wish to maintain old project without risking overriding the logo. |
+| `asperheader.useHeaderLogoVersion` | boolean | `false` | Use a header logo based on version instead of the latest, this will be ignored if use random logo is enabled. |
+| `asperheader.headerLogoVersionReference` | string | `"v2"` | Use a specific store instance of the logo based on the provided id (this should allow you store old versions and stay compatible with old projects). |
 | `asperheader.maxScanLength` | number | `100` | Maximum lines scanned for existing headers. |
 | `asperheader.enableDebug` | boolean | `true` | Enable debug logging. |
 | `asperheader.refreshOnSave` | boolean | `true` | Automatically refresh header on file save. |
@@ -270,6 +273,10 @@ The extension currently supports the following languages:
 - Fix trailing whitespaces that remained at the end of the first line of the comment
 - Fix format detection for .gitignore files
 - Update package dependencies to their latest version
+
+### 1.0.21
+
+- Add a method to allow the user to switch between logo versions without requiring the user to override the default logo field.
 
 ---
 

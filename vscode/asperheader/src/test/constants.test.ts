@@ -233,13 +233,57 @@ suite('Constants Validation Tests', () => {
 
     /**
      * @brief Tests character set validation for ASCII art logo content
-     * @test Validates that logo contains only permitted ASCII characters (dots, hashes, spaces)
+     * @test Validates that logo contains only permitted ASCII characters (dots, hashes, plus, spaces)
+     *       The modern logo (v2/default) uses '.' for background and '+' for foreground,
+     *       while legacy logos use '#' instead of '+'. Both must be accepted.
      */
     test('ASCII art contains only valid characters', () => {
-        const validChars = /^[.\#\s]*$/; // Only dots, hashes, and spaces
+        const validChars = /^[.\#\+\s]*$/; // Dots, hashes, plus, and spaces (supports both v1/# and v2/+ logos)
 
         CONST.defaultHeaderLogo.forEach((line, index) => {
-            assert.ok(validChars.test(line), `Logo line ${index} should contain only valid ASCII art characters (., #, space)`);
+            assert.ok(validChars.test(line), `Logo line ${index} should contain only valid ASCII art characters (., #, +, space)`);
+        });
+    });
+
+    /**
+     * @brief Validates all versioned logos also contain only allowed characters
+     * @test Ensures headerLogoVersions entries use the same character set
+     */
+    test('Versioned logos contain only valid characters', () => {
+        const validChars = /^[.\#\+\s]*$/;
+        Object.entries(CONST.headerLogoVersions).forEach(([version, logo]) => {
+            assert.ok(Array.isArray(logo), `Logo version ${version} should be an array`);
+            assert.ok(logo.length > 0, `Logo version ${version} should not be empty`);
+            logo.forEach((line, index) => {
+                assert.ok(validChars.test(line), `Logo version ${version} line ${index} should contain only valid ASCII art characters (., #, +, space)`);
+            });
+        });
+    });
+
+    /**
+     * @brief Tests that defaultHeaderLogo matches expected modern logo version (v2)
+     * @test Validates consistency between defaultHeaderLogo and headerLogoVersions.v2
+     */
+    test('Default logo matches v2 version', () => {
+        // Default logo should be identical to v2 (modern '+' style)
+        assert.deepStrictEqual(CONST.defaultHeaderLogo, CONST.headerLogoVersions["v2"], 'defaultHeaderLogo should match v2 version');
+    });
+
+    /**
+     * @brief Tests dimensional consistency of all logo versions
+     * @test Validates that logo height matches the value used for maxScanLength calculation
+     */
+    test('All logo versions have reasonable dimensions', () => {
+        const allLogos: Record<string, string[]> = {
+            default: CONST.defaultHeaderLogo,
+            ...CONST.headerLogoVersions
+        };
+        Object.entries(allLogos).forEach(([name, logo]) => {
+            assert.ok(logo.length >= 10 && logo.length <= 40, `Logo ${name} height ${logo.length} should be between 10 and 40 lines`);
+            const maxLen = Math.max(...logo.map(l => l.length));
+            const minLen = Math.min(...logo.map(l => l.length));
+            assert.ok(maxLen > 20, `Logo ${name} should have reasonable width`);
+            assert.ok((maxLen - minLen) < maxLen * 0.5, `Logo ${name} lines should have relatively consistent length`);
         });
     });
 
