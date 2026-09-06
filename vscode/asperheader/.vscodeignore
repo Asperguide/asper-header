@@ -31,3 +31,8 @@ assets/**
 !dist/assets/**/*.min.json
 **/images/demo/*.gif
 **/images/demo/*.mp4
+# no files/folders with the .old are to be added
+*.old
+**/*.old
+**/*.old/**
+**/*.old*
