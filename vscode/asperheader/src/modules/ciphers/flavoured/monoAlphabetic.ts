@@ -36,11 +36,12 @@ export class MonoalphabeticCipher extends BaseCipher {
 
     /**
      * @brief Constructor for Monoalphabetic cipher
-     * @param mapAlphabet 26-letter substitution alphabet (default: empty string)
+     * @param mapAlphabet 26-letter substitution alphabet (default: QWERTYUIOPASDFGHJKLZXCVBNM)
      * @throws Error if mapAlphabet doesn't contain exactly 26 letters
      * @details Creates both forward and reverse mappings from the provided substitution alphabet.
+     *          Default is a QWERTY permutation to ensure `new Cipher()` does not throw (hardening 1.0.22).
      */
-    constructor(mapAlphabet: string = "") {
+    constructor(mapAlphabet: string = "QWERTYUIOPASDFGHJKLZXCVBNM") {
         super();
 
         const sanitizedMap = this.sanitize(mapAlphabet);

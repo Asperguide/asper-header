@@ -1500,6 +1500,81 @@ const someCode = true;`;
     });
 
     /**
+     * @brief Hardening: golden-header snapshot (replaces weak `includes` checks)
+     * @details Verifies the full `buildTheHeader` output line-by-line for the
+     * TypeScript multi-line style, including dynamic logo height. Catches
+     * regressions like 1.0.21 to 1.0.22 decoration drift or missing `/STOP`.
+     */
+    suite('Golden Header Snapshot', () => {
+        test('should build header with exact structure: opener, LOGO(23), PROJECT, FILE, DESCRIPTION+STOP, closer', async () => {
+            const document = new MockTextDocument('/test/golden.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            mockShowInputBoxResponse = 'Golden description';
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            // Force deterministic description/purpose via Config projectDescription
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === 'projectDescription') { return 'Golden description'; }
+                return origGet(key);
+            };
+            const commentStyle = { singleLine: ['//'], multiLine: ['/*', ' *', ' */'], prompt_comment_opening_type: false, language: 'typescript' };
+            const prefixes = await generatorAny.getCorrectCommentPrefix(commentStyle);
+            const headerLines = await generatorAny.buildTheHeader(prefixes, 'typescript');
+            const headerText = headerLines.join('');
+            const lines = headerText.split('\n').filter((l: string) => l.length > 0);
+            // Opener+closer with telegraph markers
+            assert.ok(lines.some((l: string) => l.includes('+==== BEGIN AsperHeader')), 'Missing header opener');
+            assert.ok(lines.some((l: string) => l.includes('+==== END AsperHeader')), 'Missing header closer');
+            // LOGO section: key + logo height (23 for v2) + /STOP
+            const logoKeyIdx = lines.findIndex((l: string) => l.includes('LOGO:'));
+            assert.notStrictEqual(logoKeyIdx, -1, 'Missing LOGO key');
+            const logoHeight = CodeConfig.get('headerLogo').length;
+            assert.strictEqual(logoHeight, 23, 'Default logo should be 23 lines');
+            const stopAfterLogo = lines[logoKeyIdx + 1 + logoHeight];
+            assert.ok(stopAfterLogo.includes('/STOP'), 'Expected /STOP after LOGO, got ' + stopAfterLogo);
+            // DESCRIPTION section also ends with /STOP
+            const descIdx = lines.findIndex((l: string) => l.includes('DESCRIPTION:'));
+            assert.notStrictEqual(descIdx, -1, 'Missing DESCRIPTION key');
+            assert.ok(lines[descIdx + 2].includes('/STOP'), 'DESCRIPTION should be followed by content + /STOP');
+            // Must contain PROJECT, FILE, CREATION DATE, LAST MODIFIED, COPYRIGHT, PURPOSE, // AR
+            ['PROJECT:', 'FILE:', 'CREATION DATE:', 'LAST MODIFIED:', 'COPYRIGHT:', 'PURPOSE:', '// AR'].forEach(token => {
+                assert.ok(lines.some((l: string) => l.includes(token)), 'Missing token ' + token);
+            });
+            // Comment delimiters - avoid /* and */ inside template literals to not confuse Doxygen/TS
+            assert.ok(lines[0].trim() === '/*', 'First line should be /*, got ' + lines[0]);
+            assert.ok(lines[lines.length - 1].trim() === '*/', 'Last line should be */, got ' + lines[lines.length - 1]);
+            generatorAny.Config.get = origGet;
+        });
+
+        test('should build header with versioned logo v1 (17 lines) when dynamic flag toggled', async () => {
+            const document = new MockTextDocument('/test/golden.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            mockShowInputBoxResponse = 'desc';
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === 'projectDescription') { return 'desc'; }
+                if (key === 'useHeaderLogoVersion') { return true; }
+                if (key === 'headerLogoVersionReference') { return 'v1'; }
+                return origGet(key);
+            };
+            const commentStyle = { singleLine: ['//'], multiLine: ['/*', ' *', ' */'], prompt_comment_opening_type: false, language: 'typescript' };
+            const prefixes = await generatorAny.getCorrectCommentPrefix(commentStyle);
+            const headerLines = await generatorAny.buildTheHeader(prefixes, 'typescript');
+            const headerText = headerLines.join('');
+            const lines = headerText.split('\n').filter((l: string) => l.length > 0);
+            const logoKeyIdx = lines.findIndex((l: string) => l.includes('LOGO:'));
+            const v1Height = origGet('headerLogoVersions')['v1'].length;
+            assert.strictEqual(v1Height, 17);
+            const stopAfterLogo = lines[logoKeyIdx + 1 + v1Height];
+            assert.ok(stopAfterLogo.includes('/STOP'), 'v1 LOGO should be 17 lines then /STOP');
+            generatorAny.Config.get = origGet;
+        });
+    });
+
+    /**
      * @brief Test suite for primary CommentGenerator API methods
      * 
      * Tests the main public interface of CommentGenerator including
