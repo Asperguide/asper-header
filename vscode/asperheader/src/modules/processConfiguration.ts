@@ -163,7 +163,7 @@ class Configuration {
     /** @brief Different versions for the header logo */
     private headerLogoVersions: Record<string, string[]> = CONST.headerLogoVersions;
     /** @brief Use a version specified from the list or the default logo */
-    private useHeaderLogoVersion: boolean = CONST.userHeaderLogoVersion;
+    private useHeaderLogoVersion: boolean = CONST.useHeaderLogoVersion;
     /** @brief Specify the version of the logo that is to be used. */
     private headerLogoVersionReference: string = CONST.headerLogoVersionReference;
     /** @brief Maximum number of lines to scan when searching for existing headers */
@@ -262,7 +262,7 @@ class Configuration {
         this.headerDateSeperatorYear = config.get<string>("headerDateSeperatorYear", CONST.headerDateSeperatorYear);
         this.headerLogo = config.get<string[]>("headerLogo", CONST.defaultHeaderLogo);
         this.headerLogoVersions = config.get<Record<string, string[]>>("headerLogoVersions", CONST.headerLogoVersions);
-        this.useHeaderLogoVersion = config.get<boolean>("useHeaderLogoVersion", CONST.userHeaderLogoVersion);
+        this.useHeaderLogoVersion = config.get<boolean>("useHeaderLogoVersion", CONST.useHeaderLogoVersion);
         this.headerLogoVersionReference = config.get<string>("headerLogoVersionReference", CONST.headerLogoVersionReference);
         this.maxScanLength = config.get<number>("maxScanLength", CONST.defaultMaxScanLength);
         this.enableDebug = config.get<boolean>("enableDebug", CONST.enableDebug);

@@ -163,6 +163,12 @@ export class CommentGenerator {
     private maxScanLength: number = this.Config.get("maxScanLength");
     /** @brief Array of logo lines to display in header */
     private headerLogo: string[] = this.Config.get("headerLogo");
+    /** @brief Array of logo lines to display in header */
+    private headerLogoVersions: Record<string, string[]> = this.Config.get("headerLogoVersions");
+    /** @brief Array of logo lines to display in header */
+    private useHeaderLogoVersion: boolean = this.Config.get("useHeaderLogoVersion");
+    /** @brief The version of the header to use */
+    private headerLogoVersionReference: string = this.Config.get("headerLogoVersionReference");
     /** @brief Project name to display in header */
     private projectName: string = this.Config.get("extensionName");
     /** @brief Copyright information */
@@ -600,7 +606,18 @@ export class CommentGenerator {
         this.filePath = this.documentBody.uri.fsPath;
         this.projectCopyRight = this.Config.get("projectCopyright");
         this.addBlankLineAfterMultiline = this.Config.get("headerAddBlankLineAfterMultiline");
-        this.maxScanLength = this.Config.get("defaultMaxScanLength") + this.headerLogo.length;
+        this.maxScanLength = this.Config.get("defaultMaxScanLength");
+        if (this.useHeaderLogoVersion) {
+            if (this.headerLogoVersionReference in this.headerLogoVersions) {
+                logger.debug(getMessage("headerLogoReference", this.headerLogoVersionReference));
+                this.maxScanLength += this.headerLogoVersions[this.headerLogoVersionReference].length;
+            } else {
+                logger.error(getMessage("headerLogoReferenceNotFound", this.headerLogoVersionReference));
+            }
+        } else {
+            logger.debug(getMessage("headerLogoVersionDisabled"));
+            this.maxScanLength += this.headerLogo.length;
+        }
         this.fileName = this.documentBody.uri.path.split('/').pop() || "unknown";
         if (this.fileName.includes('.')) {
             this.fileExtension = this.fileName.split('.').pop() || "none";
@@ -820,6 +837,14 @@ export class CommentGenerator {
                 }
             } catch (e) {
                 logger.error(getMessage("randomLogoGatheringFailed", String(e)));
+            }
+        } else if (this.useHeaderLogoVersion === true) {
+            if (this.headerLogoVersionReference in this.headerLogoVersions) {
+                logger.debug(getMessage("headerLogoReference", this.headerLogoVersionReference));
+                logoContent = this.headerLogoVersions[this.headerLogoVersionReference];
+            } else {
+                logger.error(getMessage("headerLogoReferenceNotFound", this.headerLogoVersionReference));
+                logger.Gui.error(getMessage("headerLogoReferenceNotFoundGUI", this.headerLogoVersionReference));
             }
         }
         buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Config.get("headerLogoKey"), logoContent));

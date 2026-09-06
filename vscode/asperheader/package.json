@@ -386,7 +386,7 @@
         "asperheader.useHeaderLogoVersion": {
           "type": "boolean",
           "default": false,
-          "description": "Use a header logo based on version instead of the latest."
+          "description": "Use a header logo based on version instead of the latest, this will be ignored if use random logo is enabled."
         },
         "asperheader.headerLogoVersionReference": {
           "type": "string",
