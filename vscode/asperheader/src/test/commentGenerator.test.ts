@@ -1368,75 +1368,134 @@ const someCode = true;`;
      * or when headerLogoVersions are used.
      */
     suite('Logo Height and MaxScanLength Calculation', () => {
-        test('should compute maxScanLength as defaultMaxScanLength + default logo height', () => {
+        test('should compute maxScanLength as maxScanLength + default logo height (dynamic)', () => {
             const document = new MockTextDocument('/test/file.ts', '', 'typescript');
             const editor = new MockTextEditor(document);
             generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
             const generatorAny = generator as any;
-            const expected = CodeConfig.get("defaultMaxScanLength") + CodeConfig.get("headerLogo").length;
-            // defaultMaxScanLength=100, default logo is v2 with 23 lines => 123
-            assert.strictEqual(generatorAny.maxScanLength, expected, `maxScanLength should be defaultMaxScanLength (${CodeConfig.get("defaultMaxScanLength")}) + logo height (${CodeConfig.get("headerLogo").length})`);
+            const base = CodeConfig.get("maxScanLength");
+            const expected = base + CodeConfig.get("headerLogo").length;
+            // base=100, default logo is v2 with 23 lines => 123; dynamic via Config.get("maxScanLength")
+            assert.strictEqual(generatorAny.maxScanLength, expected, `maxScanLength should be maxScanLength (${base}) + logo height (${CodeConfig.get("headerLogo").length})`);
             assert.strictEqual(generatorAny.maxScanLength, 123);
         });
 
-        test('should compute maxScanLength using versioned logo when enabled (v1)', () => {
+        test('should compute maxScanLength using versioned logo when enabled (v1) - dynamic Config', () => {
             const document = new MockTextDocument('/test/file.ts', '', 'typescript');
             const editor = new MockTextEditor(document);
             generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
             const generatorAny = generator as any;
-            // Simulate versioned logo enabled with v1 (17 lines)
-            generatorAny.useHeaderLogoVersion = true;
-            generatorAny.headerLogoVersionReference = "v1";
-            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
-            // Re-trigger updateFileInfo to recalc
+            // Stub Config.get to simulate user enabling versioned logo via settings (1.0.22 dynamic)
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === "useHeaderLogoVersion") { return true; }
+                if (key === "headerLogoVersionReference") { return "v1"; }
+                return origGet(key);
+            };
             generatorAny.updateFileInfo(document as any);
-            const expected = CodeConfig.get("defaultMaxScanLength") + generatorAny.headerLogoVersions["v1"].length;
+            const base = origGet("maxScanLength");
+            const versions = origGet("headerLogoVersions");
+            const expected = base + versions["v1"].length;
             assert.strictEqual(generatorAny.maxScanLength, expected);
-            assert.strictEqual(generatorAny.headerLogoVersions["v1"].length, 17);
+            assert.strictEqual(versions["v1"].length, 17);
             assert.strictEqual(generatorAny.maxScanLength, 117);
+            generatorAny.Config.get = origGet;
         });
 
-        test('should compute maxScanLength using versioned logo v1-wide (25 lines)', () => {
+        test('should compute maxScanLength using versioned logo v1-wide (25 lines) - dynamic', () => {
             const document = new MockTextDocument('/test/file.ts', '', 'typescript');
             const editor = new MockTextEditor(document);
             generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
             const generatorAny = generator as any;
-            generatorAny.useHeaderLogoVersion = true;
-            generatorAny.headerLogoVersionReference = "v1-wide";
-            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === "useHeaderLogoVersion") { return true; }
+                if (key === "headerLogoVersionReference") { return "v1-wide"; }
+                return origGet(key);
+            };
             generatorAny.updateFileInfo(document as any);
-            const expected = CodeConfig.get("defaultMaxScanLength") + generatorAny.headerLogoVersions["v1-wide"].length;
+            const base = origGet("maxScanLength");
+            const versions = origGet("headerLogoVersions");
+            const expected = base + versions["v1-wide"].length;
             assert.strictEqual(generatorAny.maxScanLength, expected);
-            assert.strictEqual(generatorAny.headerLogoVersions["v1-wide"].length, 25);
+            assert.strictEqual(versions["v1-wide"].length, 25);
             assert.strictEqual(generatorAny.maxScanLength, 125);
+            generatorAny.Config.get = origGet;
         });
 
-        test('should compute maxScanLength using v2 when versioned (also 23 lines)', () => {
+        test('should compute maxScanLength using v2 when versioned (also 23 lines) - dynamic', () => {
             const document = new MockTextDocument('/test/file.ts', '', 'typescript');
             const editor = new MockTextEditor(document);
             generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
             const generatorAny = generator as any;
-            generatorAny.useHeaderLogoVersion = true;
-            generatorAny.headerLogoVersionReference = "v2";
-            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === "useHeaderLogoVersion") { return true; }
+                if (key === "headerLogoVersionReference") { return "v2"; }
+                return origGet(key);
+            };
             generatorAny.updateFileInfo(document as any);
-            const expected = CodeConfig.get("defaultMaxScanLength") + generatorAny.headerLogoVersions["v2"].length;
+            const base = origGet("maxScanLength");
+            const versions = origGet("headerLogoVersions");
+            const expected = base + versions["v2"].length;
             assert.strictEqual(generatorAny.maxScanLength, expected);
             assert.strictEqual(generatorAny.maxScanLength, 123);
+            generatorAny.Config.get = origGet;
         });
 
-        test('should keep maxScanLength at default when versioned logo reference is unknown', () => {
+        test('should keep maxScanLength at base when versioned logo reference is unknown - dynamic', () => {
             const document = new MockTextDocument('/test/file.ts', '', 'typescript');
             const editor = new MockTextEditor(document);
             generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
             const generatorAny = generator as any;
-            generatorAny.useHeaderLogoVersion = true;
-            generatorAny.headerLogoVersionReference = "nonexistent";
-            generatorAny.headerLogoVersions = CodeConfig.get("headerLogoVersions");
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === "useHeaderLogoVersion") { return true; }
+                if (key === "headerLogoVersionReference") { return "nonexistent"; }
+                return origGet(key);
+            };
             generatorAny.updateFileInfo(document as any);
-            // When reference not found, code does NOT add logo height, leaves at defaultMaxScanLength
-            assert.strictEqual(generatorAny.maxScanLength, CodeConfig.get("defaultMaxScanLength"));
+            const base = origGet("maxScanLength");
+            assert.strictEqual(generatorAny.maxScanLength, base);
             assert.strictEqual(generatorAny.maxScanLength, 100);
+            generatorAny.Config.get = origGet;
+        });
+
+        test('should reflect user-changed maxScanLength dynamically (e.g. 200)', () => {
+            const document = new MockTextDocument('/test/file.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === "maxScanLength") { return 200; }
+                if (key === "useHeaderLogoVersion") { return false; }
+                return origGet(key);
+            };
+            generatorAny.updateFileInfo(document as any);
+            // 200 + default logo 23 = 223
+            assert.strictEqual(generatorAny.maxScanLength, 223);
+            generatorAny.Config.get = origGet;
+        });
+
+        test('should refresh cached logo fields dynamically on updateFileInfo', () => {
+            const document = new MockTextDocument('/test/file.ts', '', 'typescript');
+            const editor = new MockTextEditor(document);
+            generator = new CommentGenerator(lazyFileLoader, editor as any, mockRandomLogo);
+            const generatorAny = generator as any;
+            // Initially default state
+            assert.strictEqual(generatorAny.useHeaderLogoVersion, false);
+            // Simulate user toggling via settings then opening new document
+            const origGet = generatorAny.Config.get.bind(generatorAny.Config);
+            generatorAny.Config.get = (key: string) => {
+                if (key === "useHeaderLogoVersion") { return true; }
+                if (key === "headerLogoVersionReference") { return "v1"; }
+                return origGet(key);
+            };
+            generatorAny.updateFileInfo(document as any);
+            assert.strictEqual(generatorAny.useHeaderLogoVersion, true);
+            assert.strictEqual(generatorAny.headerLogoVersionReference, "v1");
+            generatorAny.Config.get = origGet;
         });
     });
 
