@@ -2,7 +2,7 @@
  * @file commentGenerator.ts
  * @brief Comprehensive comment and header generation system for AsperHeader extension
  * @author Henry Letellier
- * @version 1.0.21
+ * @version 1.0.22
  * @since 1.0.0
  * @date 2025
  * 
@@ -612,6 +612,17 @@ export class CommentGenerator {
         this.headerInnerEnd = undefined;
         this.headerInnerStart = undefined;
         this.documentBody = document;
+        // Refresh all configuration-derived caches dynamically so user settings changes apply without reload (1.0.22)
+        this.headerLogo = this.Config.get("headerLogo");
+        this.headerLogoVersions = this.Config.get("headerLogoVersions");
+        this.useHeaderLogoVersion = this.Config.get("useHeaderLogoVersion");
+        this.headerLogoVersionReference = this.Config.get("headerLogoVersionReference");
+        this.languagePrepend = this.Config.get("languagePrepend");
+        this.languageAppend = this.Config.get("languageAppend");
+        this.singleLineOverride = this.Config.get("languageSingleLineComment");
+        this.multiLineOverride = this.Config.get("languageMultiLineComment");
+        this.trimTrailingSpaces = this.Config.get("removeTrailingHeaderSpaces");
+        this.preferSingleLineComments = this.Config.get("preferSingleLineComments");
         if (this.Config.get("useWorkspaceNameWhenAvailable")) {
             this.projectName = this.Config.get("workspaceName") || this.Config.get("extensionName");
         } else {
@@ -620,7 +631,9 @@ export class CommentGenerator {
         this.filePath = this.documentBody.uri.fsPath;
         this.projectCopyRight = this.Config.get("projectCopyright");
         this.addBlankLineAfterMultiline = this.Config.get("headerAddBlankLineAfterMultiline");
-        this.maxScanLength = this.Config.get("defaultMaxScanLength");
+        // Dynamic scan budget: base maxScanLength (user-configurable, fallback to defaultMaxScanLength via processConfiguration) + current logo height
+        const baseScanLength: number = this.Config.get("maxScanLength");
+        this.maxScanLength = baseScanLength;
         if (this.useHeaderLogoVersion) {
             if (this.headerLogoVersionReference in this.headerLogoVersions) {
                 logger.debug(getMessage("headerLogoReference", this.headerLogoVersionReference));
@@ -839,8 +852,17 @@ export class CommentGenerator {
         }
         // Opening the header
         buildHeader.push(this.headerOpener(commentMiddle, eol, this.projectName));
-        // The logo
-        let logoContent = this.headerLogo;
+        // The logo - fully dynamic (1.0.22): read fresh config so settings changes apply without reload
+        const freshLogo: string[] = this.Config.get("headerLogo");
+        const freshVersions: Record<string, string[]> = this.Config.get("headerLogoVersions");
+        const freshUseVersion: boolean = this.Config.get("useHeaderLogoVersion");
+        const freshRef: string = this.Config.get("headerLogoVersionReference");
+        // Keep caches in sync for callers that read them directly
+        this.headerLogo = freshLogo;
+        this.headerLogoVersions = freshVersions;
+        this.useHeaderLogoVersion = freshUseVersion;
+        this.headerLogoVersionReference = freshRef;
+        let logoContent = freshLogo;
         if (this.Config.get("randomLogo") === true) {
             try {
                 const gatheredLogo: logo = await this.randomLogo.getRandomLogoFromFolder();
@@ -852,13 +874,13 @@ export class CommentGenerator {
             } catch (e) {
                 logger.error(getMessage("randomLogoGatheringFailed", String(e)));
             }
-        } else if (this.useHeaderLogoVersion === true) {
-            if (this.headerLogoVersionReference in this.headerLogoVersions) {
-                logger.debug(getMessage("headerLogoReference", this.headerLogoVersionReference));
-                logoContent = this.headerLogoVersions[this.headerLogoVersionReference];
+        } else if (freshUseVersion === true) {
+            if (freshRef in freshVersions) {
+                logger.debug(getMessage("headerLogoReference", freshRef));
+                logoContent = freshVersions[freshRef];
             } else {
-                logger.error(getMessage("headerLogoReferenceNotFound", this.headerLogoVersionReference));
-                logger.Gui.error(getMessage("headerLogoReferenceNotFoundGUI", this.headerLogoVersionReference));
+                logger.error(getMessage("headerLogoReferenceNotFound", freshRef));
+                logger.Gui.error(getMessage("headerLogoReferenceNotFoundGUI", freshRef));
             }
         }
         buildHeader.push(this.addMultilineKey(commentMiddle, eol, this.Config.get("headerLogoKey"), logoContent));
