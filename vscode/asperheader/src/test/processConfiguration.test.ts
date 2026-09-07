@@ -109,9 +109,9 @@ suite('ProcessConfiguration Test Suite', () => {
 
     /**
      * @brief Setup function executed before each test
-     * @test Mocks VS Code workspace configuration API for isolated testing
+     * @test Mocks VS Code workspace configuration API and resets CodeConfig to defaults for isolation
      */
-    setup(() => {
+    setup(async () => {
         originalGetConfiguration = vscode.workspace.getConfiguration;
         mockConfig = new MockWorkspaceConfiguration();
 
@@ -119,15 +119,24 @@ suite('ProcessConfiguration Test Suite', () => {
         vscode.workspace.getConfiguration = (section?: string) => {
             return mockConfig as any;
         };
+        // Ensure CodeConfig starts from defaults, not residual from previous suite (e.g., commentGenerator)
+        try {
+            await CodeConfig.refreshVariables();
+        } catch { /* ignore */ }
     });
 
     /**
      * @brief Teardown function executed after each test
-     * @test Restores original VS Code API and cleans up test state
+     * @test Restores original VS Code API and resets CodeConfig singleton to defaults to prevent cross-test pollution
      */
-    teardown(() => {
-        vscode.workspace.getConfiguration = originalGetConfiguration;
+    teardown(async () => {
         mockConfig.clear();
+        // Reset CodeConfig to defaults so next test's fallback assertions are not polluted by previous refreshVariables()
+        // This hardens against the brittle pattern noted in 1.0.10 where residual `enableDebug='true'` leaked.
+        vscode.workspace.getConfiguration = originalGetConfiguration;
+        try {
+            await CodeConfig.refreshVariables();
+        } catch { /* ignore - will fallback to CONST */ }
     });
 
     /**

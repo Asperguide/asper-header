@@ -33,7 +33,7 @@ echo "Running pre-publishing commands..."
 npm run package
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
-    echo "Pre-publishing step failed, se above for more details."
+    echo "Pre-publishing step failed, see above for more details."
     exit $STATUS
 fi
 echo "Running tests..."
@@ -41,6 +41,13 @@ npm run test
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
     echo "Test run failed, see above for more details."
+    exit $STATUS
+fi
+echo "Checking coverage..."
+npm run test:coverage
+STATU=$?
+if [ $STATUS -ne 0 ]; then
+    echo "Coverage failed, see above for more details."
     exit $STATUS
 fi
 echo "Running the intergrated vsce:package (if present)..."

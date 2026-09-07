@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.22] - 6/09/2026
+
+### Changed
+
+- make header scan length (`maxScanLength`) fully dynamic: the effective scan budget is now recomputed on every `updateFileInfo` from the live `maxScanLength` setting plus the current logo height (versioned or default), so user changes via settings apply without reload.
+- refresh cached logo configuration (`headerLogo`, `headerLogoVersions`, `useHeaderLogoVersion`, `headerLogoVersionReference`) dynamically in `CommentGenerator.updateFileInfo` / `buildTheHeader` instead of using stale construction-time values.
+
 ## [1.0.21] - 6/09/2026
 
 ### Added

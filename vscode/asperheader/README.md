@@ -278,6 +278,10 @@ The extension currently supports the following languages:
 
 - Add a method to allow the user to switch between logo versions without requiring the user to override the default logo field.
 
+### 1.0.22
+
+- Make header scan length fully dynamic: effective `maxScanLength` is now `maxScanLength` setting + current logo height (versioned or default) recomputed on every scan, so settings changes apply without reload.
+
 ---
 
 ## Community
