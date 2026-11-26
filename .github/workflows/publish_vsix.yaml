@@ -34,7 +34,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 26
 
       - name: Set package.json version from tag (strict 3 or 4 numeric parts)
         id: set-package-version
